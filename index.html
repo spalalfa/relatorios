@@ -1,84 +1,905 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPAL • Controle de Conferência</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ALFA • Controle Operacional</title>
+
+    <meta
+        name="description"
+        content="Sistema de controle de relatórios, processos e liberações."
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand"><div class="brand-mark">S</div><div><strong>SPAL</strong><span>Controle de Conferência</span></div></div>
-    <nav>
-      <button class="nav active" data-view="dashboard">▦ <span>Dashboard</span></button>
-      <button class="nav" data-view="processos">⌕ <span>Processos</span></button>
-      <button class="nav" data-view="ecolab">◉ <span>ECOLAB</span></button>
-      <button class="nav" data-view="importar">↥ <span>Importar Word</span></button>
-    </nav>
-    <div class="side-foot">ALFA TRANSPORTES<br><small>SPAL – MARILIA/SP</small></div>
-  </aside>
 
-  <main>
-    <header>
-      <div><p class="eyebrow">PAINEL OPERACIONAL</p><h1 id="pageTitle">Dashboard</h1></div>
-      <div class="header-actions"><button class="ghost" id="refreshBtn">↻ Atualizar</button></div>
-    </header>
+<div id="toast" class="toast"></div>
 
-    <section id="dashboard" class="view active">
-      <div class="hero">
-        <div><p>ACOMPANHAMENTO</p><h2>Confira rapidamente o andamento das notas.</h2><span>Pesquise por CT-e, NF, ACR, cliente ou senha.</span></div>
-        <div class="hero-search"><input id="globalSearch" placeholder="Ex.: 867137, 6545516, ECOLAB..."><button onclick="searchAll()">Pesquisar</button></div>
-      </div>
-      <div class="cards">
-        <div class="card"><span>Total de notas</span><b id="kpiTotal">0</b></div>
-        <div class="card"><span>ECOLAB</span><b id="kpiEcolab">0</b></div>
-        <div class="card"><span>Senhas abertas</span><b id="kpiAbertas">0</b></div>
-        <div class="card"><span>Liberadas</span><b id="kpiLiberadas">0</b></div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><div><h3>Últimos processos</h3><p>Registros importados ou atualizados recentemente.</p></div><button class="small-btn" onclick="showView('processos')">Ver todos</button></div>
-        <div class="table-wrap"><table><thead><tr><th>NF</th><th>CT-e</th><th>Cliente</th><th>ACR</th><th>Senha</th><th>Status</th></tr></thead><tbody id="recentTable"></tbody></table></div>
-      </div>
-    </section>
+<!-- LOGIN -->
 
-    <section id="processos" class="view">
-      <div class="toolbar"><div class="searchbox">⌕ <input id="processSearch" placeholder="Pesquisar CT-e, NF, ACR, cliente ou senha..." oninput="renderProcessos()"></div><select id="statusFilter" onchange="renderProcessos()"><option value="">Todos os status</option><option>GERADA</option><option>ABERTA</option><option>LIBERADA</option></select></div>
-      <div class="panel"><div class="panel-head"><div><h3>Todos os processos</h3><p>Use a ação para informar a senha e atualizar o status.</p></div><button class="small-btn" onclick="showView('importar')">+ Importar Word</button></div>
-      <div class="table-wrap"><table><thead><tr><th>Data</th><th>NF</th><th>CT-e</th><th>Cliente</th><th>Vol.</th><th>ACR</th><th>Senha</th><th>Status</th><th></th></tr></thead><tbody id="processTable"></tbody></table></div></div>
-    </section>
+<section id="loginScreen" class="login-screen">
 
-    <section id="ecolab" class="view">
-      <div class="client-hero"><div class="ecolab-logo">E</div><div><p class="eyebrow">CLIENTE</p><h2>ECOLAB</h2><span>Somente notas da ECOLAB</span></div></div>
-      <div class="cards"><div class="card"><span>Notas ECOLAB</span><b id="ecTotal">0</b></div><div class="card"><span>Com senha</span><b id="ecSenha">0</b></div><div class="card"><span>Em aberto</span><b id="ecAberta">0</b></div><div class="card"><span>Liberadas</span><b id="ecLib">0</b></div></div>
-      <div class="panel"><div class="panel-head"><div><h3>Processos ECOLAB</h3><p>Acompanhamento exclusivo das notas da ECOLAB.</p></div><div class="searchbox compact">⌕ <input id="ecSearch" placeholder="Buscar na ECOLAB..." oninput="renderEcolab()"></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Data</th><th>NF</th><th>CT-e</th><th>Volume</th><th>ACR</th><th>Senha</th><th>Status</th><th></th></tr></thead><tbody id="ecTable"></tbody></table></div></div>
-    </section>
+    <div class="login-card">
 
-    <section id="importar" class="view">
-      <div class="import-grid">
-        <div class="panel upload-panel">
-          <p class="eyebrow">ENTRADA DE DADOS</p><h2>Importar relatório Word</h2>
-          <p>Selecione o relatório .docx. O sistema identifica automaticamente DATA, SENHA, CT-e, NF, REMETENTE, VOLUME e ACR.</p>
-          <label class="drop" id="dropZone"><input type="file" id="wordFile" accept=".docx"><div class="upload-icon">↥</div><b>Arraste o Word aqui</b><span>ou clique para selecionar .docx</span></label>
-          <div id="importPreview" class="preview hidden"></div>
-          <button class="primary wide hidden" id="confirmImport">Importar registros</button>
+        <div class="brand-mark">
+            A
         </div>
-        <div class="panel instructions"><h3>Fluxo sugerido</h3>
-          <div class="step"><b>01</b><div><strong>Você monta o relatório</strong><span>Como o documento da SPAL do dia 17/09.</span></div></div>
-          <div class="step"><b>02</b><div><strong>Importa o Word</strong><span>As linhas entram no painel automaticamente.</span></div></div>
-          <div class="step"><b>03</b><div><strong>Senha é informada</strong><span>Ex.: no relatório de 09/09, a senha era 37742.</span></div></div>
-          <div class="step"><b>04</b><div><strong>Status é atualizado</strong><span>GERADA → ABERTA → LIBERADA.</span></div></div>
+
+        <span class="eyebrow">
+            ALFA TRANSPORTES
+        </span>
+
+        <h1>
+            Controle Operacional
+        </h1>
+
+        <p class="muted">
+            Relatórios, processos e liberações
+            SPAL / ECOLAB em um só lugar.
+        </p>
+
+        <form id="loginForm">
+
+            <label>
+                E-mail
+
+                <input
+                    id="email"
+                    type="email"
+                    autocomplete="username"
+                    placeholder="seu@email.com"
+                    required
+                >
+            </label>
+
+            <label>
+                Senha
+
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                    required
+                >
+            </label>
+
+            <button
+                type="submit"
+                class="btn btn-primary btn-block"
+            >
+                Entrar
+            </button>
+
+        </form>
+
+        <button
+            id="forgotPassword"
+            class="link-button"
+            type="button"
+        >
+            Esqueci minha senha
+        </button>
+
+        <p
+            id="loginMessage"
+            class="form-message"
+        ></p>
+
+    </div>
+
+</section>
+
+
+<!-- SISTEMA -->
+
+<div id="app" class="app hidden">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="brand">
+
+                <div class="brand-mark small">
+                    A
+                </div>
+
+                <div>
+
+                    <strong>
+                        ALFA
+                    </strong>
+
+                    <span>
+                        Controle Operacional
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button
+                id="closeSidebar"
+                class="icon-btn mobile-only"
+            >
+                ×
+            </button>
+
         </div>
-      </div>
-    </section>
-  </main>
+
+
+        <nav class="nav">
+
+            <button
+                class="nav-item active"
+                data-view="dashboard"
+            >
+                <span>⌂</span>
+                Dashboard
+            </button>
+
+            <button
+                class="nav-item"
+                data-view="processos"
+            >
+                <span>▤</span>
+                Processos
+            </button>
+
+            <button
+                class="nav-item"
+                data-view="relatorios"
+            >
+                <span>▥</span>
+                Relatórios
+            </button>
+
+            <button
+                class="nav-item"
+                data-view="ecolab"
+            >
+                <span>◉</span>
+                ECOLAB
+            </button>
+
+            <button
+                id="navImportar"
+                class="nav-item admin-only"
+                data-view="importar"
+            >
+                <span>↑</span>
+                Importar Word
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-mini">
+
+                <div
+                    class="avatar"
+                    id="userAvatar"
+                >
+                    U
+                </div>
+
+                <div>
+
+                    <strong id="userEmail">
+                        Usuário
+                    </strong>
+
+                    <span id="userRole">
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+            >
+                Sair
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- CONTEÚDO -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button
+                id="openSidebar"
+                class="icon-btn mobile-only"
+            >
+                ☰
+            </button>
+
+            <div>
+
+                <span class="eyebrow">
+                    PAINEL OPERACIONAL
+                </span>
+
+                <h2 id="pageTitle">
+                    Dashboard
+                </h2>
+
+            </div>
+
+            <div class="top-actions">
+
+                <button
+                    id="refreshBtn"
+                    class="btn btn-secondary"
+                >
+                    ↻ Atualizar
+                </button>
+
+                <button
+                    id="topImportBtn"
+                    class="btn btn-primary admin-only"
+                    data-view-target="importar"
+                >
+                    + Importar Word
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <section
+            id="view-dashboard"
+            class="view"
+        >
+
+            <div class="hero">
+
+                <div>
+
+                    <span class="eyebrow">
+                        VISÃO GERAL
+                    </span>
+
+                    <h3>
+                        Acompanhe as conferências
+                        sem perder nenhum processo.
+                    </h3>
+
+                    <p>
+                        Cada relatório possui uma única senha.
+                        Após a conferência SPAL, a senha é vinculada
+                        ao relatório e aparece em todas as suas notas.
+                    </p>
+
+                </div>
+
+                <div class="hero-status">
+
+                    <span class="pulse"></span>
+
+                    <span id="connectionText">
+                        Conectando...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+
+                    <span>
+                        Relatórios
+                    </span>
+
+                    <strong id="statReports">
+                        0
+                    </strong>
+
+                    <small>
+                        Total importado
+                    </small>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <span>
+                        Processos
+                    </span>
+
+                    <strong id="statProcesses">
+                        0
+                    </strong>
+
+                    <small>
+                        Notas cadastradas
+                    </small>
+
+                </article>
+
+
+                <article class="stat-card warning">
+
+                    <span>
+                        Aguardando conferência
+                    </span>
+
+                    <strong id="statWaiting">
+                        0
+                    </strong>
+
+                    <small>
+                        Relatórios pendentes
+                    </small>
+
+                </article>
+
+
+                <article class="stat-card success">
+
+                    <span>
+                        Liberados
+                    </span>
+
+                    <strong id="statReleased">
+                        0
+                    </strong>
+
+                    <small>
+                        Relatórios liberados
+                    </small>
+
+                </article>
+
+            </div>
+
+
+            <div class="two-col">
+
+                <section class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                RECENTES
+                            </span>
+
+                            <h3>
+                                Últimos relatórios
+                            </h3>
+
+                        </div>
+
+                        <button
+                            class="text-btn"
+                            data-view-target="relatorios"
+                        >
+                            Ver todos →
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="recentReports"
+                        class="table-wrap"
+                    ></div>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                CONSULTA RÁPIDA
+                            </span>
+
+                            <h3>
+                                Buscar processo
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="search-box large">
+
+                        <span>
+                            ⌕
+                        </span>
+
+                        <input
+                            id="quickSearch"
+                            placeholder="CT-e, NF, ACR, cliente ou senha..."
+                        >
+
+                    </div>
+
+                    <div
+                        id="quickResults"
+                        class="quick-results"
+                    >
+
+                        <div class="empty">
+                            Digite algo para pesquisar.
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROCESSOS -->
+
+        <section
+            id="view-processos"
+            class="view hidden"
+        >
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CONSULTA
+                    </span>
+
+                    <h3>
+                        Processos
+                    </h3>
+
+                    <p class="muted">
+                        Pesquise por CT-e, NF, ACR,
+                        cliente ou senha.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filters panel">
+
+                <div class="search-box">
+
+                    <span>
+                        ⌕
+                    </span>
+
+                    <input
+                        id="processSearch"
+                        placeholder="Pesquisar..."
+                    >
+
+                </div>
+
+
+                <select id="processStatus">
+
+                   <option value="">Todos os status</option>
+                    <option value="AGUARDANDO CONFERÊNCIA">Aguardando conferência</option>
+                    <option value="AGUARDANDO LIBERAÇÃO">Aguardando liberação</option>
+                    <option value="LIBERADA">Liberada</option>
+
+                </select>
+
+
+                <input
+                    id="processDate"
+                    type="date"
+                    title="Filtrar por data"
+                >
+
+            </div>
+
+
+            <section class="panel">
+
+                <div
+                    id="processTable"
+                    class="table-wrap"
+                ></div>
+
+            </section>
+
+        </section>
+
+
+        <!-- RELATÓRIOS -->
+
+        <section
+            id="view-relatorios"
+            class="view hidden"
+        >
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CONTROLE
+                    </span>
+
+                    <h3>
+                        Relatórios
+                    </h3>
+
+                    <p class="muted">
+                        A senha pertence ao relatório
+                        e é compartilhada pelas notas.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn btn-primary admin-only"
+                    data-view-target="importar"
+                >
+                    + Novo relatório
+                </button>
+
+            </div>
+
+
+            <section class="panel">
+
+                <div
+                    id="reportsTable"
+                    class="table-wrap"
+                ></div>
+
+            </section>
+
+        </section>
+
+
+        <!-- ECOLAB -->
+
+        <section
+            id="view-ecolab"
+            class="view hidden"
+        >
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CLIENTE
+                    </span>
+
+                    <h3>
+                        ECOLAB
+                    </h3>
+
+                    <p class="muted">
+                        Somente processos da ECOLAB
+                        são exibidos nesta área.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ecolab-banner">
+
+                <div class="ecolab-dot">
+                    E
+                </div>
+
+                <div>
+
+                    <strong>
+                        Consulta ECOLAB
+                    </strong>
+
+                    <span>
+                        O banco de dados também aplica
+                        regras de segurança para impedir
+                        acesso a processos de outros clientes.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <section class="panel">
+
+                <div
+                    id="ecolabTable"
+                    class="table-wrap"
+                ></div>
+
+            </section>
+
+        </section>
+
+
+        <!-- IMPORTAR -->
+
+        <section
+            id="view-importar"
+            class="view hidden admin-only"
+        >
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ADMINISTRAÇÃO
+                    </span>
+
+                    <h3>
+                        Importar relatório Word
+                    </h3>
+
+                    <p class="muted">
+                        Selecione o relatório diário
+                        em formato .docx.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="import-layout">
+
+                <section class="panel upload-panel">
+
+                    <div
+                        id="dropzone"
+                        class="dropzone"
+                    >
+
+                        <div class="upload-icon">
+                            ↑
+                        </div>
+
+                        <h3>
+                            Arraste o Word para cá
+                        </h3>
+
+                        <p>
+                            ou selecione um arquivo .docx
+                        </p>
+
+                        <input
+                            id="wordFile"
+                            type="file"
+                            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        >
+
+                        <label
+                            for="wordFile"
+                            class="btn btn-primary"
+                        >
+                            Selecionar Word
+                        </label>
+
+                        <div
+                            id="selectedFile"
+                            class="selected-file hidden"
+                        ></div>
+
+                    </div>
+
+
+                    <div
+                        id="previewBox"
+                        class="preview hidden"
+                    ></div>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                CONFERÊNCIA
+                            </span>
+
+                            <h3>
+                                Dados do relatório
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <label>
+
+                        Data do relatório
+
+                        <input
+                            id="importDate"
+                            type="date"
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        Senha
+
+                        <span class="hint">
+                            informe somente após a conferência SPAL
+                        </span>
+
+                        <input
+                            id="importPassword"
+                            placeholder="Ex.: 37742"
+                        >
+
+                    </label>
+
+
+                    <div class="status-preview">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong id="importStatus">
+                            AGUARDANDO CONFERÊNCIA
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        id="importBtn"
+                        class="btn btn-primary btn-block"
+                        disabled
+                    >
+                        Importar relatório
+                    </button>
+
+
+                    <p
+                        id="importMessage"
+                        class="form-message"
+                    ></p>
+
+
+                    <div class="rules-box">
+
+                        <strong>
+                            Regra definitiva
+                        </strong>
+
+                        <p>
+                            Relatório novo =
+                            <b>AGUARDANDO CONFERÊNCIA</b>
+                            e senha <b>—</b>.
+                        </p>
+
+                        <p>
+                            Após a conferência =
+                            informe a senha e o relatório
+                            passa para <b>LIBERADA</b>.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
-<div id="modal" class="modal hidden"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><h2>Atualizar processo</h2><p id="modalDesc"></p><label>Senha<input id="modalSenha" placeholder="Ex.: 37742"></label><label>Status<select id="modalStatus"><option>GERADA</option><option>ABERTA</option><option>LIBERADA</option></select></label><div class="modal-actions"><button class="ghost" onclick="closeModal()">Cancelar</button><button class="primary" onclick="saveModal()">Salvar</button></div></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<!-- MODAL -->
+
+<div
+    id="reportModal"
+    class="modal hidden"
+>
+
+    <div
+        class="modal-backdrop"
+        data-close-modal
+    ></div>
+
+    <div class="modal-card">
+
+        <div class="modal-head">
+
+            <div>
+
+                <span class="eyebrow">
+                    RELATÓRIO
+                </span>
+
+                <h3 id="modalTitle">
+                    Detalhes
+                </h3>
+
+            </div>
+
+            <button
+                class="icon-btn"
+                data-close-modal
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="modalBody"></div>
+
+    </div>
+
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
+
 <script src="app.js"></script>
+
 </body>
 </html>
