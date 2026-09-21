@@ -703,51 +703,67 @@ async function loadAllData() {
 ========================================================= */
 
 async function loadReports() {
+
     if (!supabaseClient) {
         return;
     }
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("relatorios")
-            .select(`
-                id,
-                report_number,
-                report_date,
-                imported_at,
-                password,
-                status,
-                created_by,
-                created_at,
-                updated_at,
-                password_generated_at,
-                password_released_at
-            `)
-            .order(
-                "report_date",
-                {
-                    ascending: false
-                }
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("relatorios")
+                .select(`
+                    id,
+                    report_number,
+                    report_date,
+                    imported_at,
+                    password,
+                    status,
+                    created_by,
+                    created_at,
+                    updated_at,
+                    password_generated_at,
+                    password_released_at
+                `)
+                .order(
+                    "report_date",
+                    {
+                        ascending: false
+                    }
+                );
+
+        if (error) {
+            throw error;
+        }
+
+        reports =
+            (data || []).map(
+                report => ({
+                    ...report,
+                    status:
+                        normalizeStatus(
+                            report.status
+                        )
+                })
             );
 
-    if (error) {
+    } catch (error) {
+
         console.error(
             "Erro ao carregar relatórios:",
             error
         );
 
-        throw error;
+        showToast(
+            error?.message ||
+            "Não foi possível carregar os relatórios.",
+            "error"
+        );
     }
-
-    reports =
-        (data || []).map(report => ({
-            ...report,
-            status:
-                normalizeStatus(report.status)
-        }));
 }
 
 
@@ -2043,6 +2059,11 @@ async function saveReportPassword(
     password
 ) {
     if (!supabaseClient) {
+        showToast(
+            "Supabase não está conectado.",
+            "error"
+        );
+
         return;
     }
 
@@ -2080,8 +2101,14 @@ async function saveReportPassword(
         nowISO();
 
     try {
+
+        /*
+         * Atualiza somente os campos necessários.
+         *
+         * NÃO enviamos report_number.
+         * Ele é gerado pelo IDENTITY do PostgreSQL.
+         */
         const {
-            data,
             error
         } =
             await supabaseClient
@@ -2102,49 +2129,35 @@ async function saveReportPassword(
                 .eq(
                     "id",
                     reportId
-                )
-                .select(`
-                    id,
-                    report_number,
-                    report_date,
-                    imported_at,
-                    password,
-                    status,
-                    created_by,
-                    created_at,
-                    updated_at,
-                    password_generated_at,
-                    password_released_at
-                `)
-                .single();
+                );
 
         if (error) {
             throw error;
         }
 
-        const index =
-            reports.findIndex(
-                item =>
-                    item.id === reportId
-            );
+        /*
+         * Recarrega os relatórios diretamente
+         * do banco para pegar o estado atualizado.
+         */
+        await loadReports();
 
-        if (index !== -1) {
-            reports[index] = {
-                ...data,
-                status:
-                    normalizeStatus(
-                        data.status
-                    )
-            };
-        }
-
+        /*
+         * Recria os vínculos dos processos
+         * com os relatórios atualizados.
+         */
         await refreshProcessReportReferences();
 
+        /*
+         * Atualiza a interface.
+         */
         renderReports();
         renderProcesses();
         renderEcolab();
         updateDashboard();
 
+        /*
+         * Reabre o modal já com os dados novos.
+         */
         openReportModal(reportId);
 
         showToast(
@@ -2153,13 +2166,25 @@ async function saveReportPassword(
         );
 
     } catch (error) {
+
         console.error(
             "Erro ao registrar senha:",
             error
         );
 
+        console.error(
+            "Detalhes do erro:",
+            {
+                message: error?.message,
+                details: error?.details,
+                hint: error?.hint,
+                code: error?.code
+            }
+        );
+
         showToast(
             error?.message ||
+            error?.details ||
             "Não foi possível registrar a senha.",
             "error"
         );
@@ -2175,6 +2200,11 @@ async function releaseReport(
     reportId
 ) {
     if (!supabaseClient) {
+        showToast(
+            "Supabase não está conectado.",
+            "error"
+        );
+
         return;
     }
 
@@ -2218,8 +2248,11 @@ async function releaseReport(
         nowISO();
 
     try {
+
+        /*
+         * Atualiza somente os campos necessários.
+         */
         const {
-            data,
             error
         } =
             await supabaseClient
@@ -2237,49 +2270,33 @@ async function releaseReport(
                 .eq(
                     "id",
                     reportId
-                )
-                .select(`
-                    id,
-                    report_number,
-                    report_date,
-                    imported_at,
-                    password,
-                    status,
-                    created_by,
-                    created_at,
-                    updated_at,
-                    password_generated_at,
-                    password_released_at
-                `)
-                .single();
+                );
 
         if (error) {
             throw error;
         }
 
-        const index =
-            reports.findIndex(
-                item =>
-                    item.id === reportId
-            );
+        /*
+         * Recarrega os dados do banco.
+         */
+        await loadReports();
 
-        if (index !== -1) {
-            reports[index] = {
-                ...data,
-                status:
-                    normalizeStatus(
-                        data.status
-                    )
-            };
-        }
-
+        /*
+         * Atualiza os vínculos dos processos.
+         */
         await refreshProcessReportReferences();
 
+        /*
+         * Atualiza a interface.
+         */
         renderReports();
         renderProcesses();
         renderEcolab();
         updateDashboard();
 
+        /*
+         * Reabre o modal com os dados atualizados.
+         */
         openReportModal(reportId);
 
         showToast(
@@ -2288,19 +2305,30 @@ async function releaseReport(
         );
 
     } catch (error) {
+
         console.error(
             "Erro ao liberar relatório:",
             error
         );
 
+        console.error(
+            "Detalhes do erro:",
+            {
+                message: error?.message,
+                details: error?.details,
+                hint: error?.hint,
+                code: error?.code
+            }
+        );
+
         showToast(
             error?.message ||
+            error?.details ||
             "Não foi possível liberar o relatório.",
             "error"
         );
     }
 }
-
 
 /* =========================================================
    ATUALIZAR RELAÇÃO PROCESSOS → RELATÓRIOS
