@@ -1,905 +1,1858 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ALFA • Controle Operacional</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ALFA • Consulta Operacional</title>
 
     <meta
         name="description"
-        content="Sistema de controle de relatórios, processos e liberações."
+        content="Consulta pública de relatórios, notas fiscais e processos ALFA Transportes."
     >
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg: #07090d;
+            --bg-soft: #0c1017;
+            --panel: #10151d;
+            --panel-2: #141a23;
+            --border: rgba(255,255,255,.08);
+            --border-light: rgba(255,255,255,.12);
+
+            --text: #f4f6f8;
+            --muted: #8d98a8;
+            --muted-2: #657080;
+
+            --red: #e32935;
+            --red-dark: #9e1720;
+            --red-soft: rgba(227,41,53,.12);
+
+            --green: #20c77a;
+            --green-soft: rgba(32,199,122,.12);
+
+            --yellow: #e8b94c;
+            --yellow-soft: rgba(232,185,76,.12);
+
+            --blue: #4c9fff;
+            --blue-soft: rgba(76,159,255,.12);
+
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 80% -10%,
+                    rgba(227,41,53,.12),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+            font-family: Inter, sans-serif;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* ======================================================
+           HEADER
+        ====================================================== */
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 34px;
+
+            background: rgba(7,9,13,.84);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--red),
+                    var(--red-dark)
+                );
+
+            box-shadow:
+                0 10px 30px rgba(227,41,53,.2);
+
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 15px;
+            letter-spacing: .02em;
+        }
+
+        .brand-text span {
+            display: block;
+            margin-top: 2px;
+
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+            background: var(--green);
+
+            box-shadow:
+                0 0 0 4px rgba(32,199,122,.1),
+                0 0 14px rgba(32,199,122,.5);
+        }
+
+        /* ======================================================
+           HERO
+        ====================================================== */
+
+        .hero {
+            max-width: 1240px;
+            margin: 0 auto;
+
+            padding: 72px 24px 34px;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 11px;
+
+            border: 1px solid rgba(227,41,53,.25);
+            border-radius: 999px;
+
+            background: var(--red-soft);
+
+            color: #ff737c;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+
+            margin-top: 18px;
+
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 1.02;
+            letter-spacing: -.045em;
+        }
+
+        .hero h1 span {
+            color: var(--red);
+        }
+
+        .hero p {
+            max-width: 720px;
+
+            margin-top: 18px;
+
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* ======================================================
+           SEARCH
+        ====================================================== */
+
+        .search-card {
+            max-width: 1240px;
+            margin: 0 auto;
+
+            padding: 0 24px 30px;
+        }
+
+        .search-box {
+            position: relative;
+
+            padding: 24px;
+
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.015)
+                );
+
+            box-shadow:
+                0 24px 80px rgba(0,0,0,.24);
+        }
+
+        .search-title {
+            margin-bottom: 14px;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 54px;
+
+            padding: 0 18px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 13px;
+
+            outline: none;
+
+            background: #090d13;
+            color: var(--text);
+
+            transition: .2s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--muted-2);
+        }
+
+        .search-input:focus {
+            border-color: rgba(227,41,53,.55);
+
+            box-shadow:
+                0 0 0 4px rgba(227,41,53,.08);
+        }
+
+        .search-button {
+            height: 54px;
+
+            padding: 0 24px;
+
+            border: 0;
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ef3945,
+                    #b91f29
+                );
+
+            color: white;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 12px 30px rgba(227,41,53,.2);
+
+            transition: .2s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .search-help {
+            margin-top: 11px;
+
+            color: var(--muted-2);
+            font-size: 11px;
+        }
+
+        /* ======================================================
+           CONTENT
+        ====================================================== */
+
+        .content {
+            max-width: 1240px;
+            margin: 0 auto;
+
+            padding: 0 24px 70px;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 16px;
+        }
+
+        .toolbar-title {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .result-count {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .reports-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+        .report-card {
+            position: relative;
+
+            padding: 20px;
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.012)
+                );
+
+            overflow: hidden;
+
+            transition:
+                transform .2s ease,
+                border-color .2s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+
+            border-color:
+                rgba(255,255,255,.15);
+        }
+
+        .report-card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 3px;
+            height: 100%;
+
+            background: var(--red);
+        }
+
+        .report-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 12px;
+        }
+
+        .report-date-label {
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .report-date {
+            margin-top: 4px;
+
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            padding: 6px 9px;
+
+            border-radius: 999px;
+
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+
+        .badge.waiting {
+            color: #f2c75c;
+            background: var(--yellow-soft);
+        }
+
+        .badge.release {
+            color: #67b5ff;
+            background: var(--blue-soft);
+        }
+
+        .badge.released {
+            color: #5ee2a5;
+            background: var(--green-soft);
+        }
+
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 9px;
+
+            margin-top: 20px;
+        }
+
+        .stat {
+            padding: 11px;
+
+            border: 1px solid var(--border);
+            border-radius: 11px;
+
+            background: rgba(0,0,0,.13);
+        }
+
+        .stat span {
+            display: block;
+
+            color: var(--muted-2);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .stat strong {
+            display: block;
+
+            margin-top: 4px;
+
+            font-size: 15px;
+        }
+
+        .report-password {
+            margin-top: 12px;
+            padding: 13px;
+
+            border-radius: 12px;
+
+            background: rgba(32,199,122,.06);
+            border: 1px solid rgba(32,199,122,.12);
+        }
+
+        .report-password.hidden-password {
+            background: rgba(255,255,255,.025);
+            border-color: var(--border);
+        }
+
+        .report-password small {
+            display: block;
+
+            color: var(--muted-2);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .report-password strong {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #69e5aa;
+            font-size: 17px;
+            letter-spacing: .04em;
+        }
+
+        .hidden-password strong {
+            color: var(--muted);
+        }
+
+        .report-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 15px;
+            padding-top: 14px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .process-count {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .details-button {
+            border: 0;
+            background: transparent;
+
+            color: #ff5964;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* ======================================================
+           EMPTY / LOADING
+        ====================================================== */
+
+        .empty {
+            grid-column: 1 / -1;
+
+            padding: 70px 20px;
+
+            text-align: center;
+
+            border: 1px dashed var(--border-light);
+            border-radius: var(--radius);
+
+            background: rgba(255,255,255,.015);
+        }
+
+        .empty-icon {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            margin: 0 auto 15px;
+
+            border-radius: 14px;
+
+            background: var(--red-soft);
+            color: #ff5964;
+
+            font-size: 20px;
+        }
+
+        .empty h3 {
+            font-size: 16px;
+        }
+
+        .empty p {
+            margin-top: 7px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .skeleton {
+            height: 260px;
+
+            border-radius: var(--radius);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #0d1219 25%,
+                    #151b24 37%,
+                    #0d1219 63%
+                );
+
+            background-size: 400% 100%;
+            animation: skeleton 1.4s infinite;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        /* ======================================================
+           MODAL
+        ====================================================== */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+
+            z-index: 100;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(0,0,0,.72);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(850px, 100%);
+            max-height: 90vh;
+
+            overflow: auto;
+
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+
+            background: #0d1219;
+
+            box-shadow:
+                0 40px 100px rgba(0,0,0,.5);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 21px 24px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+        }
+
+        .modal-header p {
+            margin-top: 4px;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .close {
+            width: 34px;
+            height: 34px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            background: var(--panel);
+            color: var(--muted);
+
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .process-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .process-table th {
+            padding: 10px;
+
+            color: var(--muted-2);
+
+            font-size: 9px;
+            text-align: left;
+            text-transform: uppercase;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .process-table td {
+            padding: 13px 10px;
+
+            color: #dfe4ea;
+            font-size: 11px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .process-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        /* ======================================================
+           TOAST
+        ====================================================== */
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+
+            z-index: 200;
+
+            max-width: 360px;
+
+            padding: 13px 16px;
+
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+
+            background: #151b24;
+
+            color: white;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,.35);
+
+            font-size: 12px;
+
+            transform: translateY(20px);
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ======================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1000px) {
+            .reports-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 680px) {
+            .header {
+                height: 68px;
+                padding: 0 16px;
+            }
+
+            .header-status {
+                display: none;
+            }
+
+            .hero {
+                padding: 45px 16px 25px;
+            }
+
+            .search-card,
+            .content {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .search-box {
+                padding: 17px;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+
+            .modal-body {
+                padding: 16px;
+            }
+
+            .process-table {
+                min-width: 650px;
+            }
+
+            .modal-box {
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="toast" class="toast"></div>
+<div class="app">
 
-<!-- LOGIN -->
+    <header class="header">
 
-<section id="loginScreen" class="login-screen">
+        <div class="brand">
 
-    <div class="login-card">
+            <div class="brand-mark">
+                AL
+            </div>
 
-        <div class="brand-mark">
-            A
+            <div class="brand-text">
+                <strong>ALFA TRANSPORTES</strong>
+                <span>Consulta Operacional</span>
+            </div>
+
         </div>
 
-        <span class="eyebrow">
-            ALFA TRANSPORTES
+        <div class="header-status">
+            <span class="status-dot" id="connectionDot"></span>
+            <span id="connectionText">
+                Conectando...
+            </span>
+        </div>
+
+    </header>
+
+
+    <section class="hero">
+
+        <span class="hero-label">
+            Consulta de processos
         </span>
 
         <h1>
-            Controle Operacional
+            Consulte suas
+            <span>Notas</span>
+            e relatórios.
         </h1>
 
-        <p class="muted">
-            Relatórios, processos e liberações
-            SPAL / ECOLAB em um só lugar.
+        <p>
+            Pesquise processos, CT-e, notas fiscais, clientes,
+            ACRs e relatórios disponibilizados pela ALFA Transportes.
         </p>
 
-        <form id="loginForm">
-
-            <label>
-                E-mail
-
-                <input
-                    id="email"
-                    type="email"
-                    autocomplete="username"
-                    placeholder="seu@email.com"
-                    required
-                >
-            </label>
-
-            <label>
-                Senha
-
-                <input
-                    id="password"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="••••••••"
-                    required
-                >
-            </label>
-
-            <button
-                type="submit"
-                class="btn btn-primary btn-block"
-            >
-                Entrar
-            </button>
-
-        </form>
-
-        <button
-            id="forgotPassword"
-            class="link-button"
-            type="button"
-        >
-            Esqueci minha senha
-        </button>
-
-        <p
-            id="loginMessage"
-            class="form-message"
-        ></p>
-
-    </div>
-
-</section>
+    </section>
 
 
-<!-- SISTEMA -->
+    <section class="search-card">
 
-<div id="app" class="app hidden">
+        <div class="search-box">
 
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="sidebar-top">
-
-            <div class="brand">
-
-                <div class="brand-mark small">
-                    A
-                </div>
-
-                <div>
-
-                    <strong>
-                        ALFA
-                    </strong>
-
-                    <span>
-                        Controle Operacional
-                    </span>
-
-                </div>
-
+            <div class="search-title">
+                O que você deseja consultar?
             </div>
 
-            <button
-                id="closeSidebar"
-                class="icon-btn mobile-only"
-            >
-                ×
-            </button>
+            <div class="search-row">
 
-        </div>
-
-
-        <nav class="nav">
-
-            <button
-                class="nav-item active"
-                data-view="dashboard"
-            >
-                <span>⌂</span>
-                Dashboard
-            </button>
-
-            <button
-                class="nav-item"
-                data-view="processos"
-            >
-                <span>▤</span>
-                Processos
-            </button>
-
-            <button
-                class="nav-item"
-                data-view="relatorios"
-            >
-                <span>▥</span>
-                Relatórios
-            </button>
-
-            <button
-                class="nav-item"
-                data-view="ecolab"
-            >
-                <span>◉</span>
-                ECOLAB
-            </button>
-
-            <button
-                id="navImportar"
-                class="nav-item admin-only"
-                data-view="importar"
-            >
-                <span>↑</span>
-                Importar Word
-            </button>
-
-        </nav>
-
-
-        <div class="sidebar-bottom">
-
-            <div class="user-mini">
-
-                <div
-                    class="avatar"
-                    id="userAvatar"
-                >
-                    U
-                </div>
-
-                <div>
-
-                    <strong id="userEmail">
-                        Usuário
-                    </strong>
-
-                    <span id="userRole">
-                        —
-                    </span>
-
-                </div>
-
-            </div>
-
-            <button
-                id="logoutBtn"
-                class="logout-btn"
-            >
-                Sair
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <!-- CONTEÚDO -->
-
-    <main class="main">
-
-        <header class="topbar">
-
-            <button
-                id="openSidebar"
-                class="icon-btn mobile-only"
-            >
-                ☰
-            </button>
-
-            <div>
-
-                <span class="eyebrow">
-                    PAINEL OPERACIONAL
-                </span>
-
-                <h2 id="pageTitle">
-                    Dashboard
-                </h2>
-
-            </div>
-
-            <div class="top-actions">
-
-                <button
-                    id="refreshBtn"
-                    class="btn btn-secondary"
-                >
-                    ↻ Atualizar
-                </button>
-
-                <button
-                    id="topImportBtn"
-                    class="btn btn-primary admin-only"
-                    data-view-target="importar"
-                >
-                    + Importar Word
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <!-- DASHBOARD -->
-
-        <section
-            id="view-dashboard"
-            class="view"
-        >
-
-            <div class="hero">
-
-                <div>
-
-                    <span class="eyebrow">
-                        VISÃO GERAL
-                    </span>
-
-                    <h3>
-                        Acompanhe as conferências
-                        sem perder nenhum processo.
-                    </h3>
-
-                    <p>
-                        Cada relatório possui uma única senha.
-                        Após a conferência SPAL, a senha é vinculada
-                        ao relatório e aparece em todas as suas notas.
-                    </p>
-
-                </div>
-
-                <div class="hero-status">
-
-                    <span class="pulse"></span>
-
-                    <span id="connectionText">
-                        Conectando...
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="stats-grid">
-
-                <article class="stat-card">
-
-                    <span>
-                        Relatórios
-                    </span>
-
-                    <strong id="statReports">
-                        0
-                    </strong>
-
-                    <small>
-                        Total importado
-                    </small>
-
-                </article>
-
-
-                <article class="stat-card">
-
-                    <span>
-                        Processos
-                    </span>
-
-                    <strong id="statProcesses">
-                        0
-                    </strong>
-
-                    <small>
-                        Notas cadastradas
-                    </small>
-
-                </article>
-
-
-                <article class="stat-card warning">
-
-                    <span>
-                        Aguardando conferência
-                    </span>
-
-                    <strong id="statWaiting">
-                        0
-                    </strong>
-
-                    <small>
-                        Relatórios pendentes
-                    </small>
-
-                </article>
-
-
-                <article class="stat-card success">
-
-                    <span>
-                        Liberados
-                    </span>
-
-                    <strong id="statReleased">
-                        0
-                    </strong>
-
-                    <small>
-                        Relatórios liberados
-                    </small>
-
-                </article>
-
-            </div>
-
-
-            <div class="two-col">
-
-                <section class="panel">
-
-                    <div class="panel-head">
-
-                        <div>
-
-                            <span class="eyebrow">
-                                RECENTES
-                            </span>
-
-                            <h3>
-                                Últimos relatórios
-                            </h3>
-
-                        </div>
-
-                        <button
-                            class="text-btn"
-                            data-view-target="relatorios"
-                        >
-                            Ver todos →
-                        </button>
-
-                    </div>
-
-                    <div
-                        id="recentReports"
-                        class="table-wrap"
-                    ></div>
-
-                </section>
-
-
-                <section class="panel">
-
-                    <div class="panel-head">
-
-                        <div>
-
-                            <span class="eyebrow">
-                                CONSULTA RÁPIDA
-                            </span>
-
-                            <h3>
-                                Buscar processo
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                    <div class="search-box large">
-
-                        <span>
-                            ⌕
-                        </span>
-
-                        <input
-                            id="quickSearch"
-                            placeholder="CT-e, NF, ACR, cliente ou senha..."
-                        >
-
-                    </div>
-
-                    <div
-                        id="quickResults"
-                        class="quick-results"
-                    >
-
-                        <div class="empty">
-                            Digite algo para pesquisar.
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </section>
-
-
-        <!-- PROCESSOS -->
-
-        <section
-            id="view-processos"
-            class="view hidden"
-        >
-
-            <div class="section-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        CONSULTA
-                    </span>
-
-                    <h3>
-                        Processos
-                    </h3>
-
-                    <p class="muted">
-                        Pesquise por CT-e, NF, ACR,
-                        cliente ou senha.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="filters panel">
-
-                <div class="search-box">
-
-                    <span>
-                        ⌕
-                    </span>
+                <div class="input-wrap">
 
                     <input
-                        id="processSearch"
-                        placeholder="Pesquisar..."
+                        id="searchInput"
+                        class="search-input"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Digite CT-e, NF, ACR, cliente ou senha..."
                     >
-
-                </div>
-
-
-                <select id="processStatus">
-
-                   <option value="">Todos os status</option>
-                    <option value="AGUARDANDO CONFERÊNCIA">Aguardando conferência</option>
-                    <option value="AGUARDANDO LIBERAÇÃO">Aguardando liberação</option>
-                    <option value="LIBERADA">Liberada</option>
-
-                </select>
-
-
-                <input
-                    id="processDate"
-                    type="date"
-                    title="Filtrar por data"
-                >
-
-            </div>
-
-
-            <section class="panel">
-
-                <div
-                    id="processTable"
-                    class="table-wrap"
-                ></div>
-
-            </section>
-
-        </section>
-
-
-        <!-- RELATÓRIOS -->
-
-        <section
-            id="view-relatorios"
-            class="view hidden"
-        >
-
-            <div class="section-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        CONTROLE
-                    </span>
-
-                    <h3>
-                        Relatórios
-                    </h3>
-
-                    <p class="muted">
-                        A senha pertence ao relatório
-                        e é compartilhada pelas notas.
-                    </p>
 
                 </div>
 
                 <button
-                    class="btn btn-primary admin-only"
-                    data-view-target="importar"
+                    id="searchButton"
+                    class="search-button"
+                    type="button"
                 >
-                    + Novo relatório
+                    Pesquisar
                 </button>
 
             </div>
 
+            <div class="search-help">
+                A pesquisa considera todos os relatórios disponíveis no sistema.
+            </div>
 
-            <section class="panel">
+        </div>
+
+    </section>
+
+
+    <main class="content">
+
+        <div class="toolbar">
+
+            <div>
+                <div class="toolbar-title">
+                    Relatórios disponíveis
+                </div>
 
                 <div
-                    id="reportsTable"
-                    class="table-wrap"
-                ></div>
+                    class="result-count"
+                    id="resultCount"
+                >
+                    Carregando...
+                </div>
+            </div>
 
-            </section>
-
-        </section>
+        </div>
 
 
-        <!-- ECOLAB -->
-
-        <section
-            id="view-ecolab"
-            class="view hidden"
+        <div
+            class="reports-grid"
+            id="reportsGrid"
         >
 
-            <div class="section-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        CLIENTE
-                    </span>
-
-                    <h3>
-                        ECOLAB
-                    </h3>
-
-                    <p class="muted">
-                        Somente processos da ECOLAB
-                        são exibidos nesta área.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="ecolab-banner">
-
-                <div class="ecolab-dot">
-                    E
-                </div>
-
-                <div>
-
-                    <strong>
-                        Consulta ECOLAB
-                    </strong>
-
-                    <span>
-                        O banco de dados também aplica
-                        regras de segurança para impedir
-                        acesso a processos de outros clientes.
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <section class="panel">
-
-                <div
-                    id="ecolabTable"
-                    class="table-wrap"
-                ></div>
-
-            </section>
-
-        </section>
-
-
-        <!-- IMPORTAR -->
-
-        <section
-            id="view-importar"
-            class="view hidden admin-only"
-        >
-
-            <div class="section-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        ADMINISTRAÇÃO
-                    </span>
-
-                    <h3>
-                        Importar relatório Word
-                    </h3>
-
-                    <p class="muted">
-                        Selecione o relatório diário
-                        em formato .docx.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="import-layout">
-
-                <section class="panel upload-panel">
-
-                    <div
-                        id="dropzone"
-                        class="dropzone"
-                    >
-
-                        <div class="upload-icon">
-                            ↑
-                        </div>
-
-                        <h3>
-                            Arraste o Word para cá
-                        </h3>
-
-                        <p>
-                            ou selecione um arquivo .docx
-                        </p>
-
-                        <input
-                            id="wordFile"
-                            type="file"
-                            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        >
-
-                        <label
-                            for="wordFile"
-                            class="btn btn-primary"
-                        >
-                            Selecionar Word
-                        </label>
-
-                        <div
-                            id="selectedFile"
-                            class="selected-file hidden"
-                        ></div>
-
-                    </div>
-
-
-                    <div
-                        id="previewBox"
-                        class="preview hidden"
-                    ></div>
-
-                </section>
-
-
-                <section class="panel">
-
-                    <div class="panel-head">
-
-                        <div>
-
-                            <span class="eyebrow">
-                                CONFERÊNCIA
-                            </span>
-
-                            <h3>
-                                Dados do relatório
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-
-                    <label>
-
-                        Data do relatório
-
-                        <input
-                            id="importDate"
-                            type="date"
-                        >
-
-                    </label>
-
-
-                    <label>
-
-                        Senha
-
-                        <span class="hint">
-                            informe somente após a conferência SPAL
-                        </span>
-
-                        <input
-                            id="importPassword"
-                            placeholder="Ex.: 37742"
-                        >
-
-                    </label>
-
-
-                    <div class="status-preview">
-
-                        <span>
-                            Status
-                        </span>
-
-                        <strong id="importStatus">
-                            AGUARDANDO CONFERÊNCIA
-                        </strong>
-
-                    </div>
-
-
-                    <button
-                        id="importBtn"
-                        class="btn btn-primary btn-block"
-                        disabled
-                    >
-                        Importar relatório
-                    </button>
-
-
-                    <p
-                        id="importMessage"
-                        class="form-message"
-                    ></p>
-
-
-                    <div class="rules-box">
-
-                        <strong>
-                            Regra definitiva
-                        </strong>
-
-                        <p>
-                            Relatório novo =
-                            <b>AGUARDANDO CONFERÊNCIA</b>
-                            e senha <b>—</b>.
-                        </p>
-
-                        <p>
-                            Após a conferência =
-                            informe a senha e o relatório
-                            passa para <b>LIBERADA</b>.
-                        </p>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </section>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+
+        </div>
 
     </main>
 
 </div>
 
 
-<!-- MODAL -->
+<!-- ==========================================================
+     MODAL
+========================================================== -->
 
 <div
+    class="modal"
     id="reportModal"
-    class="modal hidden"
 >
 
-    <div
-        class="modal-backdrop"
-        data-close-modal
-    ></div>
+    <div class="modal-box">
 
-    <div class="modal-card">
-
-        <div class="modal-head">
+        <div class="modal-header">
 
             <div>
 
-                <span class="eyebrow">
-                    RELATÓRIO
-                </span>
+                <h2 id="modalTitle">
+                    Relatório
+                </h2>
 
-                <h3 id="modalTitle">
-                    Detalhes
-                </h3>
+                <p id="modalSubtitle">
+                    Processos vinculados
+                </p>
 
             </div>
 
             <button
-                class="icon-btn"
-                data-close-modal
+                class="close"
+                id="modalClose"
+                type="button"
             >
                 ×
             </button>
 
         </div>
 
-
-        <div id="modalBody"></div>
+        <div
+            class="modal-body"
+            id="modalBody"
+        ></div>
 
     </div>
 
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div
+    class="toast"
+    id="toast"
+></div>
 
-<script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
 
-<script src="app.js"></script>
+<script>
+/* ============================================================
+   CONFIGURAÇÃO
+============================================================ */
+
+const SUPABASE_URL =
+    "https://ewawkukleqboozavhovb.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* ============================================================
+   ESTADO
+============================================================ */
+
+let reports = [];
+let processes = [];
+let currentSearch = "";
+
+
+/* ============================================================
+   UTILITÁRIOS
+============================================================ */
+
+const $ = selector =>
+    document.querySelector(selector);
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+function normalize(value) {
+
+    return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+
+function formatDate(value) {
+
+    if (!value) {
+        return "—";
+    }
+
+    const date =
+        new Date(`${value}T00:00:00`);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleDateString("pt-BR");
+}
+
+
+function formatDateTime(value) {
+
+    if (!value) {
+        return "—";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString(
+        "pt-BR",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
+
+
+function statusClass(status) {
+
+    const value = normalize(status);
+
+    if (value === normalize("LIBERADA")) {
+        return "released";
+    }
+
+    if (
+        value ===
+        normalize("AGUARDANDO LIBERAÇÃO")
+    ) {
+        return "release";
+    }
+
+    return "waiting";
+}
+
+
+function statusLabel(status) {
+
+    return status || "AGUARDANDO CONFERÊNCIA";
+}
+
+
+function showToast(message) {
+
+    const toast = $("#toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.__toastTimer);
+
+    window.__toastTimer =
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3500);
+}
+
+
+/* ============================================================
+   CARREGAMENTO
+============================================================ */
+
+async function loadData() {
+
+    try {
+
+        const [
+            reportsResponse,
+            processesResponse
+        ] = await Promise.all([
+
+            supabaseClient
+                .from("relatorios")
+                .select(`
+                    id,
+                    report_number,
+                    report_date,
+                    imported_at,
+                    password,
+                    status,
+                    password_generated_at,
+                    password_released_at
+                `)
+                .order(
+                    "report_date",
+                    {
+                        ascending: false
+                    }
+                ),
+
+            supabaseClient
+                .from("processos")
+                .select(`
+                    id,
+                    report_id,
+                    data,
+                    cte,
+                    nf,
+                    cliente,
+                    volume,
+                    acr,
+                    created_at
+                `)
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+        ]);
+
+
+        if (reportsResponse.error) {
+            throw reportsResponse.error;
+        }
+
+        if (processesResponse.error) {
+            throw processesResponse.error;
+        }
+
+
+        reports =
+            reportsResponse.data || [];
+
+        processes =
+            processesResponse.data || [];
+
+
+        $("#connectionDot")
+            .style.background =
+            "var(--green)";
+
+        $("#connectionText")
+            .textContent =
+            "Sistema conectado";
+
+
+        render();
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar:",
+            error
+        );
+
+        $("#connectionDot")
+            .style.background =
+            "var(--red)";
+
+        $("#connectionText")
+            .textContent =
+            "Erro de conexão";
+
+
+        $("#reportsGrid").innerHTML = `
+            <div class="empty">
+
+                <div class="empty-icon">
+                    !
+                </div>
+
+                <h3>
+                    Não foi possível carregar os dados
+                </h3>
+
+                <p>
+                    Verifique a conexão com o sistema e tente novamente.
+                </p>
+
+            </div>
+        `;
+
+    }
+}
+
+
+/* ============================================================
+   PROCESSOS POR RELATÓRIO
+============================================================ */
+
+function getProcesses(reportId) {
+
+    return processes.filter(
+        process =>
+            process.report_id === reportId
+    );
+}
+
+
+/* ============================================================
+   FILTRO
+============================================================ */
+
+function getFilteredReports() {
+
+    const term =
+        normalize(currentSearch);
+
+    if (!term) {
+        return reports;
+    }
+
+
+    return reports.filter(report => {
+
+        const reportProcesses =
+            getProcesses(report.id);
+
+
+        const reportText = [
+            report.report_number,
+            report.report_date,
+            report.status,
+            report.password
+        ]
+            .map(normalize)
+            .join(" ");
+
+
+        const processText =
+            reportProcesses
+                .map(process => [
+                    process.cte,
+                    process.nf,
+                    process.cliente,
+                    process.acr,
+                    process.volume,
+                    process.data
+                ]
+                .map(normalize)
+                .join(" "))
+                .join(" ");
+
+
+        return (
+            reportText.includes(term) ||
+            processText.includes(term)
+        );
+
+    });
+}
+
+
+/* ============================================================
+   RENDER
+============================================================ */
+
+function render() {
+
+    const filtered =
+        getFilteredReports();
+
+
+    $("#resultCount").textContent =
+        currentSearch
+            ? `${filtered.length} relatório(s) encontrado(s)`
+            : `${filtered.length} relatório(s) cadastrado(s)`;
+
+
+    if (!filtered.length) {
+
+        $("#reportsGrid").innerHTML = `
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ?
+                </div>
+
+                <h3>
+                    Nenhum resultado encontrado
+                </h3>
+
+                <p>
+                    Tente pesquisar por outra Nota, CT-e,
+                    ACR, cliente ou relatório.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    $("#reportsGrid").innerHTML =
+        filtered
+            .map(renderReportCard)
+            .join("");
+}
+
+
+/* ============================================================
+   CARD
+============================================================ */
+
+function renderReportCard(report) {
+
+    const reportProcesses =
+        getProcesses(report.id);
+
+
+    const released =
+        normalize(report.status) ===
+        normalize("LIBERADA");
+
+
+    const password =
+        released && report.password
+            ? report.password
+            : "Não liberada";
+
+
+    const passwordClass =
+        released
+            ? ""
+            : "hidden-password";
+
+
+    return `
+        <article class="report-card">
+
+            <div class="report-top">
+
+                <div>
+
+                    <div class="report-date-label">
+                        Data do relatório
+                    </div>
+
+                    <div class="report-date">
+                        ${escapeHtml(
+                            formatDate(
+                                report.report_date
+                            )
+                        )}
+                    </div>
+
+                </div>
+
+
+                <span
+                    class="badge ${statusClass(report.status)}"
+                >
+                    ${escapeHtml(
+                        statusLabel(report.status)
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="report-stats">
+
+                <div class="stat">
+
+                    <span>
+                        Processos
+                    </span>
+
+                    <strong>
+                        ${reportProcesses.length}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Importado
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(
+                            formatDate(
+                                report.imported_at
+                            )
+                        )}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    report-password
+                    ${passwordClass}
+                "
+            >
+
+                <small>
+                    Senha do relatório
+                </small>
+
+                <strong>
+                    ${escapeHtml(password)}
+                </strong>
+
+            </div>
+
+
+            <div class="report-footer">
+
+                <span class="process-count">
+                    ${reportProcesses.length}
+                    ${reportProcesses.length === 1
+                        ? "nota/processo"
+                        : "notas/processos"}
+                </span>
+
+
+                <button
+                    class="details-button"
+                    type="button"
+                    onclick="openReport('${report.id}')"
+                >
+                    Ver detalhes →
+                </button>
+
+            </div>
+
+        </article>
+    `;
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+function openReport(reportId) {
+
+    const report =
+        reports.find(
+            item => item.id === reportId
+        );
+
+
+    if (!report) {
+        return;
+    }
+
+
+    const reportProcesses =
+        getProcesses(reportId);
+
+
+    const released =
+        normalize(report.status) ===
+        normalize("LIBERADA");
+
+
+    $("#modalTitle").textContent =
+        `Relatório — ${formatDate(report.report_date)}`;
+
+
+    $("#modalSubtitle").textContent =
+        `${reportProcesses.length} processo(s) vinculado(s)`;
+
+
+    let html = `
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(3,minmax(0,1fr));
+                gap:10px;
+                margin-bottom:22px;
+            "
+        >
+
+            <div class="stat">
+
+                <span>Status</span>
+
+                <strong>
+                    ${escapeHtml(report.status)}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>Importado em</span>
+
+                <strong>
+                    ${escapeHtml(
+                        formatDateTime(
+                            report.imported_at
+                        )
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>Senha</span>
+
+                <strong>
+                    ${
+                        released && report.password
+                            ? escapeHtml(report.password)
+                            : "Não liberada"
+                    }
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div style="overflow:auto">
+
+            <table class="process-table">
+
+                <thead>
+
+                    <tr>
+                        <th>CT-e</th>
+                        <th>NF</th>
+                        <th>Cliente</th>
+                        <th>Volume</th>
+                        <th>ACR</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+    `;
+
+
+    if (!reportProcesses.length) {
+
+        html += `
+            <tr>
+                <td colspan="5">
+                    Nenhum processo encontrado.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        reportProcesses.forEach(process => {
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            process.cte || "—"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            process.nf || "—"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            process.cliente || "—"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            process.volume || "—"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            process.acr || "—"
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    }
+
+
+    html += `
+                </tbody>
+
+            </table>
+
+        </div>
+    `;
+
+
+    $("#modalBody").innerHTML =
+        html;
+
+
+    $("#reportModal")
+        .classList.add("open");
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeModal() {
+
+    $("#reportModal")
+        .classList.remove("open");
+
+    document.body.style.overflow =
+        "";
+}
+
+
+/* ============================================================
+   EVENTOS
+============================================================ */
+
+$("#searchButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            currentSearch =
+                $("#searchInput")
+                    .value;
+
+            render();
+
+        }
+    );
+
+
+$("#searchInput")
+    .addEventListener(
+        "input",
+        event => {
+
+            currentSearch =
+                event.target.value;
+
+            render();
+
+        }
+    );
+
+
+$("#searchInput")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+
+                currentSearch =
+                    event.target.value;
+
+                render();
+
+            }
+
+        }
+    );
+
+
+$("#modalClose")
+    .addEventListener(
+        "click",
+        closeModal
+    );
+
+
+$("#reportModal")
+    .addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.id ===
+                "reportModal"
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+    }
+);
+
+
+/* ============================================================
+   START
+============================================================ */
+
+loadData();
+
+</script>
 
 </body>
 </html>
+```

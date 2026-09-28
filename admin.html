@@ -1,0 +1,4401 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ALFA • Administração</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+
+    <style>
+
+        :root {
+
+            --bg: #07090d;
+            --panel: #10151d;
+            --panel-2: #141a23;
+            --panel-3: #0b0f15;
+
+            --border: rgba(255,255,255,.08);
+            --border-strong: rgba(255,255,255,.13);
+
+            --text: #f4f6f8;
+            --muted: #8d98a8;
+            --muted-2: #657080;
+
+            --red: #e32935;
+            --red-dark: #a91822;
+
+            --green: #20c77a;
+            --yellow: #e8b94c;
+            --blue: #4c9fff;
+
+            --radius: 18px;
+
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(227,41,53,.09),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family: Inter, sans-serif;
+
+        }
+
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* ======================================================
+           LOGIN
+        ====================================================== */
+
+        .login-screen {
+
+            position: fixed;
+            inset: 0;
+
+            z-index: 1000;
+
+            display: grid;
+            place-items: center;
+
+            padding: 20px;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(227,41,53,.12),
+                    transparent 45%
+                ),
+                #06080c;
+
+        }
+
+
+        .login-card {
+
+            width: min(430px,100%);
+
+            padding: 34px;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #111720,
+                    #0b0f15
+                );
+
+            box-shadow:
+                0 40px 100px rgba(0,0,0,.5);
+
+        }
+
+
+        .login-logo {
+
+            width: 52px;
+            height: 52px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red),
+                    var(--red-dark)
+                );
+
+            font-weight: 800;
+
+            box-shadow:
+                0 15px 40px rgba(227,41,53,.22);
+
+        }
+
+
+        .login-card h1 {
+
+            margin-top: 22px;
+
+            font-size: 26px;
+            letter-spacing: -.035em;
+
+        }
+
+
+        .login-card > p {
+
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.6;
+
+        }
+
+
+        .field {
+
+            margin-top: 18px;
+
+        }
+
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: .08em;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .field input,
+        .field select {
+
+            width: 100%;
+            height: 48px;
+
+            padding: 0 14px;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius: 11px;
+
+            outline: none;
+
+            background:
+                #080c11;
+
+            color: var(--text);
+
+        }
+
+
+        .field input:focus {
+
+            border-color:
+                rgba(227,41,53,.55);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(227,41,53,.08);
+
+        }
+
+
+        .login-button {
+
+            width: 100%;
+            height: 50px;
+
+            margin-top: 20px;
+
+            border: 0;
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ef3945,
+                    #ae1b25
+                );
+
+            color: white;
+
+            font-weight: 800;
+
+        }
+
+
+        .login-error {
+
+            display: none;
+
+            margin-top: 13px;
+            padding: 11px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(227,41,53,.1);
+
+            border:
+                1px solid
+                rgba(227,41,53,.2);
+
+            color: #ff7078;
+
+            font-size: 11px;
+
+        }
+
+
+        .login-error.show {
+            display: block;
+        }
+
+
+        /* ======================================================
+           APP
+        ====================================================== */
+
+        .app {
+            display: none;
+            min-height: 100vh;
+        }
+
+
+        .app.visible {
+            display: block;
+        }
+
+
+        .header {
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 28px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            background:
+                rgba(7,9,13,.88);
+
+            backdrop-filter: blur(18px);
+
+        }
+
+
+        .brand {
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+
+        .brand-logo {
+
+            width: 39px;
+            height: 39px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red),
+                    var(--red-dark)
+                );
+
+            font-size: 12px;
+            font-weight: 800;
+
+        }
+
+
+        .brand strong {
+            display: block;
+            font-size: 14px;
+        }
+
+
+        .brand span {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .13em;
+            text-transform: uppercase;
+
+        }
+
+
+        .header-right {
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+        }
+
+
+        .connection {
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        .connection-dot {
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background:
+                var(--green);
+
+        }
+
+
+        .logout {
+
+            height: 36px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,.03);
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+
+        }
+
+
+        /* ======================================================
+           LAYOUT
+        ====================================================== */
+
+        .layout {
+
+            display: grid;
+
+            grid-template-columns:
+                240px minmax(0,1fr);
+
+            min-height:
+                calc(100vh - 72px);
+
+        }
+
+
+        .sidebar {
+
+            padding: 22px 15px;
+
+            border-right:
+                1px solid var(--border);
+
+            background:
+                rgba(8,11,16,.65);
+
+        }
+
+
+        .sidebar-label {
+
+            padding:
+                0 11px 8px;
+
+            color: var(--muted-2);
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: .13em;
+            text-transform: uppercase;
+
+        }
+
+
+        .nav-button {
+
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 4px;
+
+            padding: 11px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background: transparent;
+
+            color: var(--muted);
+
+            text-align: left;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            transition: .2s ease;
+
+        }
+
+
+        .nav-button:hover,
+        .nav-button.active {
+
+            background:
+                rgba(227,41,53,.1);
+
+            color: white;
+
+        }
+
+
+        .nav-icon {
+
+            width: 27px;
+            height: 27px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+
+            background:
+                rgba(255,255,255,.035);
+
+        }
+
+
+        .main {
+
+            min-width: 0;
+
+            padding: 30px;
+
+        }
+
+
+        .view {
+            display: none;
+        }
+
+
+        .view.active {
+            display: block;
+        }
+
+
+        .page-head {
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .page-kicker {
+
+            color: var(--red);
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: .14em;
+            text-transform: uppercase;
+
+        }
+
+
+        .page-head h1 {
+
+            margin-top: 5px;
+
+            font-size: 27px;
+            letter-spacing: -.035em;
+
+        }
+
+
+        .page-head p {
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+        }
+
+
+        /* ======================================================
+           DASHBOARD
+        ====================================================== */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4,minmax(0,1fr));
+
+            gap: 13px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .stat-card {
+
+            padding: 18px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.035),
+                    rgba(255,255,255,.012)
+                );
+
+        }
+
+
+        .stat-card span {
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 700;
+
+        }
+
+
+        .stat-card strong {
+
+            display: block;
+
+            margin-top: 8px;
+
+            font-size: 27px;
+
+        }
+
+
+        .panel {
+
+            padding: 20px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 17px;
+
+            background:
+                rgba(255,255,255,.018);
+
+        }
+
+
+        .panel-head {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 16px;
+
+        }
+
+
+        .panel-head h2 {
+
+            font-size: 14px;
+
+        }
+
+
+        .panel-head span {
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        /* ======================================================
+           TOOLBAR
+        ====================================================== */
+
+        .toolbar {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto auto;
+
+            gap: 9px;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .toolbar input,
+        .toolbar select {
+
+            height: 44px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background:
+                #090d13;
+
+            color: white;
+
+            font-size: 11px;
+
+        }
+
+
+        .primary {
+
+            height: 44px;
+
+            padding: 0 16px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red),
+                    var(--red-dark)
+                );
+
+            color: white;
+
+            font-size: 11px;
+            font-weight: 800;
+
+        }
+
+
+        .secondary {
+
+            height: 40px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            color: white;
+
+            font-size: 10px;
+            font-weight: 700;
+
+        }
+
+
+        /* ======================================================
+           TABLE
+        ====================================================== */
+
+        .table-wrap {
+
+            overflow-x: auto;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 750px;
+
+        }
+
+
+        th {
+
+            padding: 12px;
+
+            background:
+                rgba(255,255,255,.025);
+
+            color: var(--muted-2);
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: .06em;
+
+            text-align: left;
+            text-transform: uppercase;
+
+        }
+
+
+        td {
+
+            padding: 13px 12px;
+
+            border-top:
+                1px solid var(--border);
+
+            color: #dfe4ea;
+
+            font-size: 10px;
+
+        }
+
+
+        tr:hover td {
+
+            background:
+                rgba(255,255,255,.018);
+
+        }
+
+
+        .status {
+
+            display: inline-flex;
+
+            padding: 6px 8px;
+
+            border-radius: 999px;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            white-space: nowrap;
+
+        }
+
+
+        .status.waiting {
+
+            color: #f2c75c;
+
+            background:
+                rgba(232,185,76,.1);
+
+        }
+
+
+        .status.release {
+
+            color: #66b2ff;
+
+            background:
+                rgba(76,159,255,.1);
+
+        }
+
+
+        .status.released {
+
+            color: #5ee2a5;
+
+            background:
+                rgba(32,199,122,.1);
+
+        }
+
+
+        .actions {
+
+            display: flex;
+            gap: 6px;
+
+        }
+
+
+        /* ======================================================
+           IMPORT
+        ====================================================== */
+
+        .import-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+
+        }
+
+
+        .dropzone {
+
+            min-height: 230px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+
+            border:
+                1px dashed
+                rgba(227,41,53,.4);
+
+            border-radius: 16px;
+
+            background:
+                rgba(227,41,53,.035);
+
+            text-align: center;
+
+        }
+
+
+        .dropzone-icon {
+
+            width: 52px;
+            height: 52px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 15px;
+
+            background:
+                rgba(227,41,53,.1);
+
+            color: #ff6972;
+
+            font-size: 21px;
+
+        }
+
+
+        .dropzone h3 {
+
+            margin-top: 15px;
+
+            font-size: 14px;
+
+        }
+
+
+        .dropzone p {
+
+            max-width: 350px;
+
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.6;
+
+        }
+
+
+        .file-input {
+
+            display: none;
+        }
+
+
+        .file-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            height: 42px;
+
+            margin-top: 16px;
+
+            padding: 0 16px;
+
+            border-radius: 9px;
+
+            background:
+                var(--panel-2);
+
+            border:
+                1px solid var(--border);
+
+            color: white;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+        }
+
+
+        .preview {
+
+            min-height: 230px;
+
+            padding: 18px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,.018);
+
+        }
+
+
+        .preview-title {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .preview-title strong {
+
+            font-size: 12px;
+
+        }
+
+
+        .preview-title span {
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        .preview-list {
+
+            max-height: 180px;
+
+            overflow: auto;
+
+        }
+
+
+        .preview-item {
+
+            display: grid;
+
+            grid-template-columns:
+                100px 110px 1fr;
+
+            gap: 8px;
+
+            padding: 9px 0;
+
+            border-top:
+                1px solid var(--border);
+
+            font-size: 9px;
+
+        }
+
+
+        .preview-item span {
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        .import-form {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            gap: 9px;
+
+            margin-top: 15px;
+
+        }
+
+
+        .import-form input {
+
+            height: 44px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            background:
+                #090d13;
+
+            color: white;
+
+            outline: none;
+
+        }
+
+
+        /* ======================================================
+           MODAL
+        ====================================================== */
+
+        .modal {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 500;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(0,0,0,.75);
+
+            backdrop-filter:
+                blur(8px);
+
+        }
+
+
+        .modal.open {
+            display: flex;
+        }
+
+
+        .modal-box {
+
+            width:
+                min(900px,100%);
+
+            max-height: 90vh;
+
+            overflow: auto;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius: 20px;
+
+            background:
+                #0d1219;
+
+            box-shadow:
+                0 40px 100px rgba(0,0,0,.55);
+
+        }
+
+
+        .modal-head {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 20px;
+
+            border-bottom:
+                1px solid var(--border);
+
+        }
+
+
+        .modal-head h2 {
+            font-size: 17px;
+        }
+
+
+        .modal-head p {
+
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        .modal-close {
+
+            width: 34px;
+            height: 34px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background:
+                var(--panel);
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+        }
+
+
+        .modal-body {
+            padding: 20px;
+        }
+
+
+        .modal-actions {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .password-box {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr auto;
+
+            gap: 9px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .password-box input {
+
+            height: 43px;
+
+            padding: 0 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background:
+                #080c11;
+
+            color: white;
+
+            outline: none;
+
+        }
+
+
+        /* ======================================================
+           TOAST
+        ====================================================== */
+
+        .toast {
+
+            position: fixed;
+
+            right: 20px;
+            bottom: 20px;
+
+            z-index: 2000;
+
+            max-width: 380px;
+
+            padding: 13px 16px;
+
+            border:
+                1px solid var(--border-strong);
+
+            border-radius: 11px;
+
+            background:
+                #151b24;
+
+            color: white;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,.4);
+
+            font-size: 11px;
+
+            transform:
+                translateY(20px);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: .25s ease;
+
+        }
+
+
+        .toast.show {
+
+            transform:
+                translateY(0);
+
+            opacity: 1;
+
+        }
+
+
+        /* ======================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 950px) {
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+
+                display: flex;
+
+                overflow-x: auto;
+
+                gap: 5px;
+
+                padding: 10px;
+
+                border-right: 0;
+
+                border-bottom:
+                    1px solid var(--border);
+
+            }
+
+            .sidebar-label {
+                display: none;
+            }
+
+            .nav-button {
+                min-width: 130px;
+                margin: 0;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+            }
+
+            .import-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .header {
+                padding: 0 14px;
+            }
+
+            .connection {
+                display: none;
+            }
+
+            .main {
+                padding: 20px 14px;
+            }
+
+            .page-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .import-form {
+                grid-template-columns: 1fr;
+            }
+
+            .login-card {
+                padding: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================================
+     LOGIN
+========================================================== -->
+
+<section
+    class="login-screen"
+    id="loginScreen"
+>
+
+    <div class="login-card">
+
+        <div class="login-logo">
+            AL
+        </div>
+
+        <h1>
+            Painel administrativo
+        </h1>
+
+        <p>
+            Acesso restrito para gerenciamento
+            dos relatórios ALFA Transportes.
+        </p>
+
+
+        <div class="field">
+
+            <label>
+                Usuário
+            </label>
+
+            <input
+                id="loginUser"
+                type="text"
+                autocomplete="username"
+                placeholder="Digite o usuário"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Senha
+            </label>
+
+            <input
+                id="loginPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Digite a senha"
+            >
+
+        </div>
+
+
+        <button
+            class="login-button"
+            id="loginButton"
+            type="button"
+        >
+            Entrar no painel
+        </button>
+
+
+        <div
+            class="login-error"
+            id="loginError"
+        >
+            Usuário ou senha inválidos.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==========================================================
+     APP
+========================================================== -->
+
+<div
+    class="app"
+    id="app"
+>
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                AL
+            </div>
+
+            <div>
+                <strong>
+                    ALFA TRANSPORTES
+                </strong>
+
+                <span>
+                    Administração
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <div class="connection">
+
+                <span
+                    class="connection-dot"
+                    id="connectionDot"
+                ></span>
+
+                <span id="connectionText">
+                    Conectando...
+                </span>
+
+            </div>
+
+
+            <button
+                class="logout"
+                id="logoutButton"
+                type="button"
+            >
+                Sair
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-label">
+                Administração
+            </div>
+
+
+            <button
+                class="nav-button active"
+                data-view="dashboard"
+            >
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                Dashboard
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-view="relatorios"
+            >
+                <span class="nav-icon">
+                    ▤
+                </span>
+
+                Relatórios
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-view="processos"
+            >
+                <span class="nav-icon">
+                    №
+                </span>
+
+                Processos / Notas
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-view="importar"
+            >
+                <span class="nav-icon">
+                    ↑
+                </span>
+
+                Importar Word
+            </button>
+
+        </aside>
+
+
+        <!-- MAIN -->
+
+        <main class="main">
+
+
+            <!-- =================================================
+                 DASHBOARD
+            ================================================== -->
+
+            <section
+                class="view active"
+                id="view-dashboard"
+            >
+
+                <div class="page-head">
+
+                    <div>
+
+                        <div class="page-kicker">
+                            ALFA • Controle
+                        </div>
+
+                        <h1>
+                            Dashboard
+                        </h1>
+
+                        <p>
+                            Visão geral dos relatórios
+                            e processos cadastrados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stats">
+
+                    <div class="stat-card">
+
+                        <span>
+                            Total de relatórios
+                        </span>
+
+                        <strong id="statReports">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span>
+                            Aguardando conferência
+                        </span>
+
+                        <strong id="statConference">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span>
+                            Aguardando liberação
+                        </span>
+
+                        <strong id="statRelease">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span>
+                            Total de processos
+                        </span>
+
+                        <strong id="statProcesses">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-head">
+
+                        <h2>
+                            Últimos relatórios
+                        </h2>
+
+                        <span>
+                            Atualização automática após operações
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="table-wrap"
+                        id="dashboardTable"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RELATÓRIOS
+            ================================================== -->
+
+            <section
+                class="view"
+                id="view-relatorios"
+            >
+
+                <div class="page-head">
+
+                    <div>
+
+                        <div class="page-kicker">
+                            Gestão
+                        </div>
+
+                        <h1>
+                            Relatórios
+                        </h1>
+
+                        <p>
+                            Controle de todos os relatórios importados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="toolbar">
+
+                    <input
+                        id="reportSearch"
+                        type="text"
+                        placeholder="Pesquisar relatório, data ou senha..."
+                    >
+
+
+                    <select id="reportStatus">
+
+                        <option value="">
+                            Todos os status
+                        </option>
+
+                        <option value="AGUARDANDO CONFERÊNCIA">
+                            Aguardando conferência
+                        </option>
+
+                        <option value="AGUARDANDO LIBERAÇÃO">
+                            Aguardando liberação
+                        </option>
+
+                        <option value="LIBERADA">
+                            Liberada
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        class="secondary"
+                        id="refreshReports"
+                        type="button"
+                    >
+                        Atualizar
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="table-wrap"
+                    id="reportsTable"
+                ></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PROCESSOS
+            ================================================== -->
+
+            <section
+                class="view"
+                id="view-processos"
+            >
+
+                <div class="page-head">
+
+                    <div>
+
+                        <div class="page-kicker">
+                            Consulta interna
+                        </div>
+
+                        <h1>
+                            Processos / Notas
+                        </h1>
+
+                        <p>
+                            Todas as notas e processos importados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="toolbar">
+
+                    <input
+                        id="processSearch"
+                        type="text"
+                        placeholder="CT-e, NF, cliente ou ACR..."
+                    >
+
+                    <div></div>
+
+                    <button
+                        class="secondary"
+                        id="refreshProcesses"
+                        type="button"
+                    >
+                        Atualizar
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="table-wrap"
+                    id="processesTable"
+                ></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 IMPORTAR
+            ================================================== -->
+
+            <section
+                class="view"
+                id="view-importar"
+            >
+
+                <div class="page-head">
+
+                    <div>
+
+                        <div class="page-kicker">
+                            Entrada de dados
+                        </div>
+
+                        <h1>
+                            Importar relatório
+                        </h1>
+
+                        <p>
+                            Importe o arquivo Word recebido da operação.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="import-grid">
+
+
+                    <div class="dropzone">
+
+                        <div class="dropzone-icon">
+                            ↑
+                        </div>
+
+                        <h3>
+                            Selecione o relatório Word
+                        </h3>
+
+                        <p>
+                            Aceita arquivos .DOCX.
+                            Os processos encontrados serão
+                            exibidos antes da importação.
+                        </p>
+
+
+                        <button
+                            class="file-button"
+                            id="selectWordButton"
+                            type="button"
+                        >
+                            Selecionar arquivo
+                        </button>
+
+
+                        <input
+                            class="file-input"
+                            id="wordFile"
+                            type="file"
+                            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        >
+
+                    </div>
+
+
+                    <div class="preview">
+
+                        <div class="preview-title">
+
+                            <strong>
+                                Pré-visualização
+                            </strong>
+
+                            <span id="previewCount">
+                                0 processos
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="preview-list"
+                            id="previewList"
+                        >
+
+                            <div
+                                style="
+                                    color:var(--muted);
+                                    font-size:10px;
+                                    padding:25px 0;
+                                    text-align:center;
+                                "
+                            >
+                                Nenhum arquivo selecionado.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="import-form">
+
+                    <input
+                        id="reportDate"
+                        type="date"
+                    >
+
+
+                    <button
+                        class="primary"
+                        id="importButton"
+                        type="button"
+                        disabled
+                    >
+                        Importar relatório
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     MODAL
+========================================================== -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <div>
+
+                <h2 id="modalTitle">
+                    Relatório
+                </h2>
+
+                <p id="modalSubtitle">
+                    Administração do relatório
+                </p>
+
+            </div>
+
+
+            <button
+                class="modal-close"
+                id="modalClose"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="modal-body"
+            id="modalBody"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO
+============================================================ */
+
+const SUPABASE_URL =
+    "https://ewawkukleqboozavhovb.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* ============================================================
+   LOGIN FIXO
+============================================================ */
+
+/*
+ * ALTERE SOMENTE ESTES DOIS VALORES
+ * caso queira trocar o acesso administrativo.
+ *
+ * Este login é uma trava de acesso da interface.
+ * A segurança real dos dados deve continuar sendo
+ * feita pelas políticas RLS do Supabase.
+ */
+
+const ADMIN_USER = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+
+/* ============================================================
+   ESTADO
+============================================================ */
+
+let reports = [];
+let processes = [];
+
+let selectedFile = null;
+let parsedProcesses = [];
+
+let currentReportId = null;
+
+
+/* ============================================================
+   UTILITÁRIOS
+============================================================ */
+
+const $ = selector =>
+    document.querySelector(selector);
+
+
+const $$ = selector =>
+    [...document.querySelectorAll(selector)];
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function normalize(value) {
+
+    return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+
+}
+
+
+function formatDate(value) {
+
+    if (!value) {
+        return "—";
+    }
+
+    const date =
+        new Date(`${value}T00:00:00`);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleDateString(
+        "pt-BR"
+    );
+
+}
+
+
+function formatDateTime(value) {
+
+    if (!value) {
+        return "—";
+    }
+
+    const date =
+        new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString(
+        "pt-BR",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+function todayISO() {
+
+    const date = new Date();
+
+    const y =
+        date.getFullYear();
+
+    const m =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const d =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return `${y}-${m}-${d}`;
+
+}
+
+
+function statusClass(status) {
+
+    const value =
+        normalize(status);
+
+    if (
+        value ===
+        normalize("LIBERADA")
+    ) {
+        return "released";
+    }
+
+    if (
+        value ===
+        normalize("AGUARDANDO LIBERAÇÃO")
+    ) {
+        return "release";
+    }
+
+    return "waiting";
+
+}
+
+
+function showToast(message) {
+
+    const toast =
+        $("#toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add("show");
+
+    clearTimeout(
+        window.__toastTimer
+    );
+
+    window.__toastTimer =
+        setTimeout(
+            () => {
+                toast.classList.remove("show");
+            },
+            3500
+        );
+
+}
+
+
+/* ============================================================
+   LOGIN
+============================================================ */
+
+function checkLogin() {
+
+    return (
+        sessionStorage.getItem(
+            "alfa_admin_authenticated"
+        ) === "1"
+    );
+
+}
+
+
+function showApp() {
+
+    $("#loginScreen")
+        .style.display = "none";
+
+    $("#app")
+        .classList.add("visible");
+
+}
+
+
+function showLogin() {
+
+    $("#loginScreen")
+        .style.display = "grid";
+
+    $("#app")
+        .classList.remove("visible");
+
+}
+
+
+function performLogin() {
+
+    const user =
+        $("#loginUser")
+            .value
+            .trim();
+
+    const password =
+        $("#loginPassword")
+            .value;
+
+
+    if (
+        user === ADMIN_USER &&
+        password === ADMIN_PASSWORD
+    ) {
+
+        sessionStorage.setItem(
+            "alfa_admin_authenticated",
+            "1"
+        );
+
+        $("#loginError")
+            .classList.remove("show");
+
+        showApp();
+
+        initialize();
+
+        return;
+    }
+
+
+    $("#loginError")
+        .classList.add("show");
+
+}
+
+
+function logout() {
+
+    sessionStorage.removeItem(
+        "alfa_admin_authenticated"
+    );
+
+    location.reload();
+
+}
+
+
+$("#loginButton")
+    .addEventListener(
+        "click",
+        performLogin
+    );
+
+
+$("#loginPassword")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+                performLogin();
+            }
+
+        }
+    );
+
+
+$("#logoutButton")
+    .addEventListener(
+        "click",
+        logout
+    );
+
+
+/* ============================================================
+   NAVEGAÇÃO
+============================================================ */
+
+$$(".nav-button")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const view =
+                    button.dataset.view;
+
+
+                $$(".nav-button")
+                    .forEach(item =>
+                        item.classList.toggle(
+                            "active",
+                            item === button
+                        )
+                    );
+
+
+                $$(".view")
+                    .forEach(section =>
+                        section.classList.toggle(
+                            "active",
+                            section.id ===
+                            `view-${view}`
+                        )
+                    );
+
+            }
+        );
+
+    });
+
+
+/* ============================================================
+   DADOS
+============================================================ */
+
+async function loadData() {
+
+    try {
+
+        setConnection(
+            true,
+            "Carregando..."
+        );
+
+
+        const [
+            reportResponse,
+            processResponse
+        ] = await Promise.all([
+
+            supabaseClient
+                .from("relatorios")
+                .select(`
+                    id,
+                    report_number,
+                    report_date,
+                    imported_at,
+                    password,
+                    status,
+                    created_at,
+                    updated_at,
+                    password_generated_at,
+                    password_released_at
+                `)
+                .order(
+                    "report_date",
+                    {
+                        ascending: false
+                    }
+                ),
+
+            supabaseClient
+                .from("processos")
+                .select(`
+                    id,
+                    report_id,
+                    data,
+                    cte,
+                    nf,
+                    cliente,
+                    volume,
+                    acr,
+                    created_at
+                `)
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+
+        ]);
+
+
+        if (reportResponse.error) {
+            throw reportResponse.error;
+        }
+
+
+        if (processResponse.error) {
+            throw processResponse.error;
+        }
+
+
+        reports =
+            reportResponse.data || [];
+
+        processes =
+            processResponse.data || [];
+
+
+        setConnection(
+            true,
+            "Sistema conectado"
+        );
+
+
+        renderAll();
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar dados:",
+            error
+        );
+
+
+        setConnection(
+            false,
+            "Erro de conexão"
+        );
+
+
+        showToast(
+            error.message ||
+            "Erro ao carregar os dados."
+        );
+
+    }
+
+}
+
+
+function setConnection(
+    connected,
+    text
+) {
+
+    $("#connectionDot")
+        .style.background =
+        connected
+            ? "var(--green)"
+            : "var(--red)";
+
+
+    $("#connectionText")
+        .textContent =
+        text;
+
+}
+
+
+/* ============================================================
+   RENDER GERAL
+============================================================ */
+
+function renderAll() {
+
+    renderDashboard();
+
+    renderReports();
+
+    renderProcesses();
+
+}
+
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+
+function renderDashboard() {
+
+    const conference =
+        reports.filter(
+            item =>
+                normalize(item.status) ===
+                normalize(
+                    "AGUARDANDO CONFERÊNCIA"
+                )
+        ).length;
+
+
+    const release =
+        reports.filter(
+            item =>
+                normalize(item.status) ===
+                normalize(
+                    "AGUARDANDO LIBERAÇÃO"
+                )
+        ).length;
+
+
+    $("#statReports")
+        .textContent =
+        reports.length;
+
+
+    $("#statConference")
+        .textContent =
+        conference;
+
+
+    $("#statRelease")
+        .textContent =
+        release;
+
+
+    $("#statProcesses")
+        .textContent =
+        processes.length;
+
+
+    const recent =
+        reports.slice(0, 8);
+
+
+    $("#dashboardTable")
+        .innerHTML =
+        tableReports(
+            recent
+        );
+
+}
+
+
+/* ============================================================
+   RELATÓRIOS
+============================================================ */
+
+function filteredReports() {
+
+    const search =
+        normalize(
+            $("#reportSearch")
+                ?.value || ""
+        );
+
+
+    const status =
+        normalize(
+            $("#reportStatus")
+                ?.value || ""
+        );
+
+
+    return reports.filter(report => {
+
+        const processesOfReport =
+            processes.filter(
+                process =>
+                    process.report_id ===
+                    report.id
+            );
+
+
+        const text = [
+
+            report.report_number,
+            report.report_date,
+            report.password,
+            report.status,
+
+            ...processesOfReport.flatMap(
+                process => [
+                    process.cte,
+                    process.nf,
+                    process.cliente,
+                    process.acr
+                ]
+            )
+
+        ]
+            .map(normalize)
+            .join(" ");
+
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+
+        const matchesStatus =
+            !status ||
+            normalize(report.status) ===
+            status;
+
+
+        return (
+            matchesSearch &&
+            matchesStatus
+        );
+
+    });
+
+}
+
+
+function renderReports() {
+
+    $("#reportsTable")
+        .innerHTML =
+        tableReports(
+            filteredReports(),
+            true
+        );
+
+}
+
+
+function tableReports(
+    data,
+    showActions = true
+) {
+
+    if (!data.length) {
+
+        return `
+            <div
+                style="
+                    padding:45px;
+                    text-align:center;
+                    color:var(--muted);
+                    font-size:11px;
+                "
+            >
+                Nenhum relatório encontrado.
+            </div>
+        `;
+
+    }
+
+
+    return `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Data
+                    </th>
+
+                    <th>
+                        Processos
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Senha
+                    </th>
+
+                    <th>
+                        Importado
+                    </th>
+
+                    ${
+                        showActions
+                            ? "<th>Ações</th>"
+                            : ""
+                    }
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${data.map(report => {
+
+                    const count =
+                        processes.filter(
+                            process =>
+                                process.report_id ===
+                                report.id
+                        ).length;
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    ${escapeHtml(
+                                        formatDate(
+                                            report.report_date
+                                        )
+                                    )}
+                                </strong>
+                            </td>
+
+
+                            <td>
+                                ${count}
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="
+                                        status
+                                        ${statusClass(
+                                            report.status
+                                        )}
+                                    "
+                                >
+                                    ${escapeHtml(
+                                        report.status
+                                    )}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                ${
+                                    report.password
+                                        ? escapeHtml(
+                                            report.password
+                                        )
+                                        : "—"
+                                }
+                            </td>
+
+
+                            <td>
+                                ${escapeHtml(
+                                    formatDateTime(
+                                        report.imported_at
+                                    )
+                                )}
+                            </td>
+
+
+                            ${
+                                showActions
+                                    ? `
+
+                                        <td>
+
+                                            <div class="actions">
+
+                                                <button
+                                                    class="secondary"
+                                                    onclick="
+                                                        openReport(
+                                                            '${report.id}'
+                                                        )
+                                                    "
+                                                >
+                                                    Abrir
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    `
+                                    : ""
+                            }
+
+                        </tr>
+
+                    `;
+
+                }).join("")}
+
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+
+/* ============================================================
+   PROCESSOS
+============================================================ */
+
+function renderProcesses() {
+
+    const search =
+        normalize(
+            $("#processSearch")
+                ?.value || ""
+        );
+
+
+    const filtered =
+        processes.filter(process => {
+
+            if (!search) {
+                return true;
+            }
+
+
+            const text = [
+
+                process.cte,
+                process.nf,
+                process.cliente,
+                process.acr,
+                process.volume,
+                process.data
+
+            ]
+                .map(normalize)
+                .join(" ");
+
+
+            return text.includes(search);
+
+        });
+
+
+    if (!filtered.length) {
+
+        $("#processesTable")
+            .innerHTML = `
+
+                <div
+                    style="
+                        padding:45px;
+                        text-align:center;
+                        color:var(--muted);
+                        font-size:11px;
+                    "
+                >
+                    Nenhum processo encontrado.
+                </div>
+
+            `;
+
+        return;
+
+    }
+
+
+    $("#processesTable")
+        .innerHTML = `
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Data</th>
+                        <th>CT-e</th>
+                        <th>NF</th>
+                        <th>Cliente</th>
+                        <th>Volume</th>
+                        <th>ACR</th>
+                        <th>Relatório</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${filtered.map(process => {
+
+                        const report =
+                            reports.find(
+                                item =>
+                                    item.id ===
+                                    process.report_id
+                            );
+
+
+                        return `
+
+                            <tr>
+
+                                <td>
+                                    ${escapeHtml(
+                                        formatDate(
+                                            process.data
+                                        )
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        process.cte || "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        process.nf || "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        process.cliente || "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        process.volume || "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        process.acr || "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${
+                                        report
+                                            ? formatDate(
+                                                report.report_date
+                                            )
+                                            : "—"
+                                    }
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }).join("")}
+
+                </tbody>
+
+            </table>
+
+        `;
+
+}
+
+
+/* ============================================================
+   MODAL ADMIN
+============================================================ */
+
+function openReport(reportId) {
+
+    const report =
+        reports.find(
+            item =>
+                item.id === reportId
+        );
+
+
+    if (!report) {
+        return;
+    }
+
+
+    currentReportId =
+        reportId;
+
+
+    const reportProcesses =
+        processes.filter(
+            process =>
+                process.report_id ===
+                reportId
+        );
+
+
+    $("#modalTitle")
+        .textContent =
+        `Relatório — ${formatDate(
+            report.report_date
+        )}`;
+
+
+    $("#modalSubtitle")
+        .textContent =
+        report.status;
+
+
+    const canRelease =
+        !!report.password &&
+        normalize(report.status) !==
+        normalize("LIBERADA");
+
+
+    $("#modalBody")
+        .innerHTML = `
+
+            <div class="modal-actions">
+
+                ${
+                    normalize(report.status) !==
+                    normalize("LIBERADA")
+
+                        ? `
+
+                            <button
+                                class="secondary"
+                                onclick="
+                                    savePassword()
+                                "
+                            >
+                                ${
+                                    report.password
+                                        ? "Alterar senha"
+                                        : "Registrar senha"
+                                }
+                            </button>
+
+                        `
+                        : ""
+                }
+
+
+                ${
+                    canRelease
+
+                        ? `
+
+                            <button
+                                class="primary"
+                                onclick="
+                                    releaseReport()
+                                "
+                            >
+                                Liberar relatório
+                            </button>
+
+                        `
+                        : ""
+                }
+
+            </div>
+
+
+            <div class="password-box">
+
+                <input
+                    id="modalPassword"
+                    type="text"
+                    value="${escapeHtml(
+                        report.password || ""
+                    )}"
+                    placeholder="Senha do relatório"
+                >
+
+
+                <button
+                    class="secondary"
+                    onclick="
+                        savePassword()
+                    "
+                >
+                    Salvar senha
+                </button>
+
+            </div>
+
+
+            <div
+                class="table-wrap"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>CT-e</th>
+                            <th>NF</th>
+                            <th>Cliente</th>
+                            <th>Volume</th>
+                            <th>ACR</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${
+                            reportProcesses
+                                .map(
+                                    process => `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    process.cte || "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    process.nf || "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    process.cliente || "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    process.volume || "—"
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                                    process.acr || "—"
+                                                )}
+                                            </td>
+
+                                        </tr>
+
+                                    `
+                                )
+                                .join("")
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        `;
+
+
+    $("#modal")
+        .classList.add("open");
+
+}
+
+
+async function savePassword() {
+
+    if (!currentReportId) {
+        return;
+    }
+
+
+    const password =
+        $("#modalPassword")
+            .value
+            .trim();
+
+
+    if (!password) {
+
+        showToast(
+            "Digite uma senha."
+        );
+
+        return;
+
+    }
+
+
+    const now =
+        new Date().toISOString();
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("relatorios")
+        .update({
+
+            password,
+
+            password_generated_at:
+                now,
+
+            status:
+                "AGUARDANDO LIBERAÇÃO",
+
+            updated_at:
+                now
+
+        })
+        .eq(
+            "id",
+            currentReportId
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Não foi possível salvar a senha."
+        );
+
+        return;
+
+    }
+
+
+    showToast(
+        "Senha registrada. Relatório aguardando liberação."
+    );
+
+
+    await loadData();
+
+
+    openReport(
+        currentReportId
+    );
+
+}
+
+
+async function releaseReport() {
+
+    if (!currentReportId) {
+        return;
+    }
+
+
+    const report =
+        reports.find(
+            item =>
+                item.id ===
+                currentReportId
+        );
+
+
+    if (!report) {
+        return;
+    }
+
+
+    if (!report.password) {
+
+        showToast(
+            "Registre a senha antes de liberar."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        window.confirm(
+            "Deseja realmente liberar este relatório?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const now =
+        new Date().toISOString();
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("relatorios")
+        .update({
+
+            status:
+                "LIBERADA",
+
+            password_released_at:
+                now,
+
+            updated_at:
+                now
+
+        })
+        .eq(
+            "id",
+            currentReportId
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Não foi possível liberar."
+        );
+
+        return;
+
+    }
+
+
+    showToast(
+        "Relatório liberado com sucesso."
+    );
+
+
+    await loadData();
+
+
+    openReport(
+        currentReportId
+    );
+
+}
+
+
+/* ============================================================
+   IMPORTAÇÃO WORD
+============================================================ */
+
+const wordFileInput = $("#wordFile");
+const selectWordButton = $("#selectWordButton");
+
+if (selectWordButton && wordFileInput) {
+
+    selectWordButton.addEventListener("click", () => {
+        // Limpa o valor antes de abrir para permitir selecionar
+        // novamente exatamente o mesmo arquivo.
+        wordFileInput.value = "";
+        wordFileInput.click();
+    });
+
+    wordFileInput.addEventListener("change", async event => {
+
+        const file = event.target.files && event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        selectedFile = null;
+        parsedProcesses = [];
+        renderPreview();
+        $("#importButton").disabled = true;
+
+        const isDocx =
+            file.name.toLowerCase().endsWith(".docx") ||
+            file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+        if (!isDocx) {
+            showToast("Selecione um arquivo Word .DOCX.");
+            wordFileInput.value = "";
+            return;
+        }
+
+        if (!window.mammoth || typeof window.mammoth.extractRawText !== "function") {
+            console.error("Mammoth não foi carregado.");
+            showToast("O leitor de Word não foi carregado. Atualize a página e tente novamente.");
+            wordFileInput.value = "";
+            return;
+        }
+
+        selectedFile = file;
+
+        $("#reportDate").value = todayISO();
+
+        selectWordButton.textContent = "Lendo arquivo...";
+        selectWordButton.disabled = true;
+
+        try {
+
+            const arrayBuffer = await file.arrayBuffer();
+
+            if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+                throw new Error("O arquivo selecionado está vazio ou não pôde ser lido.");
+            }
+
+            const result = await window.mammoth.extractRawText({ arrayBuffer });
+            const text = String(result?.value || "").trim();
+
+            console.log("Word carregado:", {
+                nome: file.name,
+                tamanho: file.size,
+                caracteres: text.length,
+                mensagens: result?.messages || []
+            });
+
+            if (!text) {
+                throw new Error("O Word foi aberto, mas não contém texto legível.");
+            }
+
+            parsedProcesses = parseWord(text);
+
+            renderPreview();
+
+            $("#importButton").disabled = parsedProcesses.length === 0;
+
+            if (parsedProcesses.length > 0) {
+                showToast(`${file.name} carregado. ${parsedProcesses.length} processo(s) identificado(s).`);
+            } else {
+                showToast("Arquivo carregado, mas nenhum processo foi identificado. Verifique a pré-visualização.");
+            }
+
+        } catch (error) {
+
+            console.error("Erro ao ler Word:", error);
+
+            selectedFile = null;
+            parsedProcesses = [];
+            renderPreview();
+            $("#importButton").disabled = true;
+
+            showToast(error?.message || "Não foi possível ler o arquivo Word.");
+
+        } finally {
+            selectWordButton.textContent = "Selecionar arquivo";
+            selectWordButton.disabled = false;
+        }
+    });
+}
+
+
+/* ============================================================
+   PARSER WORD
+============================================================ */
+function parseWord(text) {
+
+    console.log("======================================");
+    console.log("INICIANDO PARSER DO RELATÓRIO");
+    console.log("======================================");
+
+
+    if (!text) {
+        console.warn("Texto do Word vazio.");
+        return [];
+    }
+
+
+    /*
+     * ============================================================
+     * NORMALIZA O TEXTO
+     * ============================================================
+     */
+
+    const lines = String(text)
+        .replace(/\u00A0/g, " ")
+        .split(/\r?\n/)
+        .map(line =>
+            line
+                .replace(/\s+/g, " ")
+                .trim()
+        )
+        .filter(Boolean);
+
+
+    console.log("LINHAS ENCONTRADAS:", lines.length);
+    console.log(lines);
+
+
+    /*
+     * ============================================================
+     * PROCURA O CABEÇALHO DA TABELA
+     *
+     * CTE
+     * NF
+     * REMETENTE
+     * VOLUME
+     * ACR
+     * ============================================================
+     */
+
+    let headerIndex = -1;
+
+
+    for (let i = 0; i < lines.length; i++) {
+
+        if (
+            lines[i].toUpperCase() === "CTE" &&
+            lines[i + 1]?.toUpperCase() === "NF" &&
+            lines[i + 2]?.toUpperCase() === "REMETENTE" &&
+            lines[i + 3]?.toUpperCase() === "VOLUME" &&
+            lines[i + 4]?.toUpperCase() === "ACR"
+        ) {
+
+            headerIndex = i;
+
+            break;
+        }
+    }
+
+
+    console.log(
+        "POSIÇÃO DO CABEÇALHO:",
+        headerIndex
+    );
+
+
+    if (headerIndex === -1) {
+
+        console.warn(
+            "Cabeçalho CTE/NF/REMETENTE/VOLUME/ACR não encontrado."
+        );
+
+        return [];
+
+    }
+
+
+    /*
+     * ============================================================
+     * OS DADOS COMEÇAM 5 LINHAS DEPOIS DO CABEÇALHO
+     *
+     * Cada processo possui exatamente:
+     *
+     * [0] CTE
+     * [1] NF
+     * [2] REMETENTE
+     * [3] VOLUME
+     * [4] ACR
+     * ============================================================
+     */
+
+    const dataStart =
+        headerIndex + 5;
+
+
+    const results = [];
+
+
+    /*
+     * ============================================================
+     * FUNÇÃO PARA VALIDAR CTE
+     *
+     * Exemplos:
+     *
+     * 10/13187807
+     * 263/13187607
+     * 83/2942304
+     * 11/8051708
+     * ============================================================
+     */
+
+    function isCTE(value) {
+
+        if (!value) {
+            return false;
+        }
+
+
+        return /^\d{1,4}\/\d{5,}$/.test(
+            String(value).trim()
+        );
+
+    }
+
+
+    /*
+     * ============================================================
+     * PERCORRE OS PROCESSOS DE 5 EM 5 LINHAS
+     * ============================================================
+     */
+
+    for (
+        let i = dataStart;
+        i + 4 < lines.length;
+        i += 5
+    ) {
+
+        const cte =
+            lines[i];
+
+        const nf =
+            lines[i + 1];
+
+        const cliente =
+            lines[i + 2];
+
+        const volume =
+            lines[i + 3];
+
+        const acr =
+            lines[i + 4];
+
+
+        console.log(
+            "ANALISANDO PROCESSO:",
+            {
+                cte,
+                nf,
+                cliente,
+                volume,
+                acr
+            }
+        );
+
+
+        /*
+         * Se não for um CTE válido,
+         * provavelmente chegamos ao rodapé do documento.
+         */
+
+        if (!isCTE(cte)) {
+
+            console.log(
+                "Fim da tabela encontrado em:",
+                cte
+            );
+
+            break;
+        }
+
+
+        /*
+         * Volume e ACR precisam ser numéricos.
+         */
+
+        if (
+            !/^\d+$/.test(volume) ||
+            !/^\d+$/.test(acr)
+        ) {
+
+            console.warn(
+                "Linha ignorada por estrutura inválida:",
+                {
+                    cte,
+                    nf,
+                    cliente,
+                    volume,
+                    acr
+                }
+            );
+
+            continue;
+        }
+
+
+        /*
+         * ========================================================
+         * ADICIONA PROCESSO
+         * ========================================================
+         */
+
+        results.push({
+
+            data:
+                $("#reportDate")?.value ||
+                todayISO(),
+
+            cte:
+                String(cte).trim(),
+
+            nf:
+                String(nf || "").trim(),
+
+            cliente:
+                String(cliente || "").trim(),
+
+            volume:
+                String(volume || "").trim(),
+
+            acr:
+                String(acr || "").trim()
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * REMOVE DUPLICADOS
+     * ============================================================
+     */
+
+    const unique = [];
+    const keys = new Set();
+
+
+    results.forEach(process => {
+
+        const key = [
+            process.cte,
+            process.nf,
+            process.cliente,
+            process.volume,
+            process.acr
+        ]
+            .join("|")
+            .toLowerCase();
+
+
+        if (!keys.has(key)) {
+
+            keys.add(key);
+
+            unique.push(process);
+
+        }
+
+    });
+
+
+    /*
+     * ============================================================
+     * RESULTADO FINAL
+     * ============================================================
+     */
+
+    console.log(
+        "======================================"
+    );
+
+    console.log(
+        "PROCESSOS IDENTIFICADOS:",
+        unique.length
+    );
+
+    console.table(unique);
+
+    console.log(
+        "======================================"
+    );
+
+
+    return unique;
+}
+
+
+/* ============================================================
+   PREVIEW
+============================================================ */
+
+function renderPreview() {
+
+    $("#previewCount")
+        .textContent =
+        `${parsedProcesses.length} processo(s)`;
+
+
+    if (!parsedProcesses.length) {
+
+        $("#previewList")
+            .innerHTML = `
+
+                <div
+                    style="
+                        color:var(--muted);
+                        font-size:10px;
+                        padding:25px 0;
+                        text-align:center;
+                    "
+                >
+                    Nenhum processo identificado.
+                </div>
+
+            `;
+
+        return;
+
+    }
+
+
+    $("#previewList")
+        .innerHTML =
+        parsedProcesses
+            .map(
+                process => `
+
+                    <div class="preview-item">
+
+                        <span>
+                            ${escapeHtml(
+                                process.cte || "—"
+                            )}
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                process.nf || "—"
+                            )}
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                process.cliente || "—"
+                            )}
+                        </span>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+}
+
+
+/* ============================================================
+   IMPORTAR
+============================================================ */
+
+$("#importButton")
+    .addEventListener(
+        "click",
+        importReport
+    );
+
+
+async function importReport() {
+
+    if (!selectedFile) {
+
+        showToast(
+            "Selecione um arquivo."
+        );
+
+        return;
+
+    }
+
+
+    if (!parsedProcesses.length) {
+
+        showToast(
+            "Nenhum processo foi identificado."
+        );
+
+        return;
+
+    }
+
+
+    const date =
+        $("#reportDate")
+            .value;
+
+
+    if (!date) {
+
+        showToast(
+            "Informe a data do relatório."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        $("#importButton");
+
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Importando...";
+
+
+    try {
+
+        /*
+         * Evita dois relatórios na mesma data.
+         */
+
+        const existing =
+            await supabaseClient
+                .from("relatorios")
+                .select("id")
+                .eq(
+                    "report_date",
+                    date
+                )
+                .maybeSingle();
+
+
+        if (existing.error) {
+            throw existing.error;
+        }
+
+
+        if (existing.data) {
+
+            throw new Error(
+                "Já existe um relatório cadastrado para esta data."
+            );
+
+        }
+
+
+        const now =
+            new Date().toISOString();
+
+
+        /*
+         * Cria primeiro o relatório.
+         */
+
+        const reportResponse =
+            await supabaseClient
+                .from("relatorios")
+                .insert({
+
+                    report_date:
+                        date,
+
+                    imported_at:
+                        now,
+
+                    password:
+                        null,
+
+                    status:
+                        "AGUARDANDO CONFERÊNCIA",
+
+                    password_generated_at:
+                        null,
+
+                    password_released_at:
+                        null,
+
+                    created_at:
+                        now,
+
+                    updated_at:
+                        now
+
+                })
+                .select()
+                .single();
+
+
+        if (reportResponse.error) {
+            throw reportResponse.error;
+        }
+
+
+        const report =
+            reportResponse.data;
+
+
+        /*
+         * Insere os processos vinculados.
+         */
+
+        const rows =
+            parsedProcesses.map(
+                process => ({
+
+                    report_id:
+                        report.id,
+
+                    data:
+                        process.data ||
+                        date,
+
+                    cte:
+                        process.cte ||
+                        null,
+
+                    nf:
+                        process.nf ||
+                        null,
+
+                    cliente:
+                        process.cliente ||
+                        null,
+
+                    volume:
+                        process.volume ||
+                        null,
+
+                    acr:
+                        process.acr ||
+                        null,
+
+                    created_at:
+                        now
+
+                })
+            );
+
+
+        const processResponse =
+            await supabaseClient
+                .from("processos")
+                .insert(rows);
+
+
+        if (processResponse.error) {
+
+            /*
+             * Tenta desfazer o relatório se
+             * a inserção dos processos falhar.
+             */
+
+            await supabaseClient
+                .from("relatorios")
+                .delete()
+                .eq(
+                    "id",
+                    report.id
+                );
+
+
+            throw processResponse.error;
+
+        }
+
+
+        showToast(
+            `Relatório importado com ${rows.length} processo(s).`
+        );
+
+
+        selectedFile =
+            null;
+
+        parsedProcesses =
+            [];
+
+
+        $("#wordFile")
+            .value = "";
+
+        $("#reportDate")
+            .value =
+            todayISO();
+
+
+        renderPreview();
+
+
+        await loadData();
+
+
+        /*
+         * Volta para relatórios.
+         */
+
+        navigate(
+            "relatorios"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erro na importação:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Não foi possível importar o relatório."
+        );
+
+
+    } finally {
+
+        button.disabled =
+            parsedProcesses.length === 0;
+
+        button.textContent =
+            "Importar relatório";
+
+    }
+
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+$("#modalClose")
+    .addEventListener(
+        "click",
+        closeModal
+    );
+
+
+$("#modal")
+    .addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.id ===
+                "modal"
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+    }
+);
+
+
+function closeModal() {
+
+    $("#modal")
+        .classList.remove("open");
+
+    currentReportId =
+        null;
+
+}
+
+
+/* ============================================================
+   PESQUISAS
+============================================================ */
+
+$("#reportSearch")
+    .addEventListener(
+        "input",
+        renderReports
+    );
+
+
+$("#reportStatus")
+    .addEventListener(
+        "change",
+        renderReports
+    );
+
+
+$("#processSearch")
+    .addEventListener(
+        "input",
+        renderProcesses
+    );
+
+
+$("#refreshReports")
+    .addEventListener(
+        "click",
+        loadData
+    );
+
+
+$("#refreshProcesses")
+    .addEventListener(
+        "click",
+        loadData
+    );
+
+
+/* ============================================================
+   NAVEGAÇÃO
+============================================================ */
+
+function navigate(view) {
+
+    $$(".nav-button")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.view ===
+                view
+            );
+
+        });
+
+
+    $$(".view")
+        .forEach(section => {
+
+            section.classList.toggle(
+                "active",
+                section.id ===
+                `view-${view}`
+            );
+
+        });
+
+}
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+============================================================ */
+
+async function initialize() {
+
+    $("#reportDate")
+        .value =
+        todayISO();
+
+
+    await loadData();
+
+}
+
+
+if (checkLogin()) {
+
+    showApp();
+
+    initialize();
+
+} else {
+
+    showLogin();
+
+}
+
+</script>
+
+</body>
+</html>
+```

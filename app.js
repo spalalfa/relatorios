@@ -1,786 +1,282 @@
-/* =========================================================
-   ALFA TRANSPORTES • CONTROLE OPERACIONAL
-   APP.JS
-========================================================= */
+(() => {
+    "use strict";
 
-const SUPABASE_URL =
-    "https://ewawkukleqboozavhovb.supabase.co";
+    // ============================================================
+    // CONFIGURAÇÃO SUPABASE
+    // ============================================================
 
-const SUPABASE_ANON_KEY =
-    "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
+    const SUPABASE_URL = "https://ewawkukleqboozavhovb.supabase.co";
 
+    const SUPABASE_KEY =
+        "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
 
-/* =========================================================
-   ESTADO GLOBAL
-========================================================= */
-
-let supabaseClient = null;
-
-let currentUser = null;
-let currentSession = null;
-
-let reports = [];
-let processes = [];
-
-let selectedWordFile = null;
-let importedWordData = null;
-
-let currentReport = null;
-
-let isInitialized = false;
-let isStartingSession = false;
-let authSubscription = null;
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-const STATUS = {
-    WAITING_CONFERENCE: "AGUARDANDO CONFERÊNCIA",
-    WAITING_RELEASE: "AGUARDANDO LIBERAÇÃO",
-    RELEASED: "LIBERADA"
-};
-
-
-/* =========================================================
-   ELEMENTOS
-========================================================= */
-
-const $ = (selector) => {
-    return document.querySelector(selector);
-};
-
-const $$ = (selector) => {
-    return [...document.querySelectorAll(selector)];
-};
-
-
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
-
-function escapeHtml(value) {
-    if (value === null || value === undefined) {
-        return "";
-    }
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function normalizeText(value) {
-    return String(value ?? "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .trim();
-}
-
-
-function formatDate(value) {
-    if (!value) {
-        return "—";
-    }
-
-    const date = new Date(`${value}T00:00:00`);
-
-    if (Number.isNaN(date.getTime())) {
-        return String(value);
-    }
-
-    return date.toLocaleDateString("pt-BR");
-}
-
-
-function formatDateTime(value) {
-    if (!value) {
-        return "—";
-    }
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return String(value);
-    }
-
-    return date.toLocaleString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-
-function todayISO() {
-    const date = new Date();
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-}
-
-
-function nowISO() {
-    return new Date().toISOString();
-}
-
-
-function truncate(value, length = 80) {
-    const text = String(value ?? "");
-
-    if (text.length <= length) {
-        return text;
-    }
-
-    return `${text.substring(0, length)}...`;
-}
-
-
-function getInitials(value) {
-    const text = String(value ?? "").trim();
-
-    if (!text) {
-        return "A";
-    }
-
-    const parts = text.split(/\s+/);
-
-    if (parts.length === 1) {
-        return parts[0].substring(0, 2).toUpperCase();
-    }
-
-    return (
-        parts[0][0] +
-        parts[parts.length - 1][0]
-    ).toUpperCase();
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function normalizeStatus(status) {
-    const normalized = normalizeText(status);
-
-    if (
-        normalized === normalizeText(STATUS.RELEASED) ||
-        normalized === "liberado" ||
-        normalized === "liberada"
-    ) {
-        return STATUS.RELEASED;
-    }
-
-    if (
-        normalized === normalizeText(STATUS.WAITING_RELEASE) ||
-        normalized === "aguardando liberacao" ||
-        normalized === "aguardando senha"
-    ) {
-        return STATUS.WAITING_RELEASE;
-    }
-
-    return STATUS.WAITING_CONFERENCE;
-}
-
-
-function statusClass(status) {
-    const normalized = normalizeStatus(status);
-
-    if (normalized === STATUS.RELEASED) {
-        return "success released";
-    }
-
-    if (normalized === STATUS.WAITING_RELEASE) {
-        return "pending info";
-    }
-
-    return "waiting warning";
-}
-
-
-function statusBadge(status) {
-    const normalized = normalizeStatus(status);
-
-    return `
-        <span class="status-badge ${statusClass(normalized)}">
-            ${escapeHtml(normalized)}
-        </span>
-    `;
-}
-
-
-/* =========================================================
-   IDENTIFICAÇÃO DO RELATÓRIO
-========================================================= */
-
-function reportNumber(report) {
-    if (
-        report &&
-        report.report_number !== null &&
-        report.report_number !== undefined &&
-        report.report_number !== ""
-    ) {
-        return String(report.report_number);
-    }
-
-    return "—";
-}
-
-
-function reportLabel(report) {
-    if (!report) {
-        return "Relatório";
-    }
-
-    const number = reportNumber(report);
-
-    return `Relatório #${number}`;
-}
-
-
-function reportTitle(report) {
-    if (!report) {
-        return "Relatório";
-    }
-
-    return `Relatório #${reportNumber(report)}`;
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimeout = null;
-
-function showToast(message, type = "success") {
-    let toast = $("#toast");
-
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        toast.className = "toast";
-
-        document.body.appendChild(toast);
-    }
-
-    toast.textContent = message;
-
-    toast.className = `toast ${type}`;
-
-    requestAnimationFrame(() => {
-        toast.classList.add("show");
-    });
-
-    clearTimeout(toastTimeout);
-
-    toastTimeout = setTimeout(() => {
-        toast.classList.remove("show");
-    }, 3500);
-}
-
-
-/* =========================================================
-   MENSAGENS
-========================================================= */
-
-function setMessage(element, message, type = "error") {
-    if (!element) {
-        return;
-    }
-
-    element.textContent = message || "";
-
-    element.classList.remove(
-        "success",
-        "error",
-        "warning"
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
     );
 
-    if (message) {
-        element.classList.add(type);
-    }
-}
+    window.supabaseClient = supabaseClient;
 
+    // ============================================================
+    // STATUS
+    // ============================================================
 
-/* =========================================================
-   INICIALIZAÇÃO SUPABASE
-========================================================= */
+    const STATUS = {
+        WAITING_CONFERENCE: "AGUARDANDO CONFERÊNCIA",
+        RELEASED: "LIBERADA"
+    };
 
-function initializeSupabase() {
-    if (supabaseClient) {
-        return supabaseClient;
-    }
+    window.STATUS = STATUS;
 
-    if (
-        typeof window.supabase === "undefined" ||
-        !window.supabase.createClient
-    ) {
-        console.error(
-            "Supabase JS não foi carregado."
-        );
+    // ============================================================
+    // ESTADO
+    // ============================================================
 
-        return null;
-    }
+    let reports = [];
+    let processes = [];
 
-    supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_ANON_KEY
-        );
+    let currentReport = null;
 
-    return supabaseClient;
-}
+    // ============================================================
+    // HELPERS
+    // ============================================================
 
+    const $ = (selector, parent = document) =>
+        parent.querySelector(selector);
 
-/* =========================================================
-   AUTENTICAÇÃO
-========================================================= */
+    const $$ = (selector, parent = document) =>
+        [...parent.querySelectorAll(selector)];
 
-async function initializeAuth() {
-    if (!supabaseClient) {
-        return;
-    }
-
-    if (isStartingSession) {
-        return;
-    }
-
-    isStartingSession = true;
-
-    try {
-        const {
-            data,
-            error
-        } = await supabaseClient.auth.getSession();
-
-        if (error) {
-            console.error(
-                "Erro ao obter sessão:",
-                error
-            );
+    function escapeHtml(value) {
+        if (value === null || value === undefined) {
+            return "—";
         }
 
-        currentSession =
-            data?.session || null;
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
-        currentUser =
-            currentSession?.user || null;
+    function normalizeText(value) {
+        return String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
 
-        updateAuthUI();
-
-        if (currentUser) {
-            await initializeApplication();
-        } else {
-            showLoginScreen();
+    function safeValue(value) {
+        if (
+            value === null ||
+            value === undefined ||
+            String(value).trim() === ""
+        ) {
+            return "—";
         }
-    } finally {
-        isStartingSession = false;
+
+        return escapeHtml(value);
     }
 
-    if (!authSubscription) {
-        const result =
-            supabaseClient.auth.onAuthStateChange(
-                async (event, session) => {
-                    currentSession =
-                        session || null;
+    function formatDate(value) {
+        if (!value) return "—";
 
-                    currentUser =
-                        session?.user || null;
+        const date = new Date(value);
 
-                    updateAuthUI();
+        if (Number.isNaN(date.getTime())) {
+            return safeValue(value);
+        }
 
-                    if (
-                        event === "SIGNED_IN" &&
-                        currentUser
-                    ) {
-                        await initializeApplication();
-                    }
+        return date.toLocaleDateString("pt-BR", {
+            timeZone: "UTC"
+        });
+    }
 
-                    if (
-                        event === "SIGNED_OUT"
-                    ) {
-                        showLoginScreen();
-                    }
-                }
+    function formatDateTime(value) {
+        if (!value) return "—";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return safeValue(value);
+        }
+
+        return date.toLocaleString("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short"
+        });
+    }
+
+    function formatNumber(value) {
+        if (value === null || value === undefined || value === "") {
+            return "0";
+        }
+
+        const number = Number(value);
+
+        if (Number.isNaN(number)) {
+            return safeValue(value);
+        }
+
+        return number.toLocaleString("pt-BR");
+    }
+
+    function truncate(value, length = 40) {
+        if (!value) return "—";
+
+        const text = String(value);
+
+        if (text.length <= length) {
+            return escapeHtml(text);
+        }
+
+        return escapeHtml(text.substring(0, length) + "...");
+    }
+
+    function getStatusClass(status) {
+        const normalized = normalizeText(status);
+
+        if (normalized === normalizeText(STATUS.RELEASED)) {
+            return "status-released";
+        }
+
+        return "status-waiting";
+    }
+
+    function statusBadge(status) {
+        const value = status || STATUS.WAITING_CONFERENCE;
+
+        return `
+            <span class="status-badge ${getStatusClass(value)}">
+                <span class="status-dot"></span>
+                ${escapeHtml(value)}
+            </span>
+        `;
+    }
+
+    function showToast(message, type = "success") {
+        const container = $("#toastContainer");
+
+        if (!container) return;
+
+        const toast = document.createElement("div");
+
+        toast.className = `toast toast-${type}`;
+
+        toast.innerHTML = `
+            <div class="toast-icon">
+                ${type === "success" ? "✓" : type === "error" ? "!" : "i"}
+            </div>
+
+            <div class="toast-content">
+                ${escapeHtml(message)}
+            </div>
+        `;
+
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.add("show");
+        });
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3500);
+    }
+
+    window.showToast = showToast;
+
+    // ============================================================
+    // CONEXÃO
+    // ============================================================
+
+    function setConnectionStatus(connected, message) {
+        const dot = $("#connectionDot");
+        const text = $("#connectionText");
+
+        if (dot) {
+            dot.classList.toggle("offline", !connected);
+        }
+
+        if (text) {
+            text.textContent =
+                message ||
+                (connected ? "Conectado" : "Sem conexão");
+        }
+    }
+
+    // ============================================================
+    // CARREGAR DADOS
+    // ============================================================
+
+    async function loadAllData() {
+        try {
+            setConnectionStatus(true, "Carregando...");
+
+            await Promise.all([
+                loadReports(),
+                loadProcesses()
+            ]);
+
+            renderDashboard();
+            renderRecentReports();
+            renderReportsTable();
+            renderProcessesTable();
+            renderEcolabTable();
+            setupSearches();
+
+            setConnectionStatus(true, "Sistema conectado");
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+
+            setConnectionStatus(false, "Erro de conexão");
+
+            showToast(
+                "Não foi possível carregar os dados.",
+                "error"
             );
-
-        authSubscription =
-            result?.data?.subscription || null;
-    }
-}
-
-
-/* =========================================================
-   LOGIN UI
-========================================================= */
-
-function showLoginScreen() {
-    const loginScreen = $("#loginScreen");
-    const app = $("#app");
-
-    if (loginScreen) {
-        loginScreen.classList.remove("hidden");
+        }
     }
 
-    if (app) {
-        app.classList.add("hidden");
-    }
-
-    closeSidebar();
-}
-
-
-function showApplication() {
-    const loginScreen = $("#loginScreen");
-    const app = $("#app");
-
-    if (loginScreen) {
-        loginScreen.classList.add("hidden");
-    }
-
-    if (app) {
-        app.classList.remove("hidden");
-    }
-}
-
-
-function updateAuthUI() {
-    const emailElement = $("#userEmail");
-    const roleElement = $("#userRole");
-    const avatarElement = $("#userAvatar");
-
-    const email =
-        currentUser?.email || "Usuário";
-
-    if (emailElement) {
-        emailElement.textContent = email;
-    }
-
-    if (roleElement) {
-        roleElement.textContent = "Administrador";
-    }
-
-    if (avatarElement) {
-        avatarElement.textContent =
-            getInitials(email);
-    }
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-async function handleLogin(event) {
-    event.preventDefault();
-
-    if (!supabaseClient) {
-        return;
-    }
-
-    const emailInput = $("#email");
-    const passwordInput = $("#password");
-    const message = $("#loginMessage");
-
-    const email =
-        emailInput?.value.trim() || "";
-
-    const password =
-        passwordInput?.value || "";
-
-    if (!email || !password) {
-        setMessage(
-            message,
-            "Informe seu e-mail e senha.",
-            "error"
-        );
-
-        return;
-    }
-
-    setMessage(message, "");
-
-    const button =
-        $("#loginForm button[type='submit']");
-
-    if (button) {
-        button.disabled = true;
-        button.dataset.originalText =
-            button.textContent;
-        button.textContent =
-            "Entrando...";
-    }
-
-    try {
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.signInWithPassword({
-                email,
-                password
+    async function loadReports() {
+        const { data, error } = await supabaseClient
+            .from("relatorios")
+            .select(`
+                id,
+                report_number,
+                report_date,
+                imported_at,
+                password,
+                status,
+                created_at,
+                updated_at,
+                password_generated_at,
+                password_released_at
+            `)
+            .order("report_date", {
+                ascending: false
             });
 
         if (error) {
+            console.error("Erro ao buscar relatórios:", error);
             throw error;
         }
 
-        currentSession =
-            data?.session || null;
+        reports = data || [];
 
-        currentUser =
-            data?.user || null;
+        window.reports = reports;
 
-        showApplication();
-
-        await initializeApplication();
-
-    } catch (error) {
-        console.error(
-            "Erro no login:",
-            error
-        );
-
-        setMessage(
-            message,
-            error?.message ||
-            "Não foi possível entrar.",
-            "error"
-        );
-    } finally {
-        if (button) {
-            button.disabled = false;
-
-            button.textContent =
-                button.dataset.originalText ||
-                "Entrar";
-        }
-    }
-}
-
-
-/* =========================================================
-   RECUPERAÇÃO DE SENHA
-========================================================= */
-
-async function handleForgotPassword(event) {
-    event.preventDefault();
-
-    if (!supabaseClient) {
-        return;
+        return reports;
     }
 
-    const email =
-        $("#email")?.value.trim();
-
-    const message =
-        $("#loginMessage");
-
-    if (!email) {
-        setMessage(
-            message,
-            "Informe seu e-mail para receber o link de recuperação.",
-            "error"
-        );
-
-        return;
-    }
-
-    try {
-        const {
-            error
-        } =
-            await supabaseClient.auth.resetPasswordForEmail(
-                email
-            );
-
-        if (error) {
-            throw error;
-        }
-
-        setMessage(
-            message,
-            "Se o e-mail estiver cadastrado, o link de recuperação será enviado.",
-            "success"
-        );
-    } catch (error) {
-        console.error(error);
-
-        setMessage(
-            message,
-            error?.message ||
-            "Não foi possível solicitar a recuperação.",
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function handleLogout() {
-    if (!supabaseClient) {
-        return;
-    }
-
-    try {
-        await supabaseClient.auth.signOut();
-    } catch (error) {
-        console.error(
-            "Erro ao sair:",
-            error
-        );
-    }
-}
-
-
-/* =========================================================
-   INICIALIZAÇÃO DA APLICAÇÃO
-========================================================= */
-
-async function initializeApplication() {
-    if (isInitialized) {
-        showApplication();
-        return;
-    }
-
-    showApplication();
-
-    try {
-        await loadAllData();
-
-        updateDashboard();
-
-        navigateTo("dashboard");
-
-        isInitialized = true;
-
-    } catch (error) {
-        console.error(
-            "Erro ao inicializar aplicação:",
-            error
-        );
-
-        showToast(
-            "Não foi possível carregar os dados.",
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   CARREGAR TODOS OS DADOS
-========================================================= */
-
-async function loadAllData() {
-    await loadReports();
-    await loadProcesses();
-
-    renderReports();
-    renderProcesses();
-    renderEcolab();
-
-    updateDashboard();
-}
-
-
-/* =========================================================
-   RELATÓRIOS
-========================================================= */
-
-async function loadReports() {
-
-    if (!supabaseClient) {
-        return;
-    }
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("relatorios")
-                .select(`
-                    id,
-                    report_number,
-                    report_date,
-                    imported_at,
-                    password,
-                    status,
-                    created_by,
-                    created_at,
-                    updated_at,
-                    password_generated_at,
-                    password_released_at
-                `)
-                .order(
-                    "report_date",
-                    {
-                        ascending: false
-                    }
-                );
-
-        if (error) {
-            throw error;
-        }
-
-        reports =
-            (data || []).map(
-                report => ({
-                    ...report,
-                    status:
-                        normalizeStatus(
-                            report.status
-                        )
-                })
-            );
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar relatórios:",
-            error
-        );
-
-        showToast(
-            error?.message ||
-            "Não foi possível carregar os relatórios.",
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   PROCESSOS
-========================================================= */
-
-async function loadProcesses() {
-    if (!supabaseClient) {
-        return;
-    }
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
+    async function loadProcesses() {
+        const { data, error } = await supabaseClient
             .from("processos")
             .select(`
                 id,
@@ -793,332 +289,252 @@ async function loadProcesses() {
                 acr,
                 created_at
             `)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+            .order("created_at", {
+                ascending: false
+            });
 
-    if (error) {
-        console.error(
-            "Erro ao carregar processos:",
-            error
+        if (error) {
+            console.error("Erro ao buscar processos:", error);
+            throw error;
+        }
+
+        processes = data || [];
+
+        window.processes = processes;
+
+        return processes;
+    }
+
+    // ============================================================
+    // DASHBOARD
+    // ============================================================
+
+    function renderDashboard() {
+        const totalReports = reports.length;
+
+        const waitingReports = reports.filter(
+            report =>
+                normalizeText(report.status) ===
+                normalizeText(STATUS.WAITING_CONFERENCE)
+        ).length;
+
+        const releasedReports = reports.filter(
+            report =>
+                normalizeText(report.status) ===
+                normalizeText(STATUS.RELEASED)
+        ).length;
+
+        const totalProcesses = processes.length;
+
+        updateElementText(
+            "#totalReports",
+            formatNumber(totalReports)
         );
 
-        throw error;
+        updateElementText(
+            "#waitingReports",
+            formatNumber(waitingReports)
+        );
+
+        updateElementText(
+            "#releasedReports",
+            formatNumber(releasedReports)
+        );
+
+        updateElementText(
+            "#totalProcesses",
+            formatNumber(totalProcesses)
+        );
+
+        // Compatibilidade com possíveis IDs antigos
+        updateElementText(
+            "#statReports",
+            formatNumber(totalReports)
+        );
+
+        updateElementText(
+            "#statWaiting",
+            formatNumber(waitingReports)
+        );
+
+        updateElementText(
+            "#statReleased",
+            formatNumber(releasedReports)
+        );
+
+        updateElementText(
+            "#statProcesses",
+            formatNumber(totalProcesses)
+        );
     }
 
-    processes =
-        (data || []).map(process => {
-            const report =
-                reports.find(
-                    item =>
-                        item.id ===
-                        process.report_id
+    function updateElementText(selector, value) {
+        const element = $(selector);
+
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    // ============================================================
+    // RELATÓRIOS RECENTES
+    // ============================================================
+
+    function renderRecentReports() {
+        const container = $("#recentReports");
+
+        if (!container) return;
+
+        if (!reports.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">◫</div>
+                    <strong>Nenhum relatório encontrado</strong>
+                    <span>Os relatórios importados aparecerão aqui.</span>
+                </div>
+            `;
+
+            return;
+        }
+
+        const recent = reports.slice(0, 5);
+
+        container.innerHTML = recent
+            .map(report => {
+                const reportProcesses = processes.filter(
+                    process => process.report_id === report.id
                 );
 
-            return {
-                ...process,
-                report:
-                    report || null
-            };
-        });
-}
+                return `
+                    <button
+                        class="recent-report"
+                        type="button"
+                        data-report-id="${escapeHtml(report.id)}"
+                    >
 
+                        <div class="recent-report-icon">
+                            <span>▤</span>
+                        </div>
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
+                        <div class="recent-report-main">
 
-function updateDashboard() {
-    const totalReports =
-        reports.length;
-
-    const totalProcesses =
-        processes.length;
-
-    const waitingConference =
-        reports.filter(
-            report =>
-                normalizeStatus(
-                    report.status
-                ) ===
-                STATUS.WAITING_CONFERENCE
-        ).length;
-
-    const released =
-        reports.filter(
-            report =>
-                normalizeStatus(
-                    report.status
-                ) ===
-                STATUS.RELEASED
-        ).length;
-
-    const waitingRelease =
-        reports.filter(
-            report =>
-                normalizeStatus(
-                    report.status
-                ) ===
-                STATUS.WAITING_RELEASE
-        ).length;
-
-    setText(
-        "#statReports",
-        totalReports
-    );
-
-    setText(
-        "#statProcesses",
-        totalProcesses
-    );
-
-    setText(
-        "#statWaiting",
-        waitingConference
-    );
-
-    setText(
-        "#statReleased",
-        released
-    );
-
-    renderRecentReports();
-
-    updateConnectionStatus(
-        true,
-        waitingRelease
-    );
-}
-
-
-function setText(selector, value) {
-    const element =
-        $(selector);
-
-    if (element) {
-        element.textContent =
-            String(value ?? "");
-    }
-}
-
-
-function updateConnectionStatus(
-    connected,
-    waitingRelease = 0
-) {
-    const element =
-        $("#connectionText");
-
-    if (!element) {
-        return;
-    }
-
-    if (connected) {
-        element.textContent =
-            `Conectado • ${waitingRelease} aguardando liberação`;
-    } else {
-        element.textContent =
-            "Sem conexão";
-    }
-}
-
-
-/* =========================================================
-   RELATÓRIOS RECENTES
-========================================================= */
-
-function renderRecentReports() {
-    const container =
-        $("#recentReports");
-
-    if (!container) {
-        return;
-    }
-
-    if (!reports.length) {
-        container.innerHTML = `
-            <div class="empty">
-                Nenhum relatório cadastrado.
-            </div>
-        `;
-
-        return;
-    }
-
-    const recent =
-        reports.slice(0, 6);
-
-    container.innerHTML = `
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Nº</th>
-                        <th>Relatório</th>
-                        <th>Data</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    ${recent.map(report => `
-                        <tr
-                            class="clickable"
-                            data-report-id="${escapeHtml(report.id)}"
-                        >
-                            <td>
-                                <span class="report-number">
-                                    ${escapeHtml(reportNumber(report))}
-                                </span>
-                            </td>
-
-                            <td>
-                                <strong>
-                                    ${escapeHtml(reportTitle(report))}
-                                </strong>
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    formatDate(
-                                        report.report_date
-                                    )
+                            <div class="recent-report-title">
+                                ${safeValue(
+                                    report.report_number ||
+                                    `Relatório ${report.id?.slice(0, 8) || ""}`
                                 )}
-                            </td>
+                            </div>
 
-                            <td>
-                                ${statusBadge(report.status)}
-                            </td>
-                        </tr>
-                    `).join("")}
-                </tbody>
-            </table>
-        </div>
-    `;
+                            <div class="recent-report-meta">
+                                <span>
+                                    ${formatDate(report.report_date)}
+                                </span>
 
-    container
-        .querySelectorAll(
-            "tr[data-report-id]"
-        )
-        .forEach(row => {
-            row.addEventListener(
-                "click",
-                () => {
-                    const id =
-                        row.dataset.reportId;
+                                <span class="meta-separator">•</span>
 
-                    openReportModal(id);
-                }
-            );
+                                <span>
+                                    ${formatNumber(reportProcesses.length)}
+                                    processo${reportProcesses.length === 1 ? "" : "s"}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="recent-report-status">
+                            ${statusBadge(report.status)}
+                        </div>
+
+                    </button>
+                `;
+            })
+            .join("");
+
+        $$(".recent-report", container).forEach(button => {
+            button.addEventListener("click", () => {
+                openReportModal(button.dataset.reportId);
+            });
         });
-}
-
-
-/* =========================================================
-   TABELA DE RELATÓRIOS
-========================================================= */
-
-function renderReports() {
-    const container =
-        $("#reportsTable");
-
-    if (!container) {
-        return;
     }
 
-    if (!reports.length) {
-        container.innerHTML = `
-            <div class="empty">
-                <strong>Nenhum relatório encontrado</strong>
-                <span>
-                    Importe um relatório Word para começar.
-                </span>
-            </div>
-        `;
+    // ============================================================
+    // TABELA DE RELATÓRIOS
+    // ============================================================
 
-        return;
-    }
+    function renderReportsTable() {
+        const table = $("#reportsTable");
 
-    container.innerHTML = `
-        <table class="data-table">
-            <thead>
+        if (!table) return;
+
+        const tbody =
+            table.querySelector("tbody") || createTableBody(table);
+
+        if (!reports.length) {
+            tbody.innerHTML = `
                 <tr>
-                    <th>Nº</th>
-                    <th>Relatório</th>
-                    <th>Importado em</th>
-                    <th>Senha</th>
-                    <th>Senha gerada</th>
-                    <th>Senha liberada</th>
-                    <th>Status</th>
-                    <th>Ações</th>
+                    <td colspan="9">
+                        <div class="table-empty">
+                            Nenhum relatório encontrado.
+                        </div>
+                    </td>
                 </tr>
-            </thead>
+            `;
 
-            <tbody>
-                ${reports.map(report => `
-                    <tr>
+            return;
+        }
+
+        tbody.innerHTML = reports
+            .map(report => {
+                const processCount = processes.filter(
+                    process => process.report_id === report.id
+                ).length;
+
+                return `
+                    <tr
+                        class="table-row-clickable"
+                        data-report-id="${escapeHtml(report.id)}"
+                    >
+
                         <td>
-                            <span class="report-number">
-                                ${escapeHtml(reportNumber(report))}
+                            <div class="cell-primary">
+                                ${safeValue(
+                                    report.report_number ||
+                                    "—"
+                                )}
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="date-cell">
+                                ${formatDate(report.report_date)}
                             </span>
                         </td>
 
                         <td>
-                            <strong>
-                                ${escapeHtml(reportTitle(report))}
-                            </strong>
-
-                            <small>
-                                Data do relatório:
-                                ${escapeHtml(
-                                    formatDate(
-                                        report.report_date
-                                    )
-                                )}
-                            </small>
+                            <span class="date-cell">
+                                ${formatDateTime(report.imported_at)}
+                            </span>
                         </td>
 
                         <td>
-                            ${escapeHtml(
-                                formatDateTime(
-                                    report.imported_at
-                                )
-                            )}
+                            <span class="number-badge">
+                                ${formatNumber(processCount)}
+                            </span>
                         </td>
 
                         <td>
                             ${
                                 report.password
                                     ? `
-                                        <span
-                                            title="Senha do relatório"
-                                        >
-                                            ${escapeHtml(
-                                                report.password
-                                            )}
-                                        </span>
+                                    <span class="password-value">
+                                        ${escapeHtml(report.password)}
+                                    </span>
                                     `
-                                    : "—"
+                                    : `
+                                    <span class="muted-value">
+                                        —
+                                    </span>
+                                    `
                             }
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                formatDateTime(
-                                    report.password_generated_at
-                                )
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                formatDateTime(
-                                    report.password_released_at
-                                )
-                            )}
                         </td>
 
                         <td>
@@ -1126,2148 +542,865 @@ function renderReports() {
                         </td>
 
                         <td>
-                            <div class="actions">
-
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-action="view"
-                                    data-report-id="${escapeHtml(report.id)}"
-                                >
-                                    Ver
-                                </button>
-
-                                ${
-                                    normalizeStatus(
-                                        report.status
-                                    ) ===
-                                    STATUS.WAITING_CONFERENCE
-                                        ? `
-                                            <button
-                                                type="button"
-                                                class="btn btn-primary"
-                                                data-action="password"
-                                                data-report-id="${escapeHtml(report.id)}"
-                                            >
-                                                Registrar senha
-                                            </button>
-                                        `
-                                        : ""
-                                }
-
-                                ${
-                                    normalizeStatus(
-                                        report.status
-                                    ) ===
-                                        STATUS.WAITING_RELEASE &&
-                                    report.password
-                                        ? `
-                                            <button
-                                                type="button"
-                                                class="btn btn-primary"
-                                                data-action="release"
-                                                data-report-id="${escapeHtml(report.id)}"
-                                            >
-                                                Liberar
-                                            </button>
-                                        `
-                                        : ""
-                                }
-
-                            </div>
+                            ${formatDateTime(
+                                report.password_generated_at
+                            )}
                         </td>
+
+                        <td>
+                            ${formatDateTime(
+                                report.password_released_at
+                            )}
+                        </td>
+
+                        <td class="table-action-cell">
+                            <button
+                                class="table-view-btn"
+                                type="button"
+                                data-report-id="${escapeHtml(report.id)}"
+                            >
+                                Ver detalhes
+                                <span>→</span>
+                            </button>
+                        </td>
+
                     </tr>
-                `).join("")}
-            </tbody>
-        </table>
-    `;
-
-    bindReportActions();
-}
-
-
-/* =========================================================
-   AÇÕES DA TABELA
-========================================================= */
-
-function bindReportActions() {
-    const container =
-        $("#reportsTable");
-
-    if (!container) {
-        return;
-    }
-
-    container
-        .querySelectorAll(
-            "[data-action]"
-        )
-        .forEach(button => {
-            button.addEventListener(
-                "click",
-                async event => {
-                    event.stopPropagation();
-
-                    const action =
-                        button.dataset.action;
-
-                    const reportId =
-                        button.dataset.reportId;
-
-                    if (!reportId) {
-                        return;
-                    }
-
-                    if (action === "view") {
-                        openReportModal(reportId);
-                    }
-
-                    if (action === "password") {
-                        await openPasswordRegistration(
-                            reportId
-                        );
-                    }
-
-                    if (action === "release") {
-                        await releaseReport(
-                            reportId
-                        );
-                    }
-                }
-            );
-        });
-}
-
-
-/* =========================================================
-   PROCESSOS
-========================================================= */
-
-function renderProcesses() {
-    const container =
-        $("#processTable");
-
-    if (!container) {
-        return;
-    }
-
-    const filtered =
-        getFilteredProcesses();
-
-    if (!filtered.length) {
-        container.innerHTML = `
-            <div class="empty">
-                Nenhum processo encontrado.
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML = `
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>CT-e</th>
-                    <th>NF</th>
-                    <th>Cliente</th>
-                    <th>Volume</th>
-                    <th>ACR</th>
-                    <th>Relatório</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                ${filtered.map(process => `
-                    <tr>
-                        <td>
-                            ${escapeHtml(
-                                formatDate(
-                                    process.data
-                                )
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.cte || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.nf || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.cliente || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.volume || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.acr || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${
-                                process.report
-                                    ? `
-                                        <strong>
-                                            #${escapeHtml(
-                                                reportNumber(
-                                                    process.report
-                                                )
-                                            )}
-                                        </strong>
-                                    `
-                                    : "—"
-                            }
-                        </td>
-
-                        <td>
-                            ${
-                                process.report
-                                    ? statusBadge(
-                                        process.report.status
-                                    )
-                                    : "—"
-                            }
-                        </td>
-                    </tr>
-                `).join("")}
-            </tbody>
-        </table>
-    `;
-}
-
-
-/* =========================================================
-   FILTRO DE PROCESSOS
-========================================================= */
-
-function getFilteredProcesses() {
-    const search =
-        normalizeText(
-            $("#processSearch")?.value
-        );
-
-    const status =
-        $("#processStatus")?.value || "";
-
-    const date =
-        $("#processDate")?.value || "";
-
-    return processes.filter(process => {
-        const report =
-            process.report;
-
-        const searchable = normalizeText(
-            [
-                process.cte,
-                process.nf,
-                process.cliente,
-                process.volume,
-                process.acr,
-                report?.password,
-                report?.report_number,
-                report?.report_date
-            ]
-                .filter(Boolean)
-                .join(" ")
-        );
-
-        const matchesSearch =
-            !search ||
-            searchable.includes(search);
-
-        const matchesStatus =
-            !status ||
-            normalizeStatus(
-                report?.status
-            ) === normalizeStatus(status);
-
-        const matchesDate =
-            !date ||
-            process.data === date;
-
-        return (
-            matchesSearch &&
-            matchesStatus &&
-            matchesDate
-        );
-    });
-}
-
-
-function filterProcesses() {
-    renderProcesses();
-}
-
-
-/* =========================================================
-   ECOLAB
-========================================================= */
-
-function renderEcolab() {
-    const container =
-        $("#ecolabTable");
-
-    if (!container) {
-        return;
-    }
-
-    const ecolabProcesses =
-        processes.filter(process => {
-            const client =
-                normalizeText(
-                    process.cliente
-                );
-
-            return (
-                client.includes("ecolab") ||
-                client.includes("eco lab")
-            );
-        });
-
-    if (!ecolabProcesses.length) {
-        container.innerHTML = `
-            <div class="empty">
-                Nenhum processo ECOLAB encontrado.
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML = `
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>CT-e</th>
-                    <th>NF</th>
-                    <th>Cliente</th>
-                    <th>Volume</th>
-                    <th>ACR</th>
-                    <th>Relatório</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                ${ecolabProcesses.map(process => `
-                    <tr>
-                        <td>
-                            ${escapeHtml(
-                                formatDate(
-                                    process.data
-                                )
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.cte || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.nf || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.cliente || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.volume || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                process.acr || "—"
-                            )}
-                        </td>
-
-                        <td>
-                            ${
-                                process.report
-                                    ? `
-                                        #${escapeHtml(
-                                            reportNumber(
-                                                process.report
-                                            )
-                                        )}
-                                    `
-                                    : "—"
-                            }
-                        </td>
-
-                        <td>
-                            ${
-                                process.report
-                                    ? statusBadge(
-                                        process.report.status
-                                    )
-                                    : "—"
-                            }
-                        </td>
-                    </tr>
-                `).join("")}
-            </tbody>
-        </table>
-    `;
-}
-
-
-/* =========================================================
-   BUSCA RÁPIDA
-========================================================= */
-
-function searchQuick() {
-    const container =
-        $("#quickResults");
-
-    if (!container) {
-        return;
-    }
-
-    const search =
-        normalizeText(
-            $("#quickSearch")?.value
-        );
-
-    if (!search) {
-        container.innerHTML = `
-            <div class="empty">
-                Digite algo para pesquisar.
-            </div>
-        `;
-
-        return;
-    }
-
-    const results = [];
-
-    reports.forEach(report => {
-        const searchable =
-            normalizeText(
-                [
-                    report.report_number,
-                    report.report_date,
-                    report.password,
-                    report.status
-                ]
-                    .filter(Boolean)
-                    .join(" ")
-            );
-
-        if (
-            searchable.includes(search)
-        ) {
-            results.push({
-                type: "report",
-                report
-            });
-        }
-    });
-
-    processes.forEach(process => {
-        const report =
-            process.report;
-
-        const searchable =
-            normalizeText(
-                [
-                    process.cte,
-                    process.nf,
-                    process.cliente,
-                    process.volume,
-                    process.acr,
-                    report?.report_number,
-                    report?.password
-                ]
-                    .filter(Boolean)
-                    .join(" ")
-            );
-
-        if (
-            searchable.includes(search)
-        ) {
-            results.push({
-                type: "process",
-                process
-            });
-        }
-    });
-
-    if (!results.length) {
-        container.innerHTML = `
-            <div class="empty">
-                Nenhum resultado encontrado.
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML =
-        results
-            .slice(0, 20)
-            .map(result => {
-                if (
-                    result.type ===
-                    "report"
-                ) {
-                    const report =
-                        result.report;
-
-                    return `
-                        <button
-                            type="button"
-                            class="quick-item"
-                            data-report-id="${escapeHtml(report.id)}"
-                        >
-                            <strong>
-                                ${escapeHtml(
-                                    reportTitle(report)
-                                )}
-                            </strong>
-
-                            <span>
-                                ${escapeHtml(
-                                    formatDate(
-                                        report.report_date
-                                    )
-                                )}
-                                •
-                                ${escapeHtml(
-                                    report.status
-                                )}
-                            </span>
-                        </button>
-                    `;
-                }
-
-                const process =
-                    result.process;
-
-                return `
-                    <button
-                        type="button"
-                        class="quick-item"
-                        data-report-id="${
-                            escapeHtml(
-                                process.report?.id || ""
-                            )
-                        }"
-                    >
-                        <strong>
-                            CT-e:
-                            ${escapeHtml(
-                                process.cte || "—"
-                            )}
-                        </strong>
-
-                        <span>
-                            NF:
-                            ${escapeHtml(
-                                process.nf || "—"
-                            )}
-                            •
-                            ${escapeHtml(
-                                process.cliente || "—"
-                            )}
-                        </span>
-                    </button>
                 `;
             })
             .join("");
 
-    container
-        .querySelectorAll(
-            "[data-report-id]"
-        )
-        .forEach(item => {
-            item.addEventListener(
-                "click",
-                () => {
-                    const id =
-                        item.dataset.reportId;
-
-                    if (id) {
-                        openReportModal(id);
-                    }
-                }
-            );
-        });
-}
-
-
-/* =========================================================
-   MODAL DE RELATÓRIO
-========================================================= */
-
-function openReportModal(reportId) {
-    const report =
-        reports.find(
-            item =>
-                item.id === reportId
-        );
-
-    if (!report) {
-        showToast(
-            "Relatório não encontrado.",
-            "error"
-        );
-
-        return;
-    }
-
-    currentReport =
-        report;
-
-    const modal =
-        $("#reportModal");
-
-    const title =
-        $("#modalTitle");
-
-    const body =
-        $("#modalBody");
-
-    if (!modal || !body) {
-        return;
-    }
-
-    if (title) {
-        title.textContent =
-            reportTitle(report);
-    }
-
-    const relatedProcesses =
-        processes.filter(
-            process =>
-                process.report_id ===
-                report.id
-        );
-
-    body.innerHTML = `
-        <div class="detail-grid">
-
-            <div class="detail-item">
-                <span>Nº do relatório</span>
-                <strong>
-                    #${escapeHtml(
-                        reportNumber(report)
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Data do relatório</span>
-                <strong>
-                    ${escapeHtml(
-                        formatDate(
-                            report.report_date
-                        )
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Importado em</span>
-                <strong>
-                    ${escapeHtml(
-                        formatDateTime(
-                            report.imported_at
-                        )
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Status</span>
-                <strong>
-                    ${statusBadge(
-                        report.status
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Senha</span>
-                <strong>
-                    ${
-                        report.password
-                            ? escapeHtml(
-                                report.password
-                            )
-                            : "—"
-                    }
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Senha gerada em</span>
-                <strong>
-                    ${escapeHtml(
-                        formatDateTime(
-                            report.password_generated_at
-                        )
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Senha liberada em</span>
-                <strong>
-                    ${escapeHtml(
-                        formatDateTime(
-                            report.password_released_at
-                        )
-                    )}
-                </strong>
-            </div>
-
-            <div class="detail-item">
-                <span>Última atualização</span>
-                <strong>
-                    ${escapeHtml(
-                        formatDateTime(
-                            report.updated_at
-                        )
-                    )}
-                </strong>
-            </div>
-
-        </div>
-
-        ${
-            normalizeStatus(
-                report.status
-            ) === STATUS.WAITING_CONFERENCE
-                ? `
-                    <div class="modal-section">
-                        <h4>
-                            Registrar senha
-                        </h4>
-
-                        <div class="action-row">
-
-                            <label>
-                                Senha
-                                <input
-                                    id="modalPassword"
-                                    type="text"
-                                    placeholder="Digite a senha gerada"
-                                    autocomplete="off"
-                                >
-                            </label>
-
-                            <button
-                                type="button"
-                                class="btn btn-primary"
-                                id="modalPasswordBtn"
-                            >
-                                Registrar senha
-                            </button>
-
-                        </div>
-                    </div>
-                `
-                : ""
-        }
-
-        ${
-            normalizeStatus(
-                report.status
-            ) === STATUS.WAITING_RELEASE &&
-            report.password
-                ? `
-                    <div class="modal-section">
-
-                        <div class="status-preview">
-                            <span>
-                                Senha registrada e aguardando liberação.
-                            </span>
-
-                            <strong>
-                                AGUARDANDO LIBERAÇÃO
-                            </strong>
-                        </div>
-
-                        <button
-                            type="button"
-                            class="btn btn-primary btn-block"
-                            id="modalReleaseBtn"
-                        >
-                            Liberar senha
-                        </button>
-
-                    </div>
-                `
-                : ""
-        }
-
-        <div class="modal-section">
-            <h4>
-                Processos vinculados
-                (${relatedProcesses.length})
-            </h4>
-
-            ${
-                relatedProcesses.length
-                    ? relatedProcesses
-                        .map(process => `
-                            <div class="modal-process">
-                                <div>
-                                    <strong>
-                                        CT-e:
-                                        ${escapeHtml(
-                                            process.cte || "—"
-                                        )}
-                                    </strong>
-
-                                    <div class="muted">
-                                        NF:
-                                        ${escapeHtml(
-                                            process.nf || "—"
-                                        )}
-                                        •
-                                        ${escapeHtml(
-                                            process.cliente || "—"
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    ${escapeHtml(
-                                        process.volume || "—"
-                                    )}
-                                </div>
-                            </div>
-                        `)
-                        .join("")
-                    : `
-                        <div class="empty">
-                            Nenhum processo vinculado.
-                        </div>
-                    `
-            }
-        </div>
-    `;
-
-    modal.classList.remove("hidden");
-
-    const passwordButton =
-        $("#modalPasswordBtn");
-
-    if (passwordButton) {
-        passwordButton.addEventListener(
-            "click",
-            async () => {
-                const password =
-                    $("#modalPassword")?.value.trim();
-
-                await saveReportPassword(
-                    report.id,
-                    password
-                );
-            }
-        );
-    }
-
-    const releaseButton =
-        $("#modalReleaseBtn");
-
-    if (releaseButton) {
-        releaseButton.addEventListener(
-            "click",
-            async () => {
-                await releaseReport(
-                    report.id
-                );
-            }
-        );
-    }
-}
-
-
-function closeReportModal() {
-    const modal =
-        $("#reportModal");
-
-    if (modal) {
-        modal.classList.add("hidden");
-    }
-
-    currentReport = null;
-}
-
-
-/* =========================================================
-   REGISTRAR SENHA
-========================================================= */
-
-async function openPasswordRegistration(
-    reportId
-) {
-    const report =
-        reports.find(
-            item =>
-                item.id === reportId
-        );
-
-    if (!report) {
-        return;
-    }
-
-    openReportModal(reportId);
-
-    setTimeout(() => {
-        const input =
-            $("#modalPassword");
-
-        if (input) {
-            input.focus();
-        }
-    }, 100);
-}
-
-
-async function saveReportPassword(
-    reportId,
-    password
-) {
-    if (!supabaseClient) {
-        showToast(
-            "Supabase não está conectado.",
-            "error"
-        );
-
-        return;
-    }
-
-    const cleanPassword =
-        String(password ?? "").trim();
-
-    if (!cleanPassword) {
-        showToast(
-            "Digite a senha antes de continuar.",
-            "error"
-        );
-
-        return;
-    }
-
-    const report =
-        reports.find(
-            item =>
-                item.id === reportId
-        );
-
-    if (!report) {
-        showToast(
-            "Relatório não encontrado.",
-            "error"
-        );
-
-        return;
-    }
-
-    const generatedAt =
-        nowISO();
-
-    const updatedAt =
-        nowISO();
-
-    try {
-
-        /*
-         * Atualiza somente os campos necessários.
-         *
-         * NÃO enviamos report_number.
-         * Ele é gerado pelo IDENTITY do PostgreSQL.
-         */
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("relatorios")
-                .update({
-                    password:
-                        cleanPassword,
-
-                    password_generated_at:
-                        generatedAt,
-
-                    status:
-                        STATUS.WAITING_RELEASE,
-
-                    updated_at:
-                        updatedAt
-                })
-                .eq(
-                    "id",
-                    reportId
-                );
-
-        if (error) {
-            throw error;
-        }
-
-        /*
-         * Recarrega os relatórios diretamente
-         * do banco para pegar o estado atualizado.
-         */
-        await loadReports();
-
-        /*
-         * Recria os vínculos dos processos
-         * com os relatórios atualizados.
-         */
-        await refreshProcessReportReferences();
-
-        /*
-         * Atualiza a interface.
-         */
-        renderReports();
-        renderProcesses();
-        renderEcolab();
-        updateDashboard();
-
-        /*
-         * Reabre o modal já com os dados novos.
-         */
-        openReportModal(reportId);
-
-        showToast(
-            "Senha registrada. O relatório agora está aguardando liberação.",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao registrar senha:",
-            error
-        );
-
-        console.error(
-            "Detalhes do erro:",
-            {
-                message: error?.message,
-                details: error?.details,
-                hint: error?.hint,
-                code: error?.code
-            }
-        );
-
-        showToast(
-            error?.message ||
-            error?.details ||
-            "Não foi possível registrar a senha.",
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   LIBERAR RELATÓRIO
-========================================================= */
-
-async function releaseReport(
-    reportId
-) {
-    if (!supabaseClient) {
-        showToast(
-            "Supabase não está conectado.",
-            "error"
-        );
-
-        return;
-    }
-
-    const report =
-        reports.find(
-            item =>
-                item.id === reportId
-        );
-
-    if (!report) {
-        showToast(
-            "Relatório não encontrado.",
-            "error"
-        );
-
-        return;
-    }
-
-    if (!report.password) {
-        showToast(
-            "A senha precisa ser registrada antes da liberação.",
-            "error"
-        );
-
-        return;
-    }
-
-    const confirmed =
-        window.confirm(
-            `Liberar a senha do ${reportTitle(report)}?`
-        );
-
-    if (!confirmed) {
-        return;
-    }
-
-    const releasedAt =
-        nowISO();
-
-    const updatedAt =
-        nowISO();
-
-    try {
-
-        /*
-         * Atualiza somente os campos necessários.
-         */
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("relatorios")
-                .update({
-                    status:
-                        STATUS.RELEASED,
-
-                    password_released_at:
-                        releasedAt,
-
-                    updated_at:
-                        updatedAt
-                })
-                .eq(
-                    "id",
-                    reportId
-                );
-
-        if (error) {
-            throw error;
-        }
-
-        /*
-         * Recarrega os dados do banco.
-         */
-        await loadReports();
-
-        /*
-         * Atualiza os vínculos dos processos.
-         */
-        await refreshProcessReportReferences();
-
-        /*
-         * Atualiza a interface.
-         */
-        renderReports();
-        renderProcesses();
-        renderEcolab();
-        updateDashboard();
-
-        /*
-         * Reabre o modal com os dados atualizados.
-         */
-        openReportModal(reportId);
-
-        showToast(
-            "Senha liberada com sucesso.",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao liberar relatório:",
-            error
-        );
-
-        console.error(
-            "Detalhes do erro:",
-            {
-                message: error?.message,
-                details: error?.details,
-                hint: error?.hint,
-                code: error?.code
-            }
-        );
-
-        showToast(
-            error?.message ||
-            error?.details ||
-            "Não foi possível liberar o relatório.",
-            "error"
-        );
-    }
-}
-
-/* =========================================================
-   ATUALIZAR RELAÇÃO PROCESSOS → RELATÓRIOS
-========================================================= */
-
-async function refreshProcessReportReferences() {
-    processes =
-        processes.map(process => {
-            const report =
-                reports.find(
-                    item =>
-                        item.id ===
-                        process.report_id
-                );
-
-            return {
-                ...process,
-                report:
-                    report || null
-            };
-        });
-}
-
-
-/* =========================================================
-   IMPORTAÇÃO WORD
-========================================================= */
-
-async function handleWordFile(
-    file
-) {
-    if (!file) {
-        return;
-    }
-
-    const extension =
-        file.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-    if (extension !== "docx") {
-        showToast(
-            "Selecione um arquivo Word .docx.",
-            "error"
-        );
-
-        return;
-    }
-
-    selectedWordFile =
-        file;
-
-    const selectedFile =
-        $("#selectedFile");
-
-    if (selectedFile) {
-        selectedFile.textContent =
-            file.name;
-        selectedFile.classList.remove(
-            "hidden"
-        );
-    }
-
-    await previewWordFile(file);
-}
-
-
-async function previewWordFile(file) {
-    if (
-        typeof mammoth ===
-        "undefined"
-    ) {
-        showToast(
-            "A biblioteca Mammoth não foi carregada.",
-            "error"
-        );
-
-        return;
-    }
-
-    try {
-        const arrayBuffer =
-            await file.arrayBuffer();
-
-        const result =
-            await mammoth.extractRawText({
-                arrayBuffer
-            });
-
-        importedWordData =
-            result.value || "";
-
-        const preview =
-            $("#previewBox");
-
-        if (preview) {
-            preview.innerHTML = `
-                <pre>${escapeHtml(
-                    truncate(
-                        importedWordData,
-                        12000
+        $$(".table-row-clickable", tbody).forEach(row => {
+            row.addEventListener("click", event => {
+                if (
+                    event.target.closest(
+                        ".table-view-btn"
                     )
-                )}</pre>
+                ) {
+                    return;
+                }
+
+                openReportModal(
+                    row.dataset.reportId
+                );
+            });
+        });
+
+        $$(".table-view-btn", tbody).forEach(button => {
+            button.addEventListener("click", event => {
+                event.stopPropagation();
+
+                openReportModal(
+                    button.dataset.reportId
+                );
+            });
+        });
+    }
+
+    function createTableBody(table) {
+        const tbody = document.createElement("tbody");
+
+        table.appendChild(tbody);
+
+        return tbody;
+    }
+
+    // ============================================================
+    // TABELA DE PROCESSOS
+    // ============================================================
+
+    function renderProcessesTable(list = processes) {
+        const table = $("#processTable");
+
+        if (!table) return;
+
+        const tbody =
+            table.querySelector("tbody") ||
+            createTableBody(table);
+
+        if (!list.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="table-empty">
+                            Nenhum processo encontrado.
+                        </div>
+                    </td>
+                </tr>
             `;
+
+            return;
         }
 
-    } catch (error) {
-        console.error(
-            "Erro ao ler Word:",
-            error
+        tbody.innerHTML = list
+            .map(process => {
+                const report = reports.find(
+                    item => item.id === process.report_id
+                );
+
+                return `
+                    <tr>
+
+                        <td>
+                            <span class="date-cell">
+                                ${formatDate(process.data)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong class="table-code">
+                                ${safeValue(process.cte)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${safeValue(process.nf)}
+                        </td>
+
+                        <td>
+                            <div class="client-cell">
+                                ${truncate(process.cliente, 45)}
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="volume-badge">
+                                ${safeValue(process.volume)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="table-code">
+                                ${safeValue(process.acr)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="report-reference">
+                                ${
+                                    report
+                                        ? safeValue(
+                                              report.report_number ||
+                                              formatDate(
+                                                  report.report_date
+                                              )
+                                          )
+                                        : "—"
+                                }
+                            </span>
+                        </td>
+
+                    </tr>
+                `;
+            })
+            .join("");
+    }
+
+    // ============================================================
+    // ECOLAB
+    // ============================================================
+
+    function renderEcolabTable() {
+        const table = $("#ecolabTable");
+
+        if (!table) return;
+
+        const tbody =
+            table.querySelector("tbody") ||
+            createTableBody(table);
+
+        if (!processes.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="table-empty">
+                            Nenhum processo disponível.
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tbody.innerHTML = processes
+            .map(process => {
+                const report = reports.find(
+                    item => item.id === process.report_id
+                );
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${formatDate(process.data)}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${safeValue(process.cte)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${safeValue(process.nf)}
+                        </td>
+
+                        <td>
+                            <div class="client-cell">
+                                ${truncate(process.cliente, 45)}
+                            </div>
+                        </td>
+
+                        <td>
+                            ${safeValue(process.volume)}
+                        </td>
+
+                        <td>
+                            ${safeValue(process.acr)}
+                        </td>
+
+                        <td>
+                            ${
+                                report
+                                    ? statusBadge(report.status)
+                                    : `<span class="muted-value">—</span>`
+                            }
+                        </td>
+
+                    </tr>
+                `;
+            })
+            .join("");
+    }
+
+    // ============================================================
+    // BUSCA
+    // ============================================================
+
+    function setupSearches() {
+        const processSearch = $("#processSearch");
+        const processStatusFilter = $("#processStatusFilter");
+        const processDateFilter = $("#processDateFilter");
+
+        if (processSearch) {
+            processSearch.oninput = applyProcessFilters;
+        }
+
+        if (processStatusFilter) {
+            processStatusFilter.onchange =
+                applyProcessFilters;
+        }
+
+        if (processDateFilter) {
+            processDateFilter.onchange =
+                applyProcessFilters;
+        }
+
+        const quickSearch = $("#quickSearch");
+
+        if (quickSearch) {
+            quickSearch.oninput = handleQuickSearch;
+        }
+    }
+
+    function applyProcessFilters() {
+        const search = normalizeText(
+            $("#processSearch")?.value
         );
 
-        showToast(
-            "Não foi possível ler o arquivo Word.",
-            "error"
+        const status = normalizeText(
+            $("#processStatusFilter")?.value
         );
+
+        const date = $("#processDateFilter")?.value;
+
+        let filtered = [...processes];
+
+        if (search) {
+            filtered = filtered.filter(process => {
+                const values = [
+                    process.cte,
+                    process.nf,
+                    process.cliente,
+                    process.volume,
+                    process.acr
+                ];
+
+                return values.some(value =>
+                    normalizeText(value).includes(search)
+                );
+            });
+        }
+
+        if (date) {
+            filtered = filtered.filter(process => {
+                if (!process.data) return false;
+
+                return String(process.data).substring(0, 10) === date;
+            });
+        }
+
+        if (status) {
+            filtered = filtered.filter(process => {
+                const report = reports.find(
+                    item => item.id === process.report_id
+                );
+
+                return (
+                    normalizeText(report?.status) ===
+                    status
+                );
+            });
+        }
+
+        renderProcessesTable(filtered);
     }
-}
 
+    function handleQuickSearch() {
+        const input = $("#quickSearch");
 
-/* =========================================================
-   PARSER DO WORD
-========================================================= */
+        const results = $("#quickSearchResults");
 
-function parseWordProcesses(text) {
-    if (!text) {
-        return [];
-    }
+        if (!input || !results) return;
 
-    const lines =
-        text
-            .split(/\r?\n/)
-            .map(line =>
-                line.trim()
-            )
-            .filter(Boolean);
+        const search = normalizeText(input.value);
 
-    const result = [];
+        if (!search) {
+            results.innerHTML = "";
+            results.classList.remove("has-results");
+            return;
+        }
 
-    for (const line of lines) {
-        const normalized =
-            normalizeText(line);
+        const matchedProcesses = processes
+            .filter(process => {
+                return [
+                    process.cte,
+                    process.nf,
+                    process.cliente,
+                    process.acr
+                ].some(value =>
+                    normalizeText(value).includes(search)
+                );
+            })
+            .slice(0, 8);
+
+        const matchedReports = reports
+            .filter(report => {
+                return [
+                    report.report_number,
+                    report.status,
+                    report.password
+                ].some(value =>
+                    normalizeText(value).includes(search)
+                );
+            })
+            .slice(0, 5);
 
         if (
-            normalized.includes("cte") ||
-            normalized.includes("ct-e")
+            !matchedProcesses.length &&
+            !matchedReports.length
         ) {
-            continue;
+            results.innerHTML = `
+                <div class="quick-empty">
+                    Nenhum resultado encontrado.
+                </div>
+            `;
+
+            results.classList.add("has-results");
+
+            return;
         }
 
-        const parts =
-            line
-                .split(/\t+/)
-                .map(item =>
-                    item.trim()
+        results.innerHTML = `
+            ${matchedReports
+                .map(
+                    report => `
+                        <button
+                            type="button"
+                            class="quick-result-item"
+                            data-report-id="${escapeHtml(
+                                report.id
+                            )}"
+                        >
+                            <span class="quick-result-icon">▤</span>
+
+                            <span>
+                                <strong>
+                                    ${
+                                        safeValue(
+                                            report.report_number ||
+                                            "Relatório"
+                                        )
+                                    }
+                                </strong>
+
+                                <small>
+                                    ${formatDate(
+                                        report.report_date
+                                    )}
+                                </small>
+                            </span>
+                        </button>
+                    `
                 )
-                .filter(Boolean);
+                .join("")}
 
-        if (parts.length < 2) {
-            continue;
-        }
+            ${matchedProcesses
+                .map(
+                    process => `
+                        <button
+                            type="button"
+                            class="quick-result-item process-result"
+                        >
+                            <span class="quick-result-icon">#</span>
 
-        const process = {
-            data: null,
-            cte: "",
-            nf: "",
-            cliente: "",
-            volume: "",
-            acr: ""
-        };
+                            <span>
+                                <strong>
+                                    ${safeValue(process.cte)}
+                                </strong>
 
-        if (parts.length >= 6) {
-            process.data =
-                normalizeDateValue(
-                    parts[0]
+                                <small>
+                                    ${truncate(
+                                        process.cliente,
+                                        50
+                                    )}
+                                </small>
+                            </span>
+                        </button>
+                    `
+                )
+                .join("")}
+        `;
+
+        results.classList.add("has-results");
+
+        $$(".quick-result-item", results).forEach(item => {
+            const reportId =
+                item.dataset.reportId;
+
+            if (reportId) {
+                item.addEventListener(
+                    "click",
+                    () => {
+                        openReportModal(reportId);
+                    }
                 );
-
-            process.cte =
-                parts[1] || "";
-
-            process.nf =
-                parts[2] || "";
-
-            process.cliente =
-                parts[3] || "";
-
-            process.volume =
-                parts[4] || "";
-
-            process.acr =
-                parts[5] || "";
-
-            result.push(process);
-        }
+            }
+        });
     }
 
-    return result;
-}
+    // ============================================================
+    // MODAL
+    // ============================================================
 
-
-function normalizeDateValue(value) {
-    if (!value) {
-        return null;
-    }
-
-    const text =
-        String(value).trim();
-
-    let match =
-        text.match(
-            /^(\d{2})\/(\d{2})\/(\d{4})$/
+    function openReportModal(reportId) {
+        const report = reports.find(
+            item => item.id === reportId
         );
 
-    if (match) {
-        return `${match[3]}-${match[2]}-${match[1]}`;
-    }
-
-    match =
-        text.match(
-            /^(\d{4})-(\d{2})-(\d{2})$/
-        );
-
-    if (match) {
-        return text;
-    }
-
-    return null;
-}
-
-
-/* =========================================================
-   IMPORTAR RELATÓRIO
-========================================================= */
-
-async function importReport() {
-    if (!supabaseClient) {
-        return;
-    }
-
-    if (!selectedWordFile) {
-        showToast(
-            "Selecione um arquivo Word antes de importar.",
-            "error"
-        );
-
-        return;
-    }
-
-    const dateInput =
-        $("#importDate");
-
-    const date =
-        dateInput?.value ||
-        todayISO();
-
-    const importButton =
-        $("#importBtn");
-
-    if (importButton) {
-        importButton.disabled = true;
-        importButton.dataset.originalText =
-            importButton.textContent;
-        importButton.textContent =
-            "Importando...";
-    }
-
-    try {
-        const now =
-            nowISO();
-
-        /*
-         * IMPORTANTE:
-         * Não enviamos report_number.
-         *
-         * O Supabase gera automaticamente
-         * através da coluna IDENTITY.
-         */
-
-        const {
-            data: report,
-            error: reportError
-        } =
-            await supabaseClient
-                .from("relatorios")
-                .insert({
-                    report_date:
-                        date,
-
-                    imported_at:
-                        now,
-
-                    password:
-                        null,
-
-                    status:
-                        STATUS.WAITING_CONFERENCE,
-
-                    created_by:
-                        currentUser?.id ||
-                        null,
-
-                    created_at:
-                        now,
-
-                    updated_at:
-                        now,
-
-                    password_generated_at:
-                        null,
-
-                    password_released_at:
-                        null
-                })
-                .select(`
-                    id,
-                    report_number,
-                    report_date,
-                    imported_at,
-                    password,
-                    status,
-                    created_by,
-                    created_at,
-                    updated_at,
-                    password_generated_at,
-                    password_released_at
-                `)
-                .single();
-
-        if (reportError) {
-            throw reportError;
-        }
-
-        const parsedProcesses =
-            parseWordProcesses(
-                importedWordData || ""
+        if (!report) {
+            showToast(
+                "Relatório não encontrado.",
+                "error"
             );
 
-        if (parsedProcesses.length) {
-            const rows =
-                parsedProcesses.map(
-                    process => ({
-                        report_id:
-                            report.id,
-
-                        data:
-                            process.data ||
-                            date,
-
-                        cte:
-                            process.cte ||
-                            "",
-
-                        nf:
-                            process.nf ||
-                            "",
-
-                        cliente:
-                            process.cliente ||
-                            null,
-
-                        volume:
-                            process.volume ||
-                            null,
-
-                        acr:
-                            process.acr ||
-                            null,
-
-                        created_at:
-                            now
-                    })
-                );
-
-            const {
-                error: processError
-            } =
-                await supabaseClient
-                    .from("processos")
-                    .insert(rows);
-
-            if (processError) {
-                console.error(
-                    "Erro ao inserir processos:",
-                    processError
-                );
-
-                /*
-                 * O relatório já foi criado.
-                 * Não escondemos esse erro.
-                 */
-                throw processError;
-            }
+            return;
         }
 
-        reports.unshift({
-            ...report,
-            status:
-                normalizeStatus(
-                    report.status
-                )
+        currentReport = report;
+
+        const modal = $("#reportModal");
+
+        const title = $("#modalReportTitle");
+
+        const content = $("#modalReportContent");
+
+        if (!modal || !content) return;
+
+        if (title) {
+            title.textContent =
+                report.report_number ||
+                `Relatório ${formatDate(
+                    report.report_date
+                )}`;
+        }
+
+        const reportProcesses = processes.filter(
+            process => process.report_id === report.id
+        );
+
+        content.innerHTML = `
+            <div class="report-detail-grid">
+
+                <div class="detail-item">
+                    <span>Relatório</span>
+                    <strong>
+                        ${safeValue(
+                            report.report_number
+                        )}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Data do relatório</span>
+                    <strong>
+                        ${formatDate(
+                            report.report_date
+                        )}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Importado em</span>
+                    <strong>
+                        ${formatDateTime(
+                            report.imported_at
+                        )}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Status</span>
+                    <strong>
+                        ${statusBadge(report.status)}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Senha</span>
+                    <strong>
+                        ${
+                            report.password
+                                ? escapeHtml(
+                                      report.password
+                                  )
+                                : "Ainda não gerada"
+                        }
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Senha gerada</span>
+                    <strong>
+                        ${formatDateTime(
+                            report.password_generated_at
+                        )}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Liberação</span>
+                    <strong>
+                        ${formatDateTime(
+                            report.password_released_at
+                        )}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Total de processos</span>
+                    <strong>
+                        ${formatNumber(
+                            reportProcesses.length
+                        )}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="modal-section">
+
+                <div class="modal-section-header">
+                    <div>
+                        <span class="panel-kicker">
+                            Processos
+                        </span>
+
+                        <h3>
+                            Processos deste relatório
+                        </h3>
+                    </div>
+
+                    <span class="number-badge">
+                        ${formatNumber(
+                            reportProcesses.length
+                        )}
+                    </span>
+                </div>
+
+                ${
+                    reportProcesses.length
+                        ? `
+                            <div class="modal-table-wrapper">
+
+                                <table class="data-table modal-data-table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>CT-e</th>
+                                            <th>NF</th>
+                                            <th>Cliente</th>
+                                            <th>Volume</th>
+                                            <th>ACR</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        ${reportProcesses
+                                            .map(
+                                                process => `
+                                                    <tr>
+                                                        <td>
+                                                            ${formatDate(
+                                                                process.data
+                                                            )}
+                                                        </td>
+
+                                                        <td>
+                                                            <strong>
+                                                                ${safeValue(
+                                                                    process.cte
+                                                                )}
+                                                            </strong>
+                                                        </td>
+
+                                                        <td>
+                                                            ${safeValue(
+                                                                process.nf
+                                                            )}
+                                                        </td>
+
+                                                        <td>
+                                                            ${truncate(
+                                                                process.cliente,
+                                                                45
+                                                            )}
+                                                        </td>
+
+                                                        <td>
+                                                            ${safeValue(
+                                                                process.volume
+                                                            )}
+                                                        </td>
+
+                                                        <td>
+                                                            ${safeValue(
+                                                                process.acr
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                `
+                                            )
+                                            .join("")}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        `
+                        : `
+                            <div class="empty-state compact">
+                                Nenhum processo vinculado a este relatório.
+                            </div>
+                        `
+                }
+
+            </div>
+        `;
+
+        modal.hidden = false;
+
+        document.body.classList.add(
+            "modal-open"
+        );
+
+        requestAnimationFrame(() => {
+            modal.classList.add("show");
+        });
+    }
+
+    function closeReportModal() {
+        const modal = $("#reportModal");
+
+        if (!modal) return;
+
+        modal.classList.remove("show");
+
+        setTimeout(() => {
+            modal.hidden = true;
+        }, 180);
+
+        document.body.classList.remove(
+            "modal-open"
+        );
+
+        currentReport = null;
+    }
+
+    window.openReportModal = openReportModal;
+    window.closeReportModal = closeReportModal;
+
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+
+    function navigateTo(viewName) {
+        const sections = $$(".view-section");
+
+        sections.forEach(section => {
+            section.classList.toggle(
+                "active",
+                section.id === `view-${viewName}`
+            );
         });
 
-        await loadProcesses();
+        $$(".nav-item").forEach(item => {
+            item.classList.toggle(
+                "active",
+                item.dataset.view === viewName
+            );
+        });
 
-        renderReports();
-        renderProcesses();
-        renderEcolab();
-        updateDashboard();
+        const titles = {
+            dashboard: "Dashboard",
+            processos: "Processos",
+            relatorios: "Relatórios",
+            ecolab: "ECOLAB",
+            importar: "Importar relatório"
+        };
 
-        resetImportForm();
+        const pageTitle = $("#pageTitle");
 
-        showToast(
-            `Relatório #${report.report_number} importado com sucesso.`,
-            "success"
-        );
-
-        navigateTo("relatorios");
-
-    } catch (error) {
-        console.error(
-            "Erro ao importar relatório:",
-            error
-        );
-
-        const message =
-            $("#importMessage");
-
-        setMessage(
-            message,
-            error?.message ||
-            "Não foi possível importar o relatório.",
-            "error"
-        );
-
-        showToast(
-            error?.message ||
-            "Erro ao importar relatório.",
-            "error"
-        );
-    } finally {
-        if (importButton) {
-            importButton.disabled = false;
-
-            importButton.textContent =
-                importButton.dataset.originalText ||
-                "Importar relatório";
+        if (pageTitle) {
+            pageTitle.textContent =
+                titles[viewName] || "ALFA";
         }
-    }
-}
 
+        const sidebar = $("#sidebar");
 
-/* =========================================================
-   RESET IMPORTAÇÃO
-========================================================= */
-
-function resetImportForm() {
-    selectedWordFile = null;
-    importedWordData = null;
-
-    const fileInput =
-        $("#wordFile");
-
-    const selectedFile =
-        $("#selectedFile");
-
-    const preview =
-        $("#previewBox");
-
-    const password =
-        $("#importPassword");
-
-    const message =
-        $("#importMessage");
-
-    if (fileInput) {
-        fileInput.value = "";
-    }
-
-    if (selectedFile) {
-        selectedFile.textContent = "";
-        selectedFile.classList.add(
-            "hidden"
-        );
-    }
-
-    if (preview) {
-        preview.innerHTML = "";
-    }
-
-    if (password) {
-        password.value = "";
-    }
-
-    if (message) {
-        message.textContent = "";
-    }
-
-    const date =
-        $("#importDate");
-
-    if (date) {
-        date.value =
-            todayISO();
-    }
-}
-
-
-/* =========================================================
-   NAVEGAÇÃO
-========================================================= */
-
-const viewTitles = {
-    dashboard: "Dashboard",
-    processos: "Processos",
-    relatorios: "Relatórios",
-    ecolab: "ECOLAB",
-    importar: "Importar relatório"
-};
-
-
-function navigateTo(view) {
-    const views =
-        $$(".view");
-
-    views.forEach(element => {
-        element.classList.add(
-            "hidden"
-        );
-    });
-
-    const target =
-        $(`#view-${view}`);
-
-    if (target) {
-        target.classList.remove(
-            "hidden"
-        );
-    }
-
-    $$(".nav-item").forEach(item => {
-        item.classList.toggle(
-            "active",
-            item.dataset.view === view
-        );
-    });
-
-    const title =
-        $("#pageTitle");
-
-    if (title) {
-        title.textContent =
-            viewTitles[view] ||
-            "Alfa Transportes";
-    }
-
-    closeSidebar();
-
-    if (view === "dashboard") {
-        updateDashboard();
-    }
-
-    if (view === "processos") {
-        renderProcesses();
-    }
-
-    if (view === "relatorios") {
-        renderReports();
-    }
-
-    if (view === "ecolab") {
-        renderEcolab();
-    }
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-function openSidebar() {
-    document.body.classList.add(
-        "sidebar-open"
-    );
-}
-
-
-function closeSidebar() {
-    document.body.classList.remove(
-        "sidebar-open"
-    );
-}
-
-
-function toggleSidebar() {
-    document.body.classList.toggle(
-        "sidebar-open"
-    );
-}
-
-
-/* =========================================================
-   REFRESH
-========================================================= */
-
-async function refreshData() {
-    const button =
-        $("#refreshBtn");
-
-    if (button) {
-        button.disabled = true;
-    }
-
-    try {
-        await loadAllData();
-
-        showToast(
-            "Dados atualizados.",
-            "success"
-        );
-    } catch (error) {
-        console.error(error);
-
-        showToast(
-            "Não foi possível atualizar os dados.",
-            "error"
-        );
-    } finally {
-        if (button) {
-            button.disabled = false;
+        if (sidebar) {
+            sidebar.classList.remove("mobile-open");
         }
-    }
-}
 
-
-/* =========================================================
-   EVENTOS
-========================================================= */
-
-function bindEvents() {
-    const loginForm =
-        $("#loginForm");
-
-    if (loginForm) {
-        loginForm.addEventListener(
-            "submit",
-            handleLogin
-        );
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 
-    const forgotPassword =
-        $("#forgotPassword");
+    window.navigateTo = navigateTo;
 
-    if (forgotPassword) {
-        forgotPassword.addEventListener(
-            "click",
-            handleForgotPassword
-        );
-    }
+    function setupNavigation() {
+        $$(".nav-item").forEach(item => {
+            item.addEventListener("click", event => {
+                event.preventDefault();
 
-    const logout =
-        $("#logoutBtn");
-
-    if (logout) {
-        logout.addEventListener(
-            "click",
-            handleLogout
-        );
-    }
-
-    $$(".nav-item").forEach(item => {
-        item.addEventListener(
-            "click",
-            () => {
-                const view =
-                    item.dataset.view;
+                const view = item.dataset.view;
 
                 if (view) {
                     navigateTo(view);
                 }
-            }
-        );
-    });
+            });
+        });
 
-    const openSidebarButton =
-        $("#openSidebar");
+        const toggle = $("#sidebarToggle");
 
-    if (openSidebarButton) {
-        openSidebarButton.addEventListener(
-            "click",
-            toggleSidebar
-        );
-    }
+        const sidebar = $("#sidebar");
 
-    const closeSidebarButton =
-        $("#closeSidebar");
-
-    if (closeSidebarButton) {
-        closeSidebarButton.addEventListener(
-            "click",
-            closeSidebar
-        );
-    }
-
-    const refresh =
-        $("#refreshBtn");
-
-    if (refresh) {
-        refresh.addEventListener(
-            "click",
-            refreshData
-        );
-    }
-
-    const topImport =
-        $("#topImportBtn");
-
-    if (topImport) {
-        topImport.addEventListener(
-            "click",
-            () => navigateTo("importar")
-        );
-    }
-
-    const navImport =
-        $("#navImportar");
-
-    if (navImport) {
-        navImport.addEventListener(
-            "click",
-            () => navigateTo("importar")
-        );
-    }
-
-    const quickSearch =
-        $("#quickSearch");
-
-    if (quickSearch) {
-        quickSearch.addEventListener(
-            "input",
-            searchQuick
-        );
-    }
-
-    const processSearch =
-        $("#processSearch");
-
-    if (processSearch) {
-        processSearch.addEventListener(
-            "input",
-            filterProcesses
-        );
-    }
-
-    const processStatus =
-        $("#processStatus");
-
-    if (processStatus) {
-        processStatus.addEventListener(
-            "change",
-            filterProcesses
-        );
-    }
-
-    const processDate =
-        $("#processDate");
-
-    if (processDate) {
-        processDate.addEventListener(
-            "change",
-            filterProcesses
-        );
-    }
-
-    const wordFile =
-        $("#wordFile");
-
-    if (wordFile) {
-        wordFile.addEventListener(
-            "change",
-            event => {
-                const file =
-                    event.target.files?.[0];
-
-                if (file) {
-                    handleWordFile(file);
-                }
-            }
-        );
-    }
-
-    const dropzone =
-        $("#dropzone");
-
-    if (dropzone) {
-        dropzone.addEventListener(
-            "dragover",
-            event => {
-                event.preventDefault();
-                dropzone.classList.add(
-                    "dragging"
-                );
-            }
-        );
-
-        dropzone.addEventListener(
-            "dragleave",
-            () => {
-                dropzone.classList.remove(
-                    "dragging"
-                );
-            }
-        );
-
-        dropzone.addEventListener(
-            "drop",
-            event => {
-                event.preventDefault();
-
-                dropzone.classList.remove(
-                    "dragging"
-                );
-
-                const file =
-                    event.dataTransfer
-                        ?.files?.[0];
-
-                if (file) {
-                    handleWordFile(file);
-                }
-            }
-        );
-    }
-
-    const importButton =
-        $("#importBtn");
-
-    if (importButton) {
-        importButton.addEventListener(
-            "click",
-            importReport
-        );
-    }
-
-    const modal =
-        $("#reportModal");
-
-    if (modal) {
-        modal
-            .querySelectorAll(
-                "[data-close-modal]"
-            )
-            .forEach(button => {
-                button.addEventListener(
-                    "click",
-                    closeReportModal
+        if (toggle && sidebar) {
+            toggle.addEventListener("click", () => {
+                sidebar.classList.toggle(
+                    "mobile-open"
                 );
             });
+        }
     }
 
-    document.addEventListener(
-        "keydown",
-        event => {
-            if (
-                event.key === "Escape"
-            ) {
-                closeReportModal();
-                closeSidebar();
-            }
+    // ============================================================
+    // EVENTOS
+    // ============================================================
+
+    function setupEvents() {
+        const modal = $("#reportModal");
+
+        const closeButton = $("#modalClose");
+
+        if (closeButton) {
+            closeButton.addEventListener(
+                "click",
+                closeReportModal
+            );
         }
-    );
 
-    document.addEventListener(
-        "click",
-        event => {
-            const modal =
-                $("#reportModal");
-
-            if (
-                modal &&
-                !modal.classList.contains(
-                    "hidden"
-                ) &&
-                event.target === modal
-            ) {
-                closeReportModal();
-            }
+        if (modal) {
+            modal.addEventListener(
+                "click",
+                event => {
+                    if (
+                        event.target === modal
+                    ) {
+                        closeReportModal();
+                    }
+                }
+            );
         }
-    );
-}
 
-
-/* =========================================================
-   DATA DO IMPORT
-========================================================= */
-
-function initializeImportDate() {
-    const date =
-        $("#importDate");
-
-    if (
-        date &&
-        !date.value
-    ) {
-        date.value =
-            todayISO();
-    }
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-async function startApplication() {
-    try {
-        bindEvents();
-
-        initializeImportDate();
-
-        initializeSupabase();
-
-        await initializeAuth();
-
-    } catch (error) {
-        console.error(
-            "Erro ao iniciar aplicação:",
-            error
+        document.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Escape"
+                ) {
+                    closeReportModal();
+                }
+            }
         );
 
-        showToast(
-            "Erro ao iniciar o sistema.",
-            "error"
-        );
+        const refreshBtn = $("#refreshBtn");
+
+        if (refreshBtn) {
+            refreshBtn.addEventListener(
+                "click",
+                async () => {
+                    refreshBtn.classList.add(
+                        "loading"
+                    );
+
+                    await loadAllData();
+
+                    setTimeout(() => {
+                        refreshBtn.classList.remove(
+                            "loading"
+                        );
+                    }, 300);
+                }
+            );
+        }
+
+        setupNavigation();
     }
-}
 
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    startApplication
-);
+   document.addEventListener("DOMContentLoaded", () => {
+    setupEvents();
+
+    /*
+     * IMPORTANTE:
+     * No painel ADMIN, os dados só devem ser carregados
+     * depois que o admin estiver autenticado.
+     *
+     * O admin.js chama window.loadAllData()
+     * depois do login.
+     */
+    const isAdminPage =
+        document.body?.dataset?.page === "admin";
+
+    if (!isAdminPage) {
+        loadAllData();
+    }
+});
+})();
