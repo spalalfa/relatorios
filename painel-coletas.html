@@ -2386,6 +2386,7 @@ function renderAdminCollections() {
                     <th>Registro</th>
                     <th>Status</th>
                     <th>Ação</th>
+                    
                 </tr>
 
             </thead>
@@ -2472,7 +2473,13 @@ function renderAdminCollections() {
                     </button>
 
                 </td>
-
+                    <td>
+                        <button
+                            class="btn btn-small whatsapp-btn"
+                            onclick="enviarColetaWhatsApp('${item.id}')">
+                                WhatsApp
+                        </button>
+                    </td>
             </tr>
         `;
 
@@ -3593,6 +3600,79 @@ async function loadAdminData() {
     await loadScheduleTable(
         $("scheduleDate").value || today()
     );
+}
+
+// ============================================================
+// WHATSAPP DA COLETA
+// ============================================================
+
+function normalizarTelefoneWhatsApp(telefone) {
+    let numero = String(telefone || "").replace(/\D/g, "");
+
+    if (!numero) return "";
+
+    // Já possui código do Brasil
+    if (numero.startsWith("55")) {
+        return numero;
+    }
+
+    // Telefone brasileiro com DDD
+    if (numero.length === 10 || numero.length === 11) {
+        return "55" + numero;
+    }
+
+    return numero;
+}
+
+
+function enviarColetaWhatsApp(coletaId) {
+    const coleta = adminCollections.find(c => c.id === coletaId);
+
+    if (!coleta) {
+        showToast("Coleta não encontrada.", "error");
+        return;
+    }
+
+    // Procura o motorista da região naquela data
+    const escala = schedules.find(s =>
+        s.regiao_id === coleta.regiao_id &&
+        s.data === coleta.data_coleta
+    );
+
+    if (!escala) {
+        showToast(
+            "Não existe motorista cadastrado para esta região nesta data.",
+            "error"
+        );
+        return;
+    }
+
+    const motorista = drivers.find(d => d.id === escala.motorista_id);
+
+    if (!motorista) {
+        showToast("Motorista não encontrado.", "error");
+        return;
+    }
+
+    const telefone = normalizarTelefoneWhatsApp(motorista.telefone);
+
+    if (!telefone) {
+        showToast(
+            `O motorista ${motorista.nome} não possui telefone cadastrado.`,
+            "error"
+        );
+        return;
+    }
+
+    const mensagem =
+`
+Coleta: ${coleta.nome}
+`;
+
+    const url =
+        `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
 }
 
 
