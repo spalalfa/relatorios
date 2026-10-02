@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             --bg2: #0d1118;
             --card: #11161f;
             --card2: #161c26;
-            --border: rgba(255,255,255,.08);
+            --border: rgba(255, 255, 255, .08);
             --text: #f4f6f8;
             --muted: #8d98a8;
             --red: #e31b23;
@@ -22,7 +23,7 @@
             --green: #24c77b;
             --yellow: #f4bd43;
             --blue: #4d9cff;
-            --shadow: 0 18px 50px rgba(0,0,0,.35);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .35);
         }
 
         * {
@@ -34,8 +35,8 @@
         body {
             font-family: Inter, Arial, Helvetica, sans-serif;
             background:
-                radial-gradient(circle at top right, rgba(227,27,35,.10), transparent 30%),
-                radial-gradient(circle at bottom left, rgba(77,156,255,.06), transparent 30%),
+                radial-gradient(circle at top right, rgba(227, 27, 35, .10), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(77, 156, 255, .06), transparent 30%),
                 var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -58,7 +59,7 @@
         .topbar {
             height: 72px;
             border-bottom: 1px solid var(--border);
-            background: rgba(7,9,13,.88);
+            background: rgba(7, 9, 13, .88);
             backdrop-filter: blur(18px);
             display: flex;
             align-items: center;
@@ -83,7 +84,7 @@
             display: grid;
             place-items: center;
             font-weight: 900;
-            box-shadow: 0 8px 25px rgba(227,27,35,.22);
+            box-shadow: 0 8px 25px rgba(227, 27, 35, .22);
         }
 
         .brand-text strong {
@@ -116,24 +117,24 @@
 
         .btn:hover {
             transform: translateY(-1px);
-            border-color: rgba(255,255,255,.16);
+            border-color: rgba(255, 255, 255, .16);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--red), #b20f17);
             border-color: transparent;
-            box-shadow: 0 8px 24px rgba(227,27,35,.18);
+            box-shadow: 0 8px 24px rgba(227, 27, 35, .18);
         }
 
         .btn-success {
-            background: rgba(36,199,123,.12);
-            border-color: rgba(36,199,123,.25);
+            background: rgba(36, 199, 123, .12);
+            border-color: rgba(36, 199, 123, .25);
             color: #5be19d;
         }
 
         .btn-danger {
-            background: rgba(227,27,35,.10);
-            border-color: rgba(227,27,35,.25);
+            background: rgba(227, 27, 35, .10);
+            border-color: rgba(227, 27, 35, .25);
             color: #ff6970;
         }
 
@@ -200,15 +201,15 @@
 
         input:focus,
         select:focus {
-            border-color: rgba(227,27,35,.65);
-            box-shadow: 0 0 0 3px rgba(227,27,35,.08);
+            border-color: rgba(227, 27, 35, .65);
+            box-shadow: 0 0 0 3px rgba(227, 27, 35, .08);
         }
 
         .filters {
             display: grid;
             grid-template-columns: 1.4fr 1fr 1fr auto;
             gap: 12px;
-            background: rgba(17,22,31,.75);
+            background: rgba(17, 22, 31, .75);
             border: 1px solid var(--border);
             padding: 15px;
             border-radius: 15px;
@@ -264,7 +265,7 @@
         }
 
         .region-card {
-            background: linear-gradient(145deg, rgba(17,22,31,.98), rgba(11,15,21,.98));
+            background: linear-gradient(145deg, rgba(17, 22, 31, .98), rgba(11, 15, 21, .98));
             border: 1px solid var(--border);
             border-radius: 17px;
             overflow: hidden;
@@ -290,7 +291,7 @@
             width: 38px;
             height: 38px;
             border-radius: 11px;
-            background: rgba(227,27,35,.12);
+            background: rgba(227, 27, 35, .12);
             color: #ff5d64;
             display: grid;
             place-items: center;
@@ -337,7 +338,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,.045);
+            border-bottom: 1px solid rgba(255, 255, 255, .045);
         }
 
         .collection:last-child {
@@ -368,20 +369,20 @@
 
         .status-pendente {
             color: #f5ca64;
-            background: rgba(244,189,67,.10);
-            border: 1px solid rgba(244,189,67,.20);
+            background: rgba(244, 189, 67, .10);
+            border: 1px solid rgba(244, 189, 67, .20);
         }
 
         .status-feita {
             color: #5be19d;
-            background: rgba(36,199,123,.10);
-            border: 1px solid rgba(36,199,123,.20);
+            background: rgba(36, 199, 123, .10);
+            border: 1px solid rgba(36, 199, 123, .20);
         }
 
         .status-nao {
             color: #ff6d74;
-            background: rgba(227,27,35,.10);
-            border: 1px solid rgba(227,27,35,.20);
+            background: rgba(227, 27, 35, .10);
+            border: 1px solid rgba(227, 27, 35, .20);
         }
 
         .empty {
@@ -412,7 +413,7 @@
         .admin-side {
             border-right: 1px solid var(--border);
             padding: 20px 14px;
-            background: rgba(9,12,17,.7);
+            background: rgba(9, 12, 17, .7);
         }
 
         .admin-nav {
@@ -431,7 +432,7 @@
 
         .admin-nav button.active,
         .admin-nav button:hover {
-            background: rgba(227,27,35,.10);
+            background: rgba(227, 27, 35, .10);
             color: #fff;
         }
 
@@ -516,14 +517,14 @@
 
         td {
             padding: 12px 11px;
-            border-bottom: 1px solid rgba(255,255,255,.05);
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
             font-size: 12px;
         }
 
         .modal-bg {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.70);
+            background: rgba(0, 0, 0, .70);
             backdrop-filter: blur(7px);
             z-index: 100;
             display: none;
@@ -541,7 +542,7 @@
             background: #11161f;
             border: 1px solid var(--border);
             border-radius: 18px;
-            box-shadow: 0 30px 100px rgba(0,0,0,.55);
+            box-shadow: 0 30px 100px rgba(0, 0, 0, .55);
             padding: 22px;
         }
 
@@ -583,11 +584,11 @@
         }
 
         .toast.success {
-            border-color: rgba(36,199,123,.3);
+            border-color: rgba(36, 199, 123, .3);
         }
 
         .toast.error {
-            border-color: rgba(227,27,35,.4);
+            border-color: rgba(227, 27, 35, .4);
         }
 
         .login-info {
@@ -620,9 +621,219 @@
         }
 
         .suggestion:hover {
-            border-color: rgba(227,27,35,.4);
+            border-color: rgba(227, 27, 35, .4);
             color: white;
         }
+
+
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .bulk-actions span {
+            font-size: 13px;
+            color: var(--muted);
+            margin-right: auto;
+        }
+
+        .bulk-actions button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .coleta-checkbox {
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            accent-color: #e63946;
+        }
+
+        .whatsapp-btn {
+            color: #55e59a;
+            border-color: rgba(85, 229, 154, .3);
+            background: rgba(85, 229, 154, .08);
+        }
+
+        .whatsapp-btn:hover {
+            background: rgba(85, 229, 154, .16);
+        }
+
+        .equipe-dia {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.equipe-dia strong {
+    font-size: 13px;
+    color: var(--text);
+}
+
+.equipe-dia span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.equipe-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   FILTROS DE COLETAS
+============================================================ */
+
+.coleta-filters {
+    display: grid;
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        1fr
+        1fr
+        auto;
+
+    gap: 12px;
+    align-items: end;
+}
+
+
+.filter-actions {
+    display: flex;
+    align-items: flex-end;
+}
+
+
+.bulk-select-all {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 13px;
+}
+
+
+.bulk-select-all input {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: var(--red);
+}
+
+
+.bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+
+.bulk-actions > span {
+    font-size: 13px;
+    color: var(--muted);
+    margin-right: auto;
+}
+
+
+.bulk-actions button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+.coleta-checkbox {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: var(--red);
+}
+
+
+.coleta-row-selected {
+    background: rgba(227, 27, 35, .045);
+}
+
+
+.coleta-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.coleta-content strong {
+    font-size: 13px;
+}
+
+
+.coleta-equipe {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+
+.coleta-equipe strong {
+    font-size: 12px;
+}
+
+
+.coleta-equipe span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+
+.coleta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+.coleta-status {
+    min-width: 115px;
+}
+
+
+@media (max-width: 1100px) {
+
+    .coleta-filters {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .coleta-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+    .filter-actions button {
+        width: 100%;
+    }
+
+}
 
         @media (max-width: 900px) {
             .filters {
@@ -709,1264 +920,928 @@
 
 <body>
 
-<div class="app">
+    <div class="app">
 
-    <header class="topbar">
-        <div class="brand">
-            <div class="brand-logo">S</div>
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-logo">S</div>
 
-            <div class="brand-text">
-                <strong>PAINEL COLETAS</strong>
-                <span>Controle operacional de coletas</span>
+                <div class="brand-text">
+                    <strong>PAINEL COLETAS</strong>
+                    <span>Controle operacional de coletas</span>
+                </div>
             </div>
-        </div>
 
-        <div class="top-actions">
-            <span class="admin-user" id="loggedUser"></span>
+            <div class="top-actions">
+                <span class="admin-user" id="loggedUser"></span>
 
-            <button class="btn btn-small" id="backPublicBtn" style="display:none;">
-                Visualização
-            </button>
+                <button class="btn btn-small" id="backPublicBtn" style="display:none;">
+                    Visualização
+                </button>
 
-            <button class="btn btn-primary btn-small" id="adminBtn">
-                Administração
-            </button>
-        </div>
-    </header>
+                <button class="btn btn-primary btn-small" id="adminBtn">
+                    Administração
+                </button>
+            </div>
+        </header>
 
 
-    <!-- =========================================================
+        <!-- =========================================================
          VISUALIZAÇÃO PRINCIPAL
     ========================================================== -->
 
-    <main class="public-page">
-        <div class="container">
+        <main class="public-page">
+            <div class="container">
 
-            <section class="hero">
-                <div>
-                    <h1>Coletas do dia</h1>
-                    <p>
-                        Acompanhe as regiões, motoristas e situação das coletas.
-                    </p>
-                </div>
-
-                <div class="date-box">
-                    <div class="field">
-                        <label>Data</label>
-                        <input type="date" id="publicDate">
+                <section class="hero">
+                    <div>
+                        <h1>Coletas do dia</h1>
+                        <p>
+                            Acompanhe as regiões, motoristas e situação das coletas.
+                        </p>
                     </div>
 
-                    <button class="btn btn-primary" id="refreshPublic">
-                        Atualizar
+                    <div class="date-box">
+                        <div class="field">
+                            <label>Data</label>
+                            <input type="date" id="publicDate">
+                        </div>
+
+                        <button class="btn btn-primary" id="refreshPublic">
+                            Atualizar
+                        </button>
+                    </div>
+                </section>
+
+
+                <section class="filters">
+
+                    <div class="field">
+                        <label>Região</label>
+
+                        <select id="filterRegion">
+                            <option value="">Todas as regiões</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Motorista</label>
+
+                        <select id="filterDriver">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Situação</label>
+
+                        <select id="filterStatus">
+                            <option value="">Todas</option>
+                            <option value="pendente">Pendentes</option>
+                            <option value="feita">Feitas</option>
+                            <option value="nao_feita">Não feitas</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" id="clearFilters">
+                        Limpar
                     </button>
-                </div>
-            </section>
+
+                </section>
 
 
-            <section class="filters">
+                <section class="stats">
 
-                <div class="field">
-                    <label>Região</label>
+                    <div class="stat blue">
+                        <span>Total de coletas</span>
+                        <strong id="statTotal">0</strong>
+                    </div>
 
-                    <select id="filterRegion">
-                        <option value="">Todas as regiões</option>
-                    </select>
-                </div>
+                    <div class="stat yellow">
+                        <span>Pendentes</span>
+                        <strong id="statPending">0</strong>
+                    </div>
 
-                <div class="field">
-                    <label>Motorista</label>
+                    <div class="stat green">
+                        <span>Realizadas</span>
+                        <strong id="statDone">0</strong>
+                    </div>
 
-                    <select id="filterDriver">
-                        <option value="">Todos</option>
-                    </select>
-                </div>
+                    <div class="stat red">
+                        <span>Não realizadas</span>
+                        <strong id="statNotDone">0</strong>
+                    </div>
 
-                <div class="field">
-                    <label>Situação</label>
-
-                    <select id="filterStatus">
-                        <option value="">Todas</option>
-                        <option value="pendente">Pendentes</option>
-                        <option value="feita">Feitas</option>
-                        <option value="nao_feita">Não feitas</option>
-                    </select>
-                </div>
-
-                <button class="btn" id="clearFilters">
-                    Limpar
-                </button>
-
-            </section>
+                </section>
 
 
-            <section class="stats">
+                <section class="regions" id="publicRegions">
+                    <div class="empty">
+                        Carregando coletas...
+                    </div>
+                </section>
 
-                <div class="stat blue">
-                    <span>Total de coletas</span>
-                    <strong id="statTotal">0</strong>
-                </div>
-
-                <div class="stat yellow">
-                    <span>Pendentes</span>
-                    <strong id="statPending">0</strong>
-                </div>
-
-                <div class="stat green">
-                    <span>Realizadas</span>
-                    <strong id="statDone">0</strong>
-                </div>
-
-                <div class="stat red">
-                    <span>Não realizadas</span>
-                    <strong id="statNotDone">0</strong>
-                </div>
-
-            </section>
+            </div>
+        </main>
 
 
-            <section class="regions" id="publicRegions">
-                <div class="empty">
-                    Carregando coletas...
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-
-    <!-- =========================================================
+        <!-- =========================================================
          ADMINISTRAÇÃO
     ========================================================== -->
 
-    <main class="admin-page">
+        <main class="admin-page">
 
-        <div class="admin-layout">
+            <div class="admin-layout">
 
-            <aside class="admin-side">
+                <aside class="admin-side">
 
-                <nav class="admin-nav">
+                    <nav class="admin-nav">
 
-                    <button class="active" data-admin-tab="coletas">
-                        📋 Coletas
-                    </button>
+                        <button class="active" data-admin-tab="coletas">
+                            📋 Coletas
+                        </button>
 
-                    <button data-admin-tab="motoristas">
-                        🚚 Motoristas
-                    </button>
+                        <button data-admin-tab="motoristas">
+                            🚚 Motoristas
+                        </button>
 
-                    <button data-admin-tab="regioes">
-                        📍 Regiões
-                    </button>
+                        <button data-admin-tab="regioes">
+                            📍 Regiões
+                        </button>
 
-                    <button data-admin-tab="sugestoes">
-                        ⭐ Sugestões
-                    </button>
+                        <button data-admin-tab="sugestoes">
+                            ⭐ Sugestões
+                        </button>
 
-                    <button data-admin-tab="escalas">
-                        📅 Motorista do dia
-                    </button>
+                        <button data-admin-tab="escalas">
+                            📅 Motorista do dia
+                        </button>
 
-                </nav>
+                    </nav>
 
-            </aside>
-
-
-            <section class="admin-content">
+                </aside>
 
 
-                <!-- COLETAS -->
-
-                <section class="admin-section active" id="tab-coletas">
-
-                    <div class="section-head">
-                        <div>
-                            <h2>Registrar coleta</h2>
-                            <p>
-                                Cadastre uma coleta para uma região.
-                            </p>
-                        </div>
-                    </div>
+                <section class="admin-content">
 
 
-                    <div class="panel">
+                    <!-- COLETAS -->
 
-                        <form id="collectionForm">
+                    <section class="admin-section active" id="tab-coletas">
 
-                            <div class="form-grid">
-
-                                <div class="field">
-                                    <label>Data da coleta</label>
-                                    <input
-                                        type="date"
-                                        id="collectionDate"
-                                        required
-                                    >
-                                </div>
-
-                                <div class="field">
-                                    <label>Região</label>
-
-                                    <select
-                                        id="collectionRegion"
-                                        required
-                                    >
-                                        <option value="">
-                                            Selecione a região
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="field full">
-                                    <label>Nome da coleta</label>
-
-                                    <input
-                                        id="collectionName"
-                                        list="collectionSuggestions"
-                                        autocomplete="off"
-                                        placeholder="Ex.: Empresa XPTO"
-                                        required
-                                    >
-
-                                    <datalist id="collectionSuggestions"></datalist>
-
-                                    <div
-                                        class="suggestions"
-                                        id="quickSuggestions"
-                                    ></div>
-                                </div>
-
-                            </div>
-
-                            <div class="form-actions">
-
-                                <button
-                                    type="button"
-                                    class="btn"
-                                    id="saveAsSuggestion"
-                                >
-                                    ⭐ Salvar como sugestão
-                                </button>
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Registrar coleta
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-
-                    <div class="section-head">
-
-                        <div>
-                            <h2>Coletas registradas</h2>
-
-                            <p>
-                                Altere a situação conforme a coleta for realizada.
-                            </p>
-                        </div>
-
-                        <div class="field">
-                            <input
-                                type="date"
-                                id="adminListDate"
-                            >
-                        </div>
-
-                    </div>
-
-
-                    <div class="panel">
-                        <div
-                            class="table-wrap"
-                            id="adminCollectionsTable"
-                        >
-                            <div class="empty">
-                                Carregando...
+                        <div class="section-head">
+                            <div>
+                                <h2>Registrar coleta</h2>
+                                <p>
+                                    Cadastre uma coleta para uma região.
+                                </p>
                             </div>
                         </div>
-                    </div>
-
-                </section>
 
 
-                <!-- MOTORISTAS -->
+                        <div class="panel">
 
-                <section class="admin-section" id="tab-motoristas">
+                            <form id="collectionForm">
 
-                    <div class="section-head">
-                        <div>
-                            <h2>Motoristas</h2>
-                            <p>
-                                Cadastre os motoristas disponíveis.
-                            </p>
-                        </div>
-                    </div>
+                                <div class="form-grid">
 
-                    <div class="panel">
+                                    <div class="field">
+                                        <label>Data da coleta</label>
+                                        <input type="date" id="collectionDate" required>
+                                    </div>
 
-                        <form id="driverForm">
+                                    <div class="field">
+                                        <label>Região</label>
 
-                            <div class="form-grid">
+                                        <select id="collectionRegion" required>
+                                            <option value="">
+                                                Selecione a região
+                                            </option>
+                                        </select>
+                                    </div>
 
-                                <div class="field">
-                                    <label>Nome</label>
+                                    <div class="field full">
+                                        <label>Nome da coleta</label>
 
-                                    <input
-                                        id="driverName"
-                                        placeholder="Nome do motorista"
-                                        required
-                                    >
+                                        <input id="collectionName" list="collectionSuggestions" autocomplete="off"
+                                            placeholder="Ex.: Empresa XPTO" required>
+
+                                        <datalist id="collectionSuggestions"></datalist>
+
+                                        <div class="suggestions" id="quickSuggestions"></div>
+                                    </div>
+
                                 </div>
 
-                                <div class="field">
-                                    <label>Telefone</label>
+                                <div class="form-actions">
 
-                                    <input
-                                        id="driverPhone"
-                                        placeholder="Opcional"
-                                    >
+                                    <button type="button" class="btn" id="saveAsSuggestion">
+                                        ⭐ Salvar como sugestão
+                                    </button>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        Registrar coleta
+                                    </button>
+
                                 </div>
 
-                            </div>
+                            </form>
 
-                            <div class="form-actions">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Cadastrar motorista
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                    <div class="panel">
-                        <div
-                            class="table-wrap"
-                            id="driversTable"
-                        ></div>
-                    </div>
-
-                </section>
-
-
-                <!-- REGIÕES -->
-
-                <section class="admin-section" id="tab-regioes">
-
-                    <div class="section-head">
-                        <div>
-                            <h2>Regiões</h2>
-                            <p>
-                                Cadastre as regiões atendidas.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="panel">
-
-                        <form id="regionForm">
-
-                            <div class="form-grid">
-
-                                <div class="field">
-                                    <label>Nome da região</label>
-
-                                    <input
-                                        id="regionName"
-                                        placeholder="Ex.: Garça"
-                                        required
-                                    >
-                                </div>
-
-                            </div>
-
-                            <div class="form-actions">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Cadastrar região
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                    <div class="panel">
-                        <div
-                            class="table-wrap"
-                            id="regionsTable"
-                        ></div>
-                    </div>
-
-                </section>
-
-
-                <!-- SUGESTÕES -->
-
-                <section class="admin-section" id="tab-sugestoes">
-
-                    <div class="section-head">
-                        <div>
-                            <h2>Coletas frequentes</h2>
-                            <p>
-                                Essas opções aparecem como sugestão ao registrar uma coleta.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="panel">
-
-                        <form id="suggestionForm">
-
-                            <div class="form-grid">
-
-                                <div class="field">
-                                    <label>Região</label>
-
-                                    <select id="suggestionRegion">
-                                        <option value="">
-                                            Todas as regiões
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="field">
-                                    <label>Nome da coleta</label>
-
-                                    <input
-                                        id="suggestionName"
-                                        placeholder="Nome que será sugerido"
-                                        required
-                                    >
-                                </div>
-
-                            </div>
-
-                            <div class="form-actions">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Cadastrar sugestão
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                    <div class="panel">
-
-                        <div
-                            class="table-wrap"
-                            id="suggestionsTable"
-                        ></div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- ESCALAS -->
-
-                <section class="admin-section" id="tab-escalas">
-
-                    <div class="section-head">
-
-                        <div>
-                            <h2>Motorista do dia</h2>
-                            <p>
-                                Defina qual motorista atenderá cada região em determinada data.
-                            </p>
                         </div>
 
-                    </div>
 
+                        <div class="section-head">
 
-                    <div class="panel">
+    <div>
+        <h2>Coletas do dia</h2>
 
-                        <form id="scheduleForm">
+        <p>
+            Filtre, selecione e encaminhe as coletas pelo WhatsApp.
+        </p>
+    </div>
 
-                            <div class="form-grid three">
-
-                                <div class="field">
-                                    <label>Data</label>
-
-                                    <input
-                                        type="date"
-                                        id="scheduleDate"
-                                        required
-                                    >
-                                </div>
-
-                                <div class="field">
-                                    <label>Região</label>
-
-                                    <select
-                                        id="scheduleRegion"
-                                        required
-                                    >
-                                        <option value="">
-                                            Selecione
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="field">
-                                    <label>Motorista</label>
-
-                                    <select
-                                        id="scheduleDriver"
-                                        required
-                                    >
-                                        <option value="">
-                                            Selecione
-                                        </option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                            <div class="form-actions">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Salvar escala
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-
-                    <div class="panel">
-
-                        <div
-                            class="table-wrap"
-                            id="scheduleTable"
-                        ></div>
-
-                    </div>
-
-                </section>
-
-
-            </section>
-
-        </div>
-
-    </main>
+    <div class="field">
+        <label>Data</label>
+        <input type="date" id="adminListDate">
+    </div>
 
 </div>
 
 
-<!-- =========================================================
-     LOGIN
-========================================================== -->
+<div class="panel coleta-filters">
 
-<div class="modal-bg" id="loginModal">
+    <div class="field">
+        <label>Pesquisar</label>
 
-    <div class="modal">
+        <input
+            type="text"
+            id="adminCollectionSearch"
+            placeholder="Pesquisar coleta..."
+            autocomplete="off"
+        >
+    </div>
 
-        <div class="modal-head">
 
-            <h3>Acesso administrativo</h3>
+    <div class="field">
+        <label>Região</label>
 
-            <button
-                class="close"
-                id="closeLogin"
-            >
-                ×
-            </button>
+        <select id="adminCollectionRegion">
 
-        </div>
+            <option value="">
+                Todas as regiões
+            </option>
 
-        <p class="login-info">
-            Entre com o mesmo usuário do Supabase utilizado na administração
-            do sistema SPAL.
-        </p>
+        </select>
+    </div>
 
-        <form id="loginForm">
 
-            <div class="field">
+    <div class="field">
+        <label>Status</label>
 
-                <label>E-mail</label>
+        <select id="adminCollectionStatus">
 
-                <input
-                    type="email"
-                    id="loginEmail"
-                    required
-                    autocomplete="username"
-                >
+            <option value="">
+                Todos
+            </option>
 
-            </div>
+            <option value="pendente">
+                Pendentes
+            </option>
 
-            <br>
+            <option value="feita">
+                Feitas
+            </option>
 
-            <div class="field">
+            <option value="nao_feita">
+                Não feitas
+            </option>
 
-                <label>Senha</label>
+        </select>
+    </div>
 
-                <input
-                    type="password"
-                    id="loginPassword"
-                    required
-                    autocomplete="current-password"
-                >
 
-            </div>
+    <div class="field">
+        <label>Motorista</label>
 
-            <div class="form-actions">
+        <select id="adminCollectionDriver">
 
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    Entrar
-                </button>
+            <option value="">
+                Todos
+            </option>
 
-            </div>
+        </select>
+    </div>
 
-        </form>
+
+    <div class="field">
+        <label>Ajudante</label>
+
+        <select id="adminCollectionHelper">
+
+            <option value="">
+                Todos
+            </option>
+
+        </select>
+    </div>
+
+
+    <div class="filter-actions">
+
+        <button
+            type="button"
+            class="btn"
+            id="clearAdminCollectionFilters"
+        >
+            Limpar filtros
+        </button>
 
     </div>
 
 </div>
 
 
-<div class="toast" id="toast"></div>
+<div class="bulk-actions">
 
+    <label class="bulk-select-all">
 
-<script>
-/* ============================================================
-   CONFIGURAÇÃO SUPABASE
-   ============================================================
+        <input
+            type="checkbox"
+            id="selecionarTodasColetas"
+        >
 
-   COLOQUE AQUI A MESMA URL E A MESMA CHAVE PÚBLICA/PUBLISHABLE
-   QUE VOCÊ JÁ USA NO SISTEMA DA SPAL.
+        <span>Selecionar todas</span>
 
-   NÃO coloque service_role/secret key neste arquivo.
-   ============================================================ */
+    </label>
 
-const SUPABASE_URL = "https://ewawkukleqboozavhovb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
 
-const { createClient } = supabase;
+    <span id="contadorColetasSelecionadas">
+        0 selecionadas
+    </span>
 
-const db = createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
 
+    <button
+        type="button"
+        class="btn btn-success btn-small"
+        id="btnEnviarSelecionadasWhatsApp"
+        disabled
+    >
+        📲 Enviar selecionadas
+    </button>
 
-/* ============================================================
-   CONFIGURAÇÃO DO ADMIN
-   ============================================================
 
-   Se quiser limitar a administração a um único usuário,
-   coloque aqui o e-mail usado no Supabase Auth.
+    <button
+        type="button"
+        class="btn btn-primary btn-small"
+        id="btnMarcarSelecionadasFeitas"
+        disabled
+    >
+        ✓ Marcar como feitas
+    </button>
 
-   Exemplo:
-   const ADMIN_EMAILS = ["gabriel@empresa.com.br"];
+</div>
 
-   Se deixar vazio [], qualquer usuário autenticado poderá
-   acessar a área administrativa.
-   ============================================================ */
 
-const ADMIN_EMAILS = [
-    // "seuemail@empresa.com.br"
-];
+<div class="panel">
 
+    <div
+        class="table-wrap"
+        id="adminCollectionsTable"
+    >
 
-/* ============================================================
-   ESTADO
-============================================================ */
+        <div class="empty">
+            Carregando...
+        </div>
 
-let regions = [];
-let drivers = [];
-let suggestions = [];
-let publicCollections = [];
-let adminCollections = [];
-let schedules = [];
-let currentUser = null;
+    </div>
 
+</div>
 
-/* ============================================================
-   ELEMENTOS
-============================================================ */
 
-const $ = id => document.getElementById(id);
+                        <div class="panel">
+                            <div class="table-wrap" id="adminCollectionsTable">
+                                <div class="empty">
+                                    Carregando...
+                                </div>
+                            </div>
+                        </div>
 
+                    </section>
 
-/* ============================================================
-   UTILITÁRIOS
-============================================================ */
 
-function today() {
+                    <!-- MOTORISTAS -->
 
-    const d = new Date();
+                    <section class="admin-section" id="tab-motoristas">
 
-    const offset = d.getTimezoneOffset();
+                        <div class="section-head">
+                            <div>
+                                <h2>Motoristas</h2>
+                                <p>
+                                    Cadastre os motoristas disponíveis.
+                                </p>
+                            </div>
+                        </div>
 
-    const local = new Date(
-        d.getTime() - offset * 60000
-    );
+                        <div class="panel">
 
-    return local.toISOString().slice(0,10);
-}
+                            <form id="driverForm">
 
+                                <div class="form-grid">
 
-function escapeHtml(value) {
+                                    <div class="field">
+                                        <label>Nome</label>
 
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+                                        <input id="driverName" placeholder="Nome do motorista" required>
+                                    </div>
 
+                                    <div class="field">
+                                        <label>Telefone</label>
 
-function formatDate(date) {
+                                        <input id="driverPhone" placeholder="Opcional">
+                                    </div>
 
-    if (!date) return "-";
+                                </div>
 
-    const parts = date.split("-");
+                                <div class="form-actions">
 
-    if (parts.length !== 3) return date;
+                                    <button type="submit" class="btn btn-primary">
+                                        Cadastrar motorista
+                                    </button>
 
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
-}
+                                </div>
 
+                            </form>
 
-function formatDateTime(value) {
+                        </div>
 
-    if (!value) return "-";
+                        <div class="panel">
+                            <div class="table-wrap" id="driversTable"></div>
+                        </div>
 
-    const d = new Date(value);
+                    </section>
 
-    return d.toLocaleString(
-        "pt-BR",
-        {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
-}
 
+                    <!-- REGIÕES -->
 
-function showToast(message, type = "") {
+                    <section class="admin-section" id="tab-regioes">
 
-    const toast = $("toast");
+                        <div class="section-head">
+                            <div>
+                                <h2>Regiões</h2>
+                                <p>
+                                    Cadastre as regiões atendidas.
+                                </p>
+                            </div>
+                        </div>
 
-    toast.textContent = message;
+                        <div class="panel">
 
-    toast.className = `toast show ${type}`;
+                            <form id="regionForm">
 
-    clearTimeout(window.toastTimer);
+                                <div class="form-grid">
 
-    window.toastTimer = setTimeout(() => {
+                                    <div class="field">
+                                        <label>Nome da região</label>
 
-        toast.className = "toast";
+                                        <input id="regionName" placeholder="Ex.: Garça" required>
+                                    </div>
 
-    }, 3500);
-}
+                                </div>
 
+                                <div class="form-actions">
 
-function statusLabel(status) {
+                                    <button type="submit" class="btn btn-primary">
+                                        Cadastrar região
+                                    </button>
 
-    if (status === "feita") return "FEITA";
+                                </div>
 
-    if (status === "nao_feita") return "NÃO FEITA";
+                            </form>
 
-    return "PENDENTE";
-}
+                        </div>
 
+                        <div class="panel">
+                            <div class="table-wrap" id="regionsTable"></div>
+                        </div>
 
-function statusClass(status) {
+                    </section>
 
-    if (status === "feita") return "status-feita";
 
-    if (status === "nao_feita") return "status-nao";
+                    <!-- SUGESTÕES -->
 
-    return "status-pendente";
-}
+                    <section class="admin-section" id="tab-sugestoes">
 
+                        <div class="section-head">
+                            <div>
+                                <h2>Coletas frequentes</h2>
+                                <p>
+                                    Essas opções aparecem como sugestão ao registrar uma coleta.
+                                </p>
+                            </div>
+                        </div>
 
-function regionName(id) {
+                        <div class="panel">
 
-    const region = regions.find(r => r.id === id);
+                            <form id="suggestionForm">
 
-    return region ? region.nome : "Sem região";
-}
+                                <div class="form-grid">
 
+                                    <div class="field">
+                                        <label>Região</label>
 
-function driverName(id) {
+                                        <select id="suggestionRegion">
+                                            <option value="">
+                                                Todas as regiões
+                                            </option>
+                                        </select>
+                                    </div>
 
-    const driver = drivers.find(d => d.id === id);
+                                    <div class="field">
+                                        <label>Nome da coleta</label>
 
-    return driver ? driver.nome : "Não definido";
-}
+                                        <input id="suggestionName" placeholder="Nome que será sugerido" required>
+                                    </div>
 
+                                </div>
 
-/* ============================================================
-   AUTH
-============================================================ */
+                                <div class="form-actions">
 
-async function getSession() {
+                                    <button type="submit" class="btn btn-primary">
+                                        Cadastrar sugestão
+                                    </button>
 
-    const {
-        data,
-        error
-    } = await db.auth.getSession();
+                                </div>
 
-    if (error) {
+                            </form>
 
-        console.error(error);
+                        </div>
 
-        return null;
-    }
+                        <div class="panel">
 
-    return data.session;
-}
+                            <div class="table-wrap" id="suggestionsTable"></div>
 
+                        </div>
 
-function isAdminEmail(email) {
+                    </section>
 
-    if (!ADMIN_EMAILS.length) {
-        return true;
-    }
 
-    return ADMIN_EMAILS
-        .map(e => e.toLowerCase())
-        .includes(
-            String(email || "").toLowerCase()
+                    <!-- ESCALAS -->
+
+                    <section class="admin-section" id="tab-escalas">
+
+                        <div class="section-head">
+
+                            <div>
+                                <h2>Motorista do dia</h2>
+                                <p>
+                                    Defina qual motorista atenderá cada região em determinada data.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="panel">
+
+                            <form id="scheduleForm">
+
+                                <div class="form-grid three">
+
+                                    <div class="field">
+                                        <label>Data</label>
+
+                                        <input type="date" id="scheduleDate" required>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>Região</label>
+
+                                        <select id="scheduleRegion" required>
+                                            <option value="">
+                                                Selecione
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>Motorista</label>
+
+                                        <select id="scheduleDriver" required>
+                                            <option value="">
+                                                Selecione
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-actions">
+
+                                    <button type="submit" class="btn btn-primary">
+                                        Salvar escala
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+
+                        <div class="panel">
+
+                            <div class="table-wrap" id="scheduleTable"></div>
+
+                        </div>
+
+                    </section>
+
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+     LOGIN
+========================================================== -->
+
+    <div class="modal-bg" id="loginModal">
+
+        <div class="modal">
+
+            <div class="modal-head">
+
+                <h3>Acesso administrativo</h3>
+
+                <button class="close" id="closeLogin">
+                    ×
+                </button>
+
+            </div>
+
+            <p class="login-info">
+                Entre com o mesmo usuário do Supabase utilizado na administração
+                do sistema SPAL.
+            </p>
+
+            <form id="loginForm">
+
+                <div class="field">
+
+                    <label>E-mail</label>
+
+                    <input type="email" id="loginEmail" required autocomplete="username">
+
+                </div>
+
+                <br>
+
+                <div class="field">
+
+                    <label>Senha</label>
+
+                    <input type="password" id="loginPassword" required autocomplete="current-password">
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit" class="btn btn-primary">
+                        Entrar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="toast" id="toast"></div>
+
+
+    <script>
+        /* ============================================================
+           CONFIGURAÇÃO SUPABASE
+           ============================================================
+        
+           COLOQUE AQUI A MESMA URL E A MESMA CHAVE PÚBLICA/PUBLISHABLE
+           QUE VOCÊ JÁ USA NO SISTEMA DA SPAL.
+        
+           NÃO coloque service_role/secret key neste arquivo.
+           ============================================================ */
+
+        const SUPABASE_URL = "https://ewawkukleqboozavhovb.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
+
+        const { createClient } = supabase;
+
+        const db = createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
         );
-}
 
 
-async function requireAdmin() {
+        /* ============================================================
+           CONFIGURAÇÃO DO ADMIN
+           ============================================================
+        
+           Se quiser limitar a administração a um único usuário,
+           coloque aqui o e-mail usado no Supabase Auth.
+        
+           Exemplo:
+           const ADMIN_EMAILS = ["gabriel@empresa.com.br"];
+        
+           Se deixar vazio [], qualquer usuário autenticado poderá
+           acessar a área administrativa.
+           ============================================================ */
 
-    const session = await getSession();
-
-    if (!session) {
-
-        $("loginModal").classList.add("open");
-
-        return false;
-    }
-
-    currentUser = session.user;
-
-    if (!isAdminEmail(currentUser.email)) {
-
-        showToast(
-            "Este usuário não possui acesso administrativo.",
-            "error"
-        );
-
-        await db.auth.signOut();
-
-        return false;
-    }
-
-    return true;
-}
+        const ADMIN_EMAILS = [
+            // "seuemail@empresa.com.br"
+        ];
 
 
-async function updateAuthUI() {
+        /* ============================================================
+           ESTADO
+        ============================================================ */
 
-    const session = await getSession();
-
-    currentUser = session?.user || null;
-
-    if (currentUser) {
-
-        $("loggedUser").textContent =
-            currentUser.email;
-
-    } else {
-
-        $("loggedUser").textContent = "";
-
-    }
-}
+        let regions = [];
+        let drivers = [];
+        let suggestions = [];
+        let publicCollections = [];
+        let adminCollections = [];
+        let schedules = [];
+        let currentUser = null;
+        let coletasSelecionadas = new Set();
+        
 
 
-/* ============================================================
-   CARREGAR DADOS BASE
-============================================================ */
 
-async function loadRegions() {
+        function carregarFiltrosColetas() {
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_regioes")
-        .select("*")
-        .eq("ativo", true)
-        .order("nome");
+    const regionSelect =
+        $("adminCollectionRegion");
 
-    if (error) {
+    const driverSelect =
+        $("adminCollectionDriver");
 
-        console.error(error);
-
-        showToast(
-            "Erro ao carregar regiões: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-    regions = data || [];
-
-    populateRegionSelects();
-}
+    const helperSelect =
+        $("adminCollectionHelper");
 
 
-async function loadDrivers() {
+    if (regionSelect) {
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_motoristas")
-        .select("*")
-        .eq("ativo", true)
-        .order("nome");
-
-    if (error) {
-
-        console.error(error);
-
-        showToast(
-            "Erro ao carregar motoristas: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-    drivers = data || [];
-
-    populateDriverSelects();
-}
-
-
-async function loadSuggestions() {
-
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_coletas_sugestoes")
-        .select("*")
-        .eq("ativo", true)
-        .order("nome");
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-    }
-
-    suggestions = data || [];
-
-    renderSuggestionControls();
-}
-
-
-/* ============================================================
-   SELECTS
-============================================================ */
-
-function populateRegionSelects() {
-
-    const selects = [
-        $("filterRegion"),
-        $("collectionRegion"),
-        $("suggestionRegion"),
-        $("scheduleRegion")
-    ];
-
-    selects.forEach(select => {
-
-        if (!select) return;
-
-        const current = select.value;
-
-        const isFilter =
-            select.id === "filterRegion" ||
-            select.id === "suggestionRegion";
-
-        select.innerHTML = `
+        regionSelect.innerHTML = `
             <option value="">
-                ${isFilter ? "Todas as regiões" : "Selecione a região"}
+                Todas as regiões
             </option>
         `;
 
-        regions.forEach(region => {
+        regions.forEach(
+            function(region) {
 
-            select.insertAdjacentHTML(
-                "beforeend",
-                `
-                <option value="${region.id}">
-                    ${escapeHtml(region.nome)}
-                </option>
-                `
+                regionSelect.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                        <option value="${region.id}">
+                            ${escapeHtml(
+                                region.nome
+                            )}
+                        </option>
+                    `
+                );
+
+            }
+        );
+
+    }
+
+
+    const motoristas = [
+        ...drivers
+    ].sort(
+        function(a, b) {
+
+            return String(
+                a.nome || ""
+            ).localeCompare(
+                String(
+                    b.nome || ""
+                )
             );
 
-        });
-
-        if (
-            [...select.options]
-                .some(o => o.value === current)
-        ) {
-            select.value = current;
         }
-
-    });
-}
+    );
 
 
-function populateDriverSelects() {
+    if (driverSelect) {
 
-    const selects = [
-        $("filterDriver"),
-        $("scheduleDriver")
-    ];
-
-    selects.forEach(select => {
-
-        if (!select) return;
-
-        const current = select.value;
-
-        select.innerHTML = `
+        driverSelect.innerHTML = `
             <option value="">
-                ${select.id === "filterDriver"
-                    ? "Todos"
-                    : "Selecione o motorista"}
+                Todos
             </option>
         `;
 
-        drivers.forEach(driver => {
+        motoristas.forEach(
+            function(driver) {
 
-            select.insertAdjacentHTML(
-                "beforeend",
-                `
-                <option value="${driver.id}">
-                    ${escapeHtml(driver.nome)}
-                </option>
-                `
-            );
+                driverSelect.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                        <option value="${driver.id}">
+                            ${escapeHtml(
+                                driver.nome
+                            )}
+                        </option>
+                    `
+                );
 
-        });
-
-        if (
-            [...select.options]
-                .some(o => o.value === current)
-        ) {
-            select.value = current;
-        }
-
-    });
-}
-
-
-/* ============================================================
-   SUGESTÕES
-============================================================ */
-
-function renderSuggestionControls() {
-
-    const datalist = $("collectionSuggestions");
-
-    datalist.innerHTML = "";
-
-    suggestions.forEach(item => {
-
-        datalist.insertAdjacentHTML(
-            "beforeend",
-            `
-            <option value="${escapeHtml(item.nome)}">
-            `
+            }
         );
 
-    });
+    }
 
-    renderQuickSuggestions();
+
+    if (helperSelect) {
+
+        helperSelect.innerHTML = `
+            <option value="">
+                Todos
+            </option>
+        `;
+
+        motoristas.forEach(
+            function(driver) {
+
+                helperSelect.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                        <option value="${driver.id}">
+                            ${escapeHtml(
+                                driver.nome
+                            )}
+                        </option>
+                    `
+                );
+
+            }
+        );
+
+    }
+
 }
 
 
-function renderQuickSuggestions() {
 
-    const regionId =
-        $("collectionRegion").value;
+        function getColetasFiltradasAtuais() {
 
-    const container =
-        $("quickSuggestions");
-
-    container.innerHTML = "";
-
-    const filtered = suggestions
-        .filter(item =>
-            !item.regiao_id ||
-            item.regiao_id === regionId
+    const search =
+        String(
+            $("adminCollectionSearch")?.value || ""
         )
-        .slice(0, 12);
+            .trim()
+            .toLowerCase();
 
-    filtered.forEach(item => {
-
-        const button =
-            document.createElement("button");
-
-        button.type = "button";
-        button.className = "suggestion";
-        button.textContent = item.nome;
-
-        button.onclick = () => {
-
-            $("collectionName").value =
-                item.nome;
-
-        };
-
-        container.appendChild(button);
-
-    });
-}
-
-
-/* ============================================================
-   MOTORISTA DO DIA
-============================================================ */
-
-async function getSchedules(date) {
-
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_motoristas_dia")
-        .select(`
-            *,
-            spal_regioes (
-                id,
-                nome
-            ),
-            spal_motoristas (
-                id,
-                nome
-            )
-        `)
-        .eq("data", date)
-        .order("created_at");
-
-    if (error) {
-
-        console.error(error);
-
-        return [];
-    }
-
-    return data || [];
-}
-
-
-function getDriverForRegion(regionId, date) {
-
-    const schedule =
-        schedules.find(
-            item =>
-                item.regiao_id === regionId
-        );
-
-    return schedule
-        ? schedule.motorista_id
-        : null;
-}
-
-
-/* ============================================================
-   COLETAS PÚBLICAS
-============================================================ */
-
-async function loadPublicData() {
-
-    const date =
-        $("publicDate").value || today();
-
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_coletas")
-        .select("*")
-        .eq("data_coleta", date)
-        .order("horario_registro");
-
-    if (error) {
-
-        console.error(error);
-
-        showToast(
-            "Erro ao carregar coletas: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-    publicCollections = data || [];
-
-    schedules =
-        await getSchedules(date);
-
-    renderPublic();
-}
-
-
-function renderPublic() {
 
     const regionFilter =
-        $("filterRegion").value;
+        $("adminCollectionRegion")?.value || "";
 
-    const driverFilter =
-        $("filterDriver").value;
 
     const statusFilter =
-        $("filterStatus").value;
+        $("adminCollectionStatus")?.value || "";
 
-    let data =
-        publicCollections.filter(item => {
+
+    const driverFilter =
+        $("adminCollectionDriver")?.value || "";
+
+
+    const helperFilter =
+        $("adminCollectionHelper")?.value || "";
+
+
+    return adminCollections.filter(
+        function(item) {
+
+            const texto =
+                String(
+                    item.nome || ""
+                ).toLowerCase();
+
+
+            if (
+                search &&
+                !texto.includes(search)
+            ) {
+                return false;
+            }
+
 
             if (
                 regionFilter &&
@@ -1975,6 +1850,7 @@ function renderPublic() {
                 return false;
             }
 
+
             if (
                 statusFilter &&
                 item.status !== statusFilter
@@ -1982,89 +1858,1196 @@ function renderPublic() {
                 return false;
             }
 
-            const driver =
-                getDriverForRegion(
-                    item.regiao_id,
-                    item.data_coleta
+
+            const escala =
+                schedules.find(
+                    function(schedule) {
+
+                        return (
+                            schedule.regiao_id ===
+                                item.regiao_id &&
+                            schedule.data ===
+                                item.data_coleta
+                        );
+
+                    }
                 );
+
+
+            const motoristaId =
+                escala
+                    ? escala.motorista_id
+                    : null;
+
+
+            const ajudanteId =
+                escala
+                    ? escala.ajudante_id
+                    : null;
+
 
             if (
                 driverFilter &&
-                driver !== driverFilter
+                motoristaId !== driverFilter
             ) {
                 return false;
             }
 
+
+            if (
+                helperFilter &&
+                ajudanteId !== helperFilter
+            ) {
+                return false;
+            }
+
+
             return true;
+
+        }
+    );
+
+}
+
+function getColetasFiltradasAtuais() {
+
+    const search =
+        String(
+            $("adminCollectionSearch")?.value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const regionFilter =
+        $("adminCollectionRegion")?.value || "";
+
+
+    const statusFilter =
+        $("adminCollectionStatus")?.value || "";
+
+
+    const driverFilter =
+        $("adminCollectionDriver")?.value || "";
+
+
+    const helperFilter =
+        $("adminCollectionHelper")?.value || "";
+
+
+    return adminCollections.filter(
+        function(item) {
+
+            const texto =
+                String(
+                    item.nome || ""
+                ).toLowerCase();
+
+
+            if (
+                search &&
+                !texto.includes(search)
+            ) {
+                return false;
+            }
+
+
+            if (
+                regionFilter &&
+                item.regiao_id !== regionFilter
+            ) {
+                return false;
+            }
+
+
+            if (
+                statusFilter &&
+                item.status !== statusFilter
+            ) {
+                return false;
+            }
+
+
+            const escala =
+                schedules.find(
+                    function(schedule) {
+
+                        return (
+                            schedule.regiao_id ===
+                                item.regiao_id &&
+                            schedule.data ===
+                                item.data_coleta
+                        );
+
+                    }
+                );
+
+
+            const motoristaId =
+                escala
+                    ? escala.motorista_id
+                    : null;
+
+
+            const ajudanteId =
+                escala
+                    ? escala.ajudante_id
+                    : null;
+
+
+            if (
+                driverFilter &&
+                motoristaId !== driverFilter
+            ) {
+                return false;
+            }
+
+
+            if (
+                helperFilter &&
+                ajudanteId !== helperFilter
+            ) {
+                return false;
+            }
+
+
+            return true;
+
+        }
+    );
+
+}
+
+function selecionarTodasColetas() {
+
+    const filtradas =
+        getColetasFiltradasAtuais();
+
+
+    const checkbox =
+        $("selecionarTodasColetas");
+
+
+    if (!checkbox) {
+        return;
+    }
+
+
+    if (checkbox.checked) {
+
+        filtradas.forEach(
+            function(item) {
+
+                coletasSelecionadas.add(
+                    item.id
+                );
+
+            }
+        );
+
+    } else {
+
+        filtradas.forEach(
+            function(item) {
+
+                coletasSelecionadas.delete(
+                    item.id
+                );
+
+            }
+        );
+
+    }
+
+
+    renderAdminCollections();
+
+}
+
+async function enviarColetasSelecionadasWhatsApp() {
+
+    const ids =
+        Array.from(
+            coletasSelecionadas
+        );
+
+
+    if (!ids.length) {
+
+        showToast(
+            "Selecione pelo menos uma coleta.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const coletas =
+        adminCollections.filter(
+            function(item) {
+
+                return ids.includes(
+                    item.id
+                );
+
+            }
+        );
+
+
+    if (!coletas.length) {
+
+        showToast(
+            "Nenhuma coleta válida foi encontrada.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Confirma antes de abrir vários WhatsApps.
+     */
+    const confirmar =
+        confirm(
+            `Serão abertas ${coletas.length} coleta(s) no WhatsApp, cada uma em uma mensagem separada.\n\nContinuar?`
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    let abertas = 0;
+    let erros = 0;
+
+
+    /*
+     * Busca Carlos uma única vez.
+     */
+    let carlos = null;
+
+
+    const precisaCarlos =
+        coletas.some(
+            function(coleta) {
+
+                const nome =
+                    String(
+                        regionName(
+                            coleta.regiao_id
+                        ) || ""
+                    )
+                        .normalize("NFD")
+                        .replace(
+                            /[\u0300-\u036f]/g,
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                return (
+                    nome.includes("garca") ||
+                    nome.includes("galia")
+                );
+
+            }
+        );
+
+
+    if (precisaCarlos) {
+
+        const {
+            data,
+            error
+        } = await db
+            .from("spal_motoristas")
+            .select(
+                "id,nome,telefone,ativo"
+            )
+            .ilike(
+                "nome",
+                "%Carlos%"
+            )
+            .order(
+                "ativo",
+                {
+                    ascending: false
+                }
+            )
+            .limit(1);
+
+
+        if (!error && data?.length) {
+
+            carlos = data[0];
+
+        }
+
+    }
+
+
+    /*
+     * Cada coleta gera seu próprio WhatsApp.
+     */
+    for (
+        const coleta of coletas
+    ) {
+
+        const escala =
+            schedules.find(
+                function(schedule) {
+
+                    return (
+                        schedule.regiao_id ===
+                            coleta.regiao_id &&
+                        schedule.data ===
+                            coleta.data_coleta
+                    );
+
+                }
+            );
+
+
+        if (!escala) {
+
+            erros++;
+
+            continue;
+
+        }
+
+
+        let responsavel =
+            drivers.find(
+                function(driver) {
+
+                    return (
+                        driver.id ===
+                        escala.ajudante_id
+                    );
+
+                }
+            );
+
+
+        if (!responsavel) {
+
+            responsavel =
+                drivers.find(
+                    function(driver) {
+
+                        return (
+                            driver.id ===
+                            escala.motorista_id
+                        );
+
+                    }
+                );
+
+        }
+
+
+        if (!responsavel) {
+
+            erros++;
+
+            continue;
+
+        }
+
+
+        const mensagem =
+            String(
+                coleta.nome || ""
+            ).trim();
+
+
+        if (!mensagem) {
+
+            erros++;
+
+            continue;
+
+        }
+
+
+        const telefoneResponsavel =
+            normalizarTelefoneWhatsApp(
+                responsavel.telefone
+            );
+
+
+        if (!telefoneResponsavel) {
+
+            erros++;
+
+            continue;
+
+        }
+
+
+        const urlResponsavel =
+            `https://wa.me/${telefoneResponsavel}?text=${
+                encodeURIComponent(
+                    mensagem
+                )
+            }`;
+
+
+        /*
+         * Abre a mensagem da coleta.
+         */
+        window.open(
+            urlResponsavel,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+
+        abertas++;
+
+
+        /*
+         * Garça/Gália também vão para Carlos.
+         */
+        const nomeRegiao =
+            String(
+                regionName(
+                    coleta.regiao_id
+                ) || ""
+            )
+                .normalize("NFD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                )
+                .toLowerCase();
+
+
+        const enviarCarlos =
+            nomeRegiao.includes("garca") ||
+            nomeRegiao.includes("galia");
+
+
+        if (
+            enviarCarlos &&
+            carlos
+        ) {
+
+            const telefoneCarlos =
+                normalizarTelefoneWhatsApp(
+                    carlos.telefone
+                );
+
+
+            if (telefoneCarlos) {
+
+                const urlCarlos =
+                    `https://wa.me/${telefoneCarlos}?text=${
+                        encodeURIComponent(
+                            mensagem
+                        )
+                    }`;
+
+
+                /*
+                 * Também é uma abertura independente.
+                 */
+                window.open(
+                    urlCarlos,
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+
+            }
+
+        }
+
+    }
+
+
+    coletasSelecionadas.clear();
+
+
+    renderAdminCollections();
+
+
+    if (erros > 0) {
+
+        showToast(
+            `${abertas} coleta(s) preparada(s). ${erros} não puderam ser enviadas.`,
+            "error"
+        );
+
+    } else {
+
+        showToast(
+            `${abertas} coleta(s) preparada(s) para envio.`,
+            "success"
+        );
+
+    }
+
+}
+
+        /* ============================================================
+           ELEMENTOS
+        ============================================================ */
+
+        const $ = id => document.getElementById(id);
+
+
+        /* ============================================================
+           UTILITÁRIOS
+        ============================================================ */
+
+        function today() {
+
+            const d = new Date();
+
+            const offset = d.getTimezoneOffset();
+
+            const local = new Date(
+                d.getTime() - offset * 60000
+            );
+
+            return local.toISOString().slice(0, 10);
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+
+        function formatDate(date) {
+
+            if (!date) return "-";
+
+            const parts = date.split("-");
+
+            if (parts.length !== 3) return date;
+
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+
+        function formatDateTime(value) {
+
+            if (!value) return "-";
+
+            const d = new Date(value);
+
+            return d.toLocaleString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+        }
+
+
+        function showToast(message, type = "") {
+
+            const toast = $("toast");
+
+            toast.textContent = message;
+
+            toast.className = `toast show ${type}`;
+
+            clearTimeout(window.toastTimer);
+
+            window.toastTimer = setTimeout(() => {
+
+                toast.className = "toast";
+
+            }, 3500);
+        }
+
+
+        function statusLabel(status) {
+
+            if (status === "feita") return "FEITA";
+
+            if (status === "nao_feita") return "NÃO FEITA";
+
+            return "PENDENTE";
+        }
+
+
+        function statusClass(status) {
+
+            if (status === "feita") return "status-feita";
+
+            if (status === "nao_feita") return "status-nao";
+
+            return "status-pendente";
+        }
+
+
+        function regionName(id) {
+
+            const region = regions.find(r => r.id === id);
+
+            return region ? region.nome : "Sem região";
+        }
+
+
+        function driverName(id) {
+
+            const driver = drivers.find(d => d.id === id);
+
+            return driver ? driver.nome : "Não definido";
+        }
+
+
+        /* ============================================================
+           AUTH
+        ============================================================ */
+
+        async function getSession() {
+
+            const {
+                data,
+                error
+            } = await db.auth.getSession();
+
+            if (error) {
+
+                console.error(error);
+
+                return null;
+            }
+
+            return data.session;
+        }
+
+
+        function isAdminEmail(email) {
+
+            if (!ADMIN_EMAILS.length) {
+                return true;
+            }
+
+            return ADMIN_EMAILS
+                .map(e => e.toLowerCase())
+                .includes(
+                    String(email || "").toLowerCase()
+                );
+        }
+
+
+        async function requireAdmin() {
+
+            const session = await getSession();
+
+            if (!session) {
+
+                $("loginModal").classList.add("open");
+
+                return false;
+            }
+
+            currentUser = session.user;
+
+            if (!isAdminEmail(currentUser.email)) {
+
+                showToast(
+                    "Este usuário não possui acesso administrativo.",
+                    "error"
+                );
+
+                await db.auth.signOut();
+
+                return false;
+            }
+
+            return true;
+        }
+
+
+        async function updateAuthUI() {
+
+            const session = await getSession();
+
+            currentUser = session?.user || null;
+
+            if (currentUser) {
+
+                $("loggedUser").textContent =
+                    currentUser.email;
+
+            } else {
+
+                $("loggedUser").textContent = "";
+
+            }
+        }
+
+
+        /* ============================================================
+           CARREGAR DADOS BASE
+        ============================================================ */
+
+        async function loadRegions() {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_regioes")
+                .select("*")
+                .eq("ativo", true)
+                .order("nome");
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Erro ao carregar regiões: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+            regions = data || [];
+
+            populateRegionSelects();
+        }
+
+
+        async function loadDrivers() {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_motoristas")
+                .select("*")
+                .eq("ativo", true)
+                .order("nome");
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Erro ao carregar motoristas: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+            drivers = data || [];
+
+            populateDriverSelects();
+        }
+
+
+        async function loadSuggestions() {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_coletas_sugestoes")
+                .select("*")
+                .eq("ativo", true)
+                .order("nome");
+
+            if (error) {
+
+                console.error(error);
+
+                return;
+            }
+
+            suggestions = data || [];
+
+            renderSuggestionControls();
+        }
+
+
+        /* ============================================================
+           SELECTS
+        ============================================================ */
+
+        function populateRegionSelects() {
+
+            const selects = [
+                $("filterRegion"),
+                $("collectionRegion"),
+                $("suggestionRegion"),
+                $("scheduleRegion")
+            ];
+
+            selects.forEach(select => {
+
+                if (!select) return;
+
+                const current = select.value;
+
+                const isFilter =
+                    select.id === "filterRegion" ||
+                    select.id === "suggestionRegion";
+
+                select.innerHTML = `
+            <option value="">
+                ${isFilter ? "Todas as regiões" : "Selecione a região"}
+            </option>
+        `;
+
+                regions.forEach(region => {
+
+                    select.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                <option value="${region.id}">
+                    ${escapeHtml(region.nome)}
+                </option>
+                `
+                    );
+
+                });
+
+                if (
+                    [...select.options]
+                        .some(o => o.value === current)
+                ) {
+                    select.value = current;
+                }
+
+            });
+        }
+
+
+        function populateDriverSelects() {
+
+            const selects = [
+                $("filterDriver"),
+                $("scheduleDriver")
+            ];
+
+            selects.forEach(select => {
+
+                if (!select) return;
+
+                const current = select.value;
+
+                select.innerHTML = `
+            <option value="">
+                ${select.id === "filterDriver"
+                        ? "Todos"
+                        : "Selecione o motorista"}
+            </option>
+        `;
+
+                drivers.forEach(driver => {
+
+                    select.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                <option value="${driver.id}">
+                    ${escapeHtml(driver.nome)}
+                </option>
+                `
+                    );
+
+                });
+
+                if (
+                    [...select.options]
+                        .some(o => o.value === current)
+                ) {
+                    select.value = current;
+                }
+
+            });
+        }
+
+
+        /* ============================================================
+           SUGESTÕES
+        ============================================================ */
+
+        function renderSuggestionControls() {
+
+            const datalist = $("collectionSuggestions");
+
+            datalist.innerHTML = "";
+
+            suggestions.forEach(item => {
+
+                datalist.insertAdjacentHTML(
+                    "beforeend",
+                    `
+            <option value="${escapeHtml(item.nome)}">
+            `
+                );
+
+            });
+
+            renderQuickSuggestions();
+        }
+
+
+        function renderQuickSuggestions() {
+
+            const regionId =
+                $("collectionRegion").value;
+
+            const container =
+                $("quickSuggestions");
+
+            container.innerHTML = "";
+
+            const filtered = suggestions
+                .filter(item =>
+                    !item.regiao_id ||
+                    item.regiao_id === regionId
+                )
+                .slice(0, 12);
+
+            filtered.forEach(item => {
+
+                const button =
+                    document.createElement("button");
+
+                button.type = "button";
+                button.className = "suggestion";
+                button.textContent = item.nome;
+
+                button.onclick = () => {
+
+                    $("collectionName").value =
+                        item.nome;
+
+                };
+
+                container.appendChild(button);
+
+            });
+        }
+
+
+        /* ============================================================
+           MOTORISTA DO DIA
+        ============================================================ */
+
+      async function getSchedules(date) {
+
+    if (!date) {
+
+        date = new Date()
+            .toISOString()
+            .slice(0, 10);
+
+    }
+
+    const { data, error } = await db
+        .from("spal_motoristas_dia")
+        .select("*")
+        .eq("data", date)
+        .order("created_at");
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar motoristas do dia:",
+            error
+        );
+
+        return [];
+    }
+
+    return data || [];
+}
+
+        function getDriverForRegion(regionId, date) {
+
+    const schedule =
+        schedules.find(function(schedule) {
+
+            return (
+                schedule.regiao_id === regionId &&
+                (!date ||
+                    schedule.data === date)
+            );
 
         });
 
-
-    $("statTotal").textContent =
-        data.length;
-
-    $("statPending").textContent =
-        data.filter(
-            x => x.status === "pendente"
-        ).length;
-
-    $("statDone").textContent =
-        data.filter(
-            x => x.status === "feita"
-        ).length;
-
-    $("statNotDone").textContent =
-        data.filter(
-            x => x.status === "nao_feita"
-        ).length;
+    return schedule
+        ? schedule.motorista_id
+        : null;
+}
 
 
-    const container =
-        $("publicRegions");
+        /* ============================================================
+           COLETAS PÚBLICAS
+        ============================================================ */
 
-    container.innerHTML = "";
+        async function loadPublicData() {
 
+            const date =
+                $("publicDate").value || today();
 
-    const regionIds =
-        regions
-            .filter(region =>
-                !regionFilter ||
-                region.id === regionFilter
-            )
-            .map(region => region.id);
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_coletas")
+                .select("*")
+                .eq("data_coleta", date)
+                .order("horario_registro");
 
+            if (error) {
 
-    regionIds.forEach(regionId => {
+                console.error(error);
 
-        const region =
-            regions.find(
-                r => r.id === regionId
-            );
+                showToast(
+                    "Erro ao carregar coletas: " + error.message,
+                    "error"
+                );
 
-        if (!region) return;
+                return;
+            }
 
+            publicCollections = data || [];
 
-        const regionCollections =
-            data.filter(
-                item =>
-                    item.regiao_id === regionId
-            );
+            schedules =
+                await getSchedules(date);
 
-
-        const schedule =
-            schedules.find(
-                item =>
-                    item.regiao_id === regionId
-            );
-
-
-        const motorista =
-            schedule
-                ? driverName(schedule.motorista_id)
-                : "Não definido";
+            renderPublic();
+        }
 
 
-        let html = `
+        function renderPublic() {
+
+            const regionFilter =
+                $("filterRegion").value;
+
+            const driverFilter =
+                $("filterDriver").value;
+
+            const statusFilter =
+                $("filterStatus").value;
+
+            let data =
+                publicCollections.filter(item => {
+
+                    if (
+                        regionFilter &&
+                        item.regiao_id !== regionFilter
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        statusFilter &&
+                        item.status !== statusFilter
+                    ) {
+                        return false;
+                    }
+
+                    const driver =
+                        getDriverForRegion(
+                            item.regiao_id,
+                            item.data_coleta
+                        );
+
+                    if (
+                        driverFilter &&
+                        driver !== driverFilter
+                    ) {
+                        return false;
+                    }
+
+                    return true;
+
+                });
+
+
+            $("statTotal").textContent =
+                data.length;
+
+            $("statPending").textContent =
+                data.filter(
+                    x => x.status === "pendente"
+                ).length;
+
+            $("statDone").textContent =
+                data.filter(
+                    x => x.status === "feita"
+                ).length;
+
+            $("statNotDone").textContent =
+                data.filter(
+                    x => x.status === "nao_feita"
+                ).length;
+
+
+            const container =
+                $("publicRegions");
+
+            container.innerHTML = "";
+
+
+            const regionIds =
+                regions
+                    .filter(region =>
+                        !regionFilter ||
+                        region.id === regionFilter
+                    )
+                    .map(region => region.id);
+
+
+            regionIds.forEach(regionId => {
+
+                const region =
+                    regions.find(
+                        r => r.id === regionId
+                    );
+
+                if (!region) return;
+
+
+                const regionCollections =
+                    data.filter(
+                        item =>
+                            item.regiao_id === regionId
+                    );
+
+
+                const schedule =
+                    schedules.find(
+                        item =>
+                            item.regiao_id === regionId
+                    );
+
+
+                const motorista =
+                    schedule
+                        ? driverName(schedule.motorista_id)
+                        : "Não definido";
+
+
+                let html = `
             <article class="region-card">
 
                 <div class="region-header">
@@ -2104,19 +3087,19 @@ function renderPublic() {
         `;
 
 
-        if (!regionCollections.length) {
+                if (!regionCollections.length) {
 
-            html += `
+                    html += `
                 <div class="empty">
                     Nenhuma coleta registrada.
                 </div>
             `;
 
-        } else {
+                } else {
 
-            regionCollections.forEach(item => {
+                    regionCollections.forEach(item => {
 
-                html += `
+                        html += `
                     <div class="collection">
 
                         <div>
@@ -2128,8 +3111,8 @@ function renderPublic() {
                             <div class="collection-meta">
                                 <span>
                                     🕐 ${formatDateTime(
-                                        item.horario_registro
-                                    )}
+                            item.horario_registro
+                        )}
                                 </span>
                             </div>
 
@@ -2142,224 +3125,531 @@ function renderPublic() {
                     </div>
                 `;
 
-            });
+                    });
 
-        }
+                }
 
 
-        html += `
+                html += `
                 </div>
             </article>
         `;
 
-        container.insertAdjacentHTML(
-            "beforeend",
-            html
-        );
+                container.insertAdjacentHTML(
+                    "beforeend",
+                    html
+                );
 
-    });
+            });
 
 
-    if (!container.children.length) {
+            if (!container.children.length) {
 
-        container.innerHTML = `
+                container.innerHTML = `
             <div class="empty">
                 Nenhuma região encontrada.
             </div>
         `;
 
-    }
-
-}
-
-
-/* ============================================================
-   REGISTRAR COLETA
-============================================================ */
-
-async function registerCollection(event) {
-
-    event.preventDefault();
-
-    if (!(await requireAdmin())) return;
-
-    const date =
-        $("collectionDate").value;
-
-    const regionId =
-        $("collectionRegion").value;
-
-    const name =
-        $("collectionName").value.trim();
-
-
-    if (!date || !regionId || !name) {
-
-        showToast(
-            "Preencha todos os campos.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas")
-        .insert({
-            data_coleta: date,
-            regiao_id: regionId,
-            nome: name,
-            status: "pendente",
-            criado_por: currentUser?.id || null
-        });
-
-
-    if (error) {
-
-        console.error(error);
-
-        showToast(
-            "Erro ao registrar coleta: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-
-    $("collectionName").value = "";
-
-    showToast(
-        "Coleta registrada com sucesso.",
-        "success"
-    );
-
-
-    await loadPublicData();
-
-    await loadAdminCollections();
-
-}
-
-
-/* ============================================================
-   SALVAR SUGESTÃO
-============================================================ */
-
-async function saveCurrentAsSuggestion() {
-
-    if (!(await requireAdmin())) return;
-
-    const name =
-        $("collectionName").value.trim();
-
-    const regionId =
-        $("collectionRegion").value || null;
-
-
-    if (!name) {
-
-        showToast(
-            "Digite o nome da coleta primeiro.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas_sugestoes")
-        .insert({
-            nome: name,
-            regiao_id: regionId,
-            ativo: true
-        });
-
-
-    if (error) {
-
-        if (error.code === "23505") {
-
-            showToast(
-                "Essa sugestão já existe.",
-                "error"
-            );
-
-        } else {
-
-            showToast(
-                "Erro ao salvar sugestão: " + error.message,
-                "error"
-            );
+            }
 
         }
 
-        return;
-    }
+
+        /* ============================================================
+           REGISTRAR COLETA
+        ============================================================ */
+
+        async function registerCollection(event) {
+
+            event.preventDefault();
+
+            if (!(await requireAdmin())) return;
+
+            const date =
+                $("collectionDate").value;
+
+            const regionId =
+                $("collectionRegion").value;
+
+            const name =
+                $("collectionName").value.trim();
 
 
-    await loadSuggestions();
+            if (!date || !regionId || !name) {
 
-    showToast(
-        "Coleta adicionada às sugestões.",
-        "success"
-    );
-}
+                showToast(
+                    "Preencha todos os campos.",
+                    "error"
+                );
 
-
-/* ============================================================
-   LISTA ADMINISTRATIVA
-============================================================ */
-
-async function loadAdminCollections() {
-
-    const date =
-        $("adminListDate").value || today();
+                return;
+            }
 
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_coletas")
-        .select("*")
-        .eq("data_coleta", date)
-        .order("horario_registro", {
-            ascending: false
-        });
+            const {
+                error
+            } = await db
+                .from("spal_coletas")
+                .insert({
+                    data_coleta: date,
+                    regiao_id: regionId,
+                    nome: name,
+                    status: "pendente",
+                    criado_por: currentUser?.id || null
+                });
 
 
-    if (error) {
+            if (error) {
 
-        console.error(error);
+                console.error(error);
 
-        $("adminCollectionsTable").innerHTML = `
+                showToast(
+                    "Erro ao registrar coleta: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+
+            $("collectionName").value = "";
+
+            showToast(
+                "Coleta registrada com sucesso.",
+                "success"
+            );
+
+
+            await loadPublicData();
+
+            await loadAdminCollections();
+
+        }
+
+
+        /* ============================================================
+           SALVAR SUGESTÃO
+        ============================================================ */
+
+        async function saveCurrentAsSuggestion() {
+
+            if (!(await requireAdmin())) return;
+
+            const name =
+                $("collectionName").value.trim();
+
+            const regionId =
+                $("collectionRegion").value || null;
+
+
+            if (!name) {
+
+                showToast(
+                    "Digite o nome da coleta primeiro.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const {
+                error
+            } = await db
+                .from("spal_coletas_sugestoes")
+                .insert({
+                    nome: name,
+                    regiao_id: regionId,
+                    ativo: true
+                });
+
+
+            if (error) {
+
+                if (error.code === "23505") {
+
+                    showToast(
+                        "Essa sugestão já existe.",
+                        "error"
+                    );
+
+                } else {
+
+                    showToast(
+                        "Erro ao salvar sugestão: " + error.message,
+                        "error"
+                    );
+
+                }
+
+                return;
+            }
+
+
+            await loadSuggestions();
+
+            showToast(
+                "Coleta adicionada às sugestões.",
+                "success"
+            );
+        }
+
+
+        /* ============================================================
+           LISTA ADMINISTRATIVA
+        ============================================================ */
+
+        async function loadAdminCollections() {
+
+            const date =
+                $("adminListDate").value || today();
+
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_coletas")
+                .select("*")
+                .eq("data_coleta", date)
+                .order("horario_registro", {
+                    ascending: false
+                });
+
+
+            if (error) {
+
+                console.error(error);
+
+                $("adminCollectionsTable").innerHTML = `
             <div class="empty">
                 ${escapeHtml(error.message)}
             </div>
         `;
 
-        return;
+                return;
+            }
+
+
+            adminCollections = data || [];
+
+            renderAdminCollections();
+
+        }
+
+        function editarColeta(coletaId) {
+            const coleta = adminCollections.find(c => c.id === coletaId);
+
+            if (!coleta) {
+                showToast("Coleta não encontrada.", "error");
+                return;
+            }
+
+            const regiaoAtual = regions.find(
+                r => r.id === coleta.regiao_id
+            );
+
+            const novoNome = prompt(
+                "Nome da coleta:",
+                coleta.nome || ""
+            );
+
+            if (novoNome === null) return;
+
+            const nome = novoNome.trim();
+
+            if (!nome) {
+                showToast("O nome da coleta não pode ficar vazio.", "error");
+                return;
+            }
+
+            const regioesTexto = regions
+                .map((r, index) => `${index + 1} - ${r.nome}`)
+                .join("\n");
+
+            const escolhaRegiao = prompt(
+                `Região atual: ${regiaoAtual?.nome || "Não informada"}\n\n` +
+                `Digite o número da nova região:\n\n${regioesTexto}`,
+                regiaoAtual
+                    ? String(
+                        regions.findIndex(r => r.id === regiaoAtual.id) + 1
+                    )
+                    : ""
+            );
+
+            if (escolhaRegiao === null) return;
+
+            const indice = Number(escolhaRegiao) - 1;
+
+            if (
+                !Number.isInteger(indice) ||
+                !regions[indice]
+            ) {
+                showToast("Região inválida.", "error");
+                return;
+            }
+
+            const novaRegiao = regions[indice];
+
+            atualizarColeta(
+                coletaId,
+                nome,
+                novaRegiao.id
+            );
+        }
+
+        async function atualizarColeta(
+    coletaId,
+    nome,
+    regiaoId
+) {
+    try {
+
+        const { error } = await db
+            .from("spal_coletas")
+            .update({
+                nome: nome,
+                regiao_id: regiaoId,
+                atualizado_em:
+                    new Date().toISOString()
+            })
+            .eq("id", coletaId);
+
+        if (error) {
+            throw error;
+        }
+
+        showToast(
+            "Coleta atualizada com sucesso.",
+            "success"
+        );
+
+        coletasSelecionadas.clear();
+
+        await loadAdminCollections();
+
+        await loadPublicData();
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao editar coleta:",
+            error
+        );
+
+        showToast(
+            "Não foi possível atualizar a coleta.",
+            "error"
+        );
+    }
+}
+
+/* ============================================================
+   CONTROLES DE SELEÇÃO DAS COLETAS
+============================================================ */
+
+function atualizarControlesSelecaoColetas() {
+
+    const contador =
+        $("contadorColetasSelecionadas");
+
+    const btnEnviar =
+        $("btnEnviarSelecionadasWhatsApp");
+
+    const btnMarcar =
+        $("btnMarcarSelecionadasFeitas");
+
+    const selecionarTodas =
+        $("selecionarTodasColetas");
+
+
+    const totalSelecionadas =
+        coletasSelecionadas.size;
+
+
+    if (contador) {
+
+        contador.textContent =
+            `${totalSelecionadas} selecionada${totalSelecionadas === 1 ? "" : "s"}`;
+
     }
 
 
-    adminCollections = data || [];
+    if (btnEnviar) {
 
-    renderAdminCollections();
+        btnEnviar.disabled =
+            totalSelecionadas === 0;
+
+    }
+
+
+    if (btnMarcar) {
+
+        btnMarcar.disabled =
+            totalSelecionadas === 0;
+
+    }
+
+
+    if (selecionarTodas) {
+
+        const filtradas =
+            getColetasFiltradasAtuais();
+
+        selecionarTodas.checked =
+            filtradas.length > 0 &&
+            filtradas.every(
+                item =>
+                    coletasSelecionadas.has(item.id)
+            );
+
+    }
 
 }
 
 
-function renderAdminCollections() {
+/* ============================================================
+   COLETAS ATUALMENTE VISÍVEIS PELOS FILTROS
+============================================================ */
+
+function getColetasFiltradasAtuais() {
+
+    const search =
+        String(
+            $("adminCollectionSearch")?.value || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    const regionFilter =
+        $("adminCollectionRegion")?.value || "";
+
+
+    const statusFilter =
+        $("adminCollectionStatus")?.value || "";
+
+
+    const driverFilter =
+        $("adminCollectionDriver")?.value || "";
+
+
+    const helperFilter =
+        $("adminCollectionHelper")?.value || "";
+
+
+    return adminCollections.filter(item => {
+
+        const nome =
+            String(item.nome || "")
+                .toLowerCase();
+
+
+        /* PESQUISA */
+
+        if (
+            search &&
+            !nome.includes(search)
+        ) {
+
+            return false;
+
+        }
+
+
+        /* REGIÃO */
+
+        if (
+            regionFilter &&
+            item.regiao_id !== regionFilter
+        ) {
+
+            return false;
+
+        }
+
+
+        /* STATUS */
+
+        if (
+            statusFilter &&
+            item.status !== statusFilter
+        ) {
+
+            return false;
+
+        }
+
+
+        /* ESCALA DA REGIÃO */
+
+        const escala =
+            schedules.find(schedule => {
+
+                return (
+                    schedule.regiao_id === item.regiao_id &&
+                    schedule.data === item.data_coleta
+                );
+
+            });
+
+
+        const motoristaId =
+            escala
+                ? escala.motorista_id
+                : null;
+
+
+        const ajudanteId =
+            escala
+                ? escala.ajudante_id
+                : null;
+
+
+        /* MOTORISTA */
+
+        if (
+            driverFilter &&
+            motoristaId !== driverFilter
+        ) {
+
+            return false;
+
+        }
+
+
+        /* AJUDANTE */
+
+        if (
+            helperFilter &&
+            ajudanteId !== helperFilter
+        ) {
+
+            return false;
+
+        }
+
+
+        return true;
+
+    });
+
+}
+
+        function renderAdminCollections() {
 
     const container =
         $("adminCollectionsTable");
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const filtradas =
+        getColetasFiltradasAtuais();
 
 
     if (!adminCollections.length) {
@@ -2370,23 +3660,60 @@ function renderAdminCollections() {
             </div>
         `;
 
+        atualizarControlesSelecaoColetas();
+
+        return;
+    }
+
+
+    if (!filtradas.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                Nenhuma coleta encontrada com os filtros atuais.
+            </div>
+        `;
+
+        atualizarControlesSelecaoColetas();
+
         return;
     }
 
 
     let html = `
+
         <table>
 
             <thead>
 
                 <tr>
+
+                    <th style="width:45px;">
+                        <input
+                            type="checkbox"
+                            id="selecionarTodasTabela"
+                            class="coleta-checkbox"
+                            ${filtradas.length > 0 &&
+                            filtradas.every(item =>
+                                coletasSelecionadas.has(item.id)
+                            )
+                            ? "checked"
+                            : ""}
+                        >
+                    </th>
+
                     <th>Coleta</th>
+
                     <th>Região</th>
-                    <th>Motorista</th>
+
+                    <th>Equipe</th>
+
                     <th>Registro</th>
+
                     <th>Status</th>
-                    <th>Ação</th>
-                    
+
+                    <th>Ações</th>
+
                 </tr>
 
             </thead>
@@ -2395,66 +3722,136 @@ function renderAdminCollections() {
     `;
 
 
-    adminCollections.forEach(item => {
+    filtradas.forEach(item => {
+
+        const escala =
+            schedules.find(schedule => {
+
+                return (
+                    schedule.regiao_id === item.regiao_id &&
+                    schedule.data === item.data_coleta
+                );
+
+            });
+
 
         const driverId =
-            getDriverForRegion(
-                item.regiao_id,
-                item.data_coleta
-            );
+            escala
+                ? escala.motorista_id
+                : null;
+
+
+        const helperId =
+            escala
+                ? escala.ajudante_id
+                : null;
+
+
+        const selecionada =
+            coletasSelecionadas.has(item.id);
 
 
         html += `
-            <tr>
+
+            <tr
+                class="${selecionada ? "coleta-row-selected" : ""}"
+            >
 
                 <td>
-                    <strong>
-                        ${escapeHtml(item.nome)}
-                    </strong>
+
+                    <input
+                        type="checkbox"
+                        class="coleta-checkbox coleta-select"
+                        data-id="${item.id}"
+                        ${selecionada ? "checked" : ""}
+                    >
+
                 </td>
 
+
                 <td>
+
+                    <div class="coleta-content">
+
+                        <strong>
+                            ${escapeHtml(item.nome || "")}
+                        </strong>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
                     ${escapeHtml(
                         regionName(item.regiao_id)
                     )}
+
                 </td>
 
-                <td>
-                    ${escapeHtml(
-                        driverName(driverId)
-                    )}
-                </td>
 
                 <td>
+
+                    <div class="coleta-equipe">
+
+                        <strong>
+                            ${escapeHtml(
+                                driverName(driverId)
+                            )}
+                        </strong>
+
+                        <span>
+                            Ajudante:
+                            ${escapeHtml(
+                                driverName(helperId)
+                            )}
+                        </span>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
                     ${formatDateTime(
                         item.horario_registro
                     )}
+
                 </td>
+
 
                 <td>
 
                     <select
-                        class="status-change"
+                        class="status-change coleta-status"
                         data-id="${item.id}"
                     >
 
                         <option
                             value="pendente"
-                            ${item.status === "pendente" ? "selected" : ""}
+                            ${item.status === "pendente"
+                                ? "selected"
+                                : ""}
                         >
                             Pendente
                         </option>
 
                         <option
                             value="feita"
-                            ${item.status === "feita" ? "selected" : ""}
+                            ${item.status === "feita"
+                                ? "selected"
+                                : ""}
                         >
                             Feita
                         </option>
 
                         <option
                             value="nao_feita"
-                            ${item.status === "nao_feita" ? "selected" : ""}
+                            ${item.status === "nao_feita"
+                                ? "selected"
+                                : ""}
                         >
                             Não feita
                         </option>
@@ -2463,50 +3860,152 @@ function renderAdminCollections() {
 
                 </td>
 
+
                 <td>
 
-                    <button
-                        class="btn btn-danger btn-small delete-collection"
-                        data-id="${item.id}"
-                    >
-                        Excluir
-                    </button>
+                    <div class="coleta-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-small whatsapp-btn"
+                            onclick="enviarColetaWhatsApp('${item.id}')"
+                        >
+                            WhatsApp
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-small"
+                            onclick="editarColeta('${item.id}')"
+                        >
+                            ✎ Editar
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-small delete-collection"
+                            data-id="${item.id}"
+                        >
+                            Excluir
+                        </button>
+
+                    </div>
 
                 </td>
-                    <td>
-                        <button
-                            class="btn btn-small whatsapp-btn"
-                            onclick="enviarColetaWhatsApp('${item.id}')">
-                                WhatsApp
-                        </button>
-                    </td>
+
             </tr>
+
         `;
 
     });
 
 
     html += `
+
             </tbody>
 
         </table>
+
     `;
 
 
-    container.innerHTML = html;
+    container.innerHTML =
+        html;
 
 
-    document
+    /* ============================================================
+       SELECIONAR INDIVIDUAL
+    ============================================================ */
+
+    container
+        .querySelectorAll(".coleta-select")
+        .forEach(checkbox => {
+
+            checkbox.addEventListener(
+                "change",
+                function() {
+
+                    const id =
+                        this.dataset.id;
+
+
+                    if (this.checked) {
+
+                        coletasSelecionadas.add(id);
+
+                    } else {
+
+                        coletasSelecionadas.delete(id);
+
+                    }
+
+
+                    renderAdminCollections();
+
+                }
+            );
+
+        });
+
+
+    /* ============================================================
+       SELECIONAR TODAS DA TABELA
+    ============================================================ */
+
+    const selecionarTodasTabela =
+        $("selecionarTodasTabela");
+
+
+    if (selecionarTodasTabela) {
+
+        selecionarTodasTabela.addEventListener(
+            "change",
+            function() {
+
+                filtradas.forEach(item => {
+
+                    if (this.checked) {
+
+                        coletasSelecionadas.add(
+                            item.id
+                        );
+
+                    } else {
+
+                        coletasSelecionadas.delete(
+                            item.id
+                        );
+
+                    }
+
+                });
+
+
+                renderAdminCollections();
+
+            }
+        );
+
+    }
+
+
+    /* ============================================================
+       STATUS
+    ============================================================ */
+
+    container
         .querySelectorAll(".status-change")
         .forEach(select => {
 
             select.addEventListener(
                 "change",
-                async () => {
+                async function() {
 
                     await updateCollectionStatus(
-                        select.dataset.id,
-                        select.value
+                        this.dataset.id,
+                        this.value
                     );
 
                 }
@@ -2515,24 +4014,31 @@ function renderAdminCollections() {
         });
 
 
-    document
+    /* ============================================================
+       EXCLUIR
+    ============================================================ */
+
+    container
         .querySelectorAll(".delete-collection")
         .forEach(button => {
 
             button.addEventListener(
                 "click",
-                async () => {
+                async function() {
 
                     if (
                         !confirm(
                             "Excluir esta coleta?"
                         )
                     ) {
+
                         return;
+
                     }
 
+
                     await deleteCollection(
-                        button.dataset.id
+                        this.dataset.id
                     );
 
                 }
@@ -2540,197 +4046,191 @@ function renderAdminCollections() {
 
         });
 
-}
 
-
-/* ============================================================
-   ALTERAR STATUS
-============================================================ */
-
-async function updateCollectionStatus(
-    id,
-    status
-) {
-
-    if (!(await requireAdmin())) return;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas")
-        .update({
-            status,
-            atualizado_em: new Date().toISOString()
-        })
-        .eq("id", id);
-
-
-    if (error) {
-
-        showToast(
-            "Erro ao atualizar: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-
-    showToast(
-        "Status atualizado.",
-        "success"
-    );
-
-
-    await loadAdminCollections();
-
-    await loadPublicData();
+    atualizarControlesSelecaoColetas();
 
 }
 
+        /* ============================================================
+           ALTERAR STATUS
+        ============================================================ */
 
-/* ============================================================
-   EXCLUIR COLETA
-============================================================ */
+        async function updateCollectionStatus(
+            id,
+            status
+        ) {
 
-async function deleteCollection(id) {
-
-    if (!(await requireAdmin())) return;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas")
-        .delete()
-        .eq("id", id);
+            if (!(await requireAdmin())) return;
 
 
-    if (error) {
-
-        showToast(
-            "Erro ao excluir: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-
-    showToast(
-        "Coleta excluída.",
-        "success"
-    );
+            const {
+                error
+            } = await db
+                .from("spal_coletas")
+                .update({
+                    status,
+                    atualizado_em: new Date().toISOString()
+                })
+                .eq("id", id);
 
 
-    await loadAdminCollections();
+            if (error) {
 
-    await loadPublicData();
+                showToast(
+                    "Erro ao atualizar: " + error.message,
+                    "error"
+                );
 
+                return;
+            }
+
+
+            showToast(
+                "Status atualizado.",
+                "success"
+            );
+
+
+            await loadAdminCollections();
+
+            await loadPublicData();
+
+        }
+
+
+        /* ============================================================
+           EXCLUIR COLETA
+        ============================================================ */
+
+        async function deleteCollection(id) {
+
+            if (!(await requireAdmin())) return;
+
+
+            const {
+                error
+            } = await db
+                .from("spal_coletas")
+                .delete()
+                .eq("id", id);
+
+
+            if (error) {
+
+                showToast(
+                    "Erro ao excluir: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showToast(
+                "Coleta excluída.",
+                "success"
+            );
+
+
+            await loadAdminCollections();
+
+            await loadPublicData();
+
+        }
+
+
+        /* ============================================================
+           MOTORISTAS
+        ============================================================ */
+
+        async function createDriver(event) { 
+ 
+    event.preventDefault(); 
+ 
+    if (!(await requireAdmin())) return; 
+ 
+    const nome = 
+        $("driverName").value.trim(); 
+ 
+    const telefone = 
+        $("driverPhone").value.trim(); 
+ 
+    const { error } = await db 
+        .from("spal_motoristas") 
+        .insert({ 
+            nome, 
+            telefone: telefone || null, 
+            ativo: true 
+        }); 
+ 
+    if (error) { 
+ 
+        showToast( 
+            "Erro ao cadastrar motorista: " + error.message, 
+            "error" 
+        ); 
+ 
+        return; 
+    } 
+ 
+    $("driverForm").reset(); 
+ 
+    showToast( 
+        "Motorista cadastrado.", 
+        "success" 
+    ); 
+ 
+    await loadDrivers(); 
+ 
+    renderDriversTable(); 
 }
 
 
-/* ============================================================
-   MOTORISTAS
-============================================================ */
+        async function loadDriversTable() {
 
-async function createDriver(event) {
-
-    event.preventDefault();
-
-    if (!(await requireAdmin())) return;
-
-
-    const nome =
-        $("driverName").value.trim();
-
-    const telefone =
-        $("driverPhone").value.trim();
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_motoristas")
+                .select("*")
+                .order("nome");
 
 
-    const {
-        error
-    } = await db
-        .from("spal_motoristas")
-        .insert({
-            nome,
-            telefone: telefone || null,
-            ativo: true
-        });
+            if (error) {
+
+                console.error(error);
+
+                return;
+            }
 
 
-    if (error) {
+            drivers = data || [];
 
-        showToast(
-            "Erro ao cadastrar motorista: " + error.message,
-            "error"
-        );
+            renderDriversTable();
 
-        return;
-    }
+        }
 
 
-    $("driverForm").reset();
+        function renderDriversTable() {
 
-    showToast(
-        "Motorista cadastrado.",
-        "success"
-    );
+            const container =
+                $("driversTable");
 
 
-    await loadDrivers();
+            if (!drivers.length) {
 
-    renderDriversTable();
-
-}
-
-
-async function loadDriversTable() {
-
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_motoristas")
-        .select("*")
-        .order("nome");
-
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-    }
-
-
-    drivers = data || [];
-
-    renderDriversTable();
-
-}
-
-
-function renderDriversTable() {
-
-    const container =
-        $("driversTable");
-
-
-    if (!drivers.length) {
-
-        container.innerHTML = `
+                container.innerHTML = `
             <div class="empty">
                 Nenhum motorista cadastrado.
             </div>
         `;
 
-        return;
-    }
+                return;
+            }
 
 
-    let html = `
+            let html = `
         <table>
 
             <thead>
@@ -2748,9 +4248,9 @@ function renderDriversTable() {
     `;
 
 
-    drivers.forEach(driver => {
+            drivers.forEach(driver => {
 
-        html += `
+                html += `
             <tr>
 
                 <td>
@@ -2775,8 +4275,8 @@ function renderDriversTable() {
                         data-active="${driver.ativo}"
                     >
                         ${driver.ativo
-                            ? "Desativar"
-                            : "Ativar"}
+                        ? "Desativar"
+                        : "Ativar"}
                     </button>
 
                 </td>
@@ -2784,183 +4284,183 @@ function renderDriversTable() {
             </tr>
         `;
 
-    });
+            });
 
 
-    html += `
+            html += `
             </tbody>
         </table>
     `;
 
 
-    container.innerHTML = html;
+            container.innerHTML = html;
 
 
-    document
-        .querySelectorAll(".toggle-driver")
-        .forEach(button => {
+            document
+                .querySelectorAll(".toggle-driver")
+                .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                async () => {
+                    button.addEventListener(
+                        "click",
+                        async () => {
 
-                    const active =
-                        button.dataset.active === "true";
+                            const active =
+                                button.dataset.active === "true";
 
-                    await toggleDriver(
-                        button.dataset.id,
-                        !active
+                            await toggleDriver(
+                                button.dataset.id,
+                                !active
+                            );
+
+                        }
                     );
 
-                }
-            );
-
-        });
-
-}
-
-
-async function toggleDriver(id, active) {
-
-    if (!(await requireAdmin())) return;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_motoristas")
-        .update({
-            ativo: active
-        })
-        .eq("id", id);
-
-
-    if (error) {
-
-        showToast(
-            "Erro: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-
-    await loadDriversTable();
-
-    await loadDrivers();
-
-    showToast(
-        active
-            ? "Motorista ativado."
-            : "Motorista desativado.",
-        "success"
-    );
-}
-
-
-/* ============================================================
-   REGIÕES
-============================================================ */
-
-async function createRegion(event) {
-
-    event.preventDefault();
-
-    if (!(await requireAdmin())) return;
-
-
-    const nome =
-        $("regionName").value.trim();
-
-
-    const {
-        error
-    } = await db
-        .from("spal_regioes")
-        .insert({
-            nome,
-            ativo: true
-        });
-
-
-    if (error) {
-
-        if (error.code === "23505") {
-
-            showToast(
-                "Essa região já está cadastrada.",
-                "error"
-            );
-
-        } else {
-
-            showToast(
-                "Erro: " + error.message,
-                "error"
-            );
+                });
 
         }
 
-        return;
-    }
+
+        async function toggleDriver(id, active) {
+
+            if (!(await requireAdmin())) return;
 
 
-    $("regionForm").reset();
-
-    await loadRegions();
-
-    await loadRegionsTable();
-
-    showToast(
-        "Região cadastrada.",
-        "success"
-    );
-}
+            const {
+                error
+            } = await db
+                .from("spal_motoristas")
+                .update({
+                    ativo: active
+                })
+                .eq("id", id);
 
 
-async function loadRegionsTable() {
+            if (error) {
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_regioes")
-        .select("*")
-        .order("nome");
+                showToast(
+                    "Erro: " + error.message,
+                    "error"
+                );
 
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-    }
+                return;
+            }
 
 
-    renderRegionsTable(data || []);
-}
+            await loadDriversTable();
+
+            await loadDrivers();
+
+            showToast(
+                active
+                    ? "Motorista ativado."
+                    : "Motorista desativado.",
+                "success"
+            );
+        }
 
 
-function renderRegionsTable(data) {
+        /* ============================================================
+           REGIÕES
+        ============================================================ */
 
-    const container =
-        $("regionsTable");
+        async function createRegion(event) {
+
+            event.preventDefault();
+
+            if (!(await requireAdmin())) return;
 
 
-    if (!data.length) {
+            const nome =
+                $("regionName").value.trim();
 
-        container.innerHTML = `
+
+            const {
+                error
+            } = await db
+                .from("spal_regioes")
+                .insert({
+                    nome,
+                    ativo: true
+                });
+
+
+            if (error) {
+
+                if (error.code === "23505") {
+
+                    showToast(
+                        "Essa região já está cadastrada.",
+                        "error"
+                    );
+
+                } else {
+
+                    showToast(
+                        "Erro: " + error.message,
+                        "error"
+                    );
+
+                }
+
+                return;
+            }
+
+
+            $("regionForm").reset();
+
+            await loadRegions();
+
+            await loadRegionsTable();
+
+            showToast(
+                "Região cadastrada.",
+                "success"
+            );
+        }
+
+
+        async function loadRegionsTable() {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_regioes")
+                .select("*")
+                .order("nome");
+
+
+            if (error) {
+
+                console.error(error);
+
+                return;
+            }
+
+
+            renderRegionsTable(data || []);
+        }
+
+
+        function renderRegionsTable(data) {
+
+            const container =
+                $("regionsTable");
+
+
+            if (!data.length) {
+
+                container.innerHTML = `
             <div class="empty">
                 Nenhuma região cadastrada.
             </div>
         `;
 
-        return;
-    }
+                return;
+            }
 
 
-    let html = `
+            let html = `
         <table>
 
             <thead>
@@ -2977,9 +4477,9 @@ function renderRegionsTable(data) {
     `;
 
 
-    data.forEach(region => {
+            data.forEach(region => {
 
-        html += `
+                html += `
             <tr>
 
                 <td>
@@ -3000,8 +4500,8 @@ function renderRegionsTable(data) {
                         data-active="${region.ativo}"
                     >
                         ${region.ativo
-                            ? "Desativar"
-                            : "Ativar"}
+                        ? "Desativar"
+                        : "Ativar"}
                     </button>
 
                 </td>
@@ -3009,181 +4509,181 @@ function renderRegionsTable(data) {
             </tr>
         `;
 
-    });
+            });
 
 
-    html += `
+            html += `
             </tbody>
         </table>
     `;
 
 
-    container.innerHTML = html;
+            container.innerHTML = html;
 
 
-    document
-        .querySelectorAll(".toggle-region")
-        .forEach(button => {
+            document
+                .querySelectorAll(".toggle-region")
+                .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                async () => {
+                    button.addEventListener(
+                        "click",
+                        async () => {
 
-                    const active =
-                        button.dataset.active === "true";
+                            const active =
+                                button.dataset.active === "true";
 
-                    await toggleRegion(
-                        button.dataset.id,
-                        !active
+                            await toggleRegion(
+                                button.dataset.id,
+                                !active
+                            );
+
+                        }
                     );
 
-                }
-            );
-
-        });
-
-}
-
-
-async function toggleRegion(id, active) {
-
-    if (!(await requireAdmin())) return;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_regioes")
-        .update({
-            ativo: active
-        })
-        .eq("id", id);
-
-
-    if (error) {
-
-        showToast(
-            "Erro: " + error.message,
-            "error"
-        );
-
-        return;
-    }
-
-
-    await loadRegions();
-
-    await loadRegionsTable();
-
-    showToast(
-        active
-            ? "Região ativada."
-            : "Região desativada.",
-        "success"
-    );
-}
-
-
-/* ============================================================
-   SUGESTÕES
-============================================================ */
-
-async function createSuggestion(event) {
-
-    event.preventDefault();
-
-    if (!(await requireAdmin())) return;
-
-
-    const nome =
-        $("suggestionName").value.trim();
-
-    const regiao_id =
-        $("suggestionRegion").value || null;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas_sugestoes")
-        .insert({
-            nome,
-            regiao_id,
-            ativo: true
-        });
-
-
-    if (error) {
-
-        if (error.code === "23505") {
-
-            showToast(
-                "Essa sugestão já existe.",
-                "error"
-            );
-
-        } else {
-
-            showToast(
-                "Erro: " + error.message,
-                "error"
-            );
+                });
 
         }
 
-        return;
-    }
+
+        async function toggleRegion(id, active) {
+
+            if (!(await requireAdmin())) return;
 
 
-    $("suggestionForm").reset();
-
-    await loadSuggestions();
-
-    await loadSuggestionsTable();
-
-    showToast(
-        "Sugestão cadastrada.",
-        "success"
-    );
-}
+            const {
+                error
+            } = await db
+                .from("spal_regioes")
+                .update({
+                    ativo: active
+                })
+                .eq("id", id);
 
 
-async function loadSuggestionsTable() {
+            if (error) {
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_coletas_sugestoes")
-        .select("*")
-        .order("nome");
+                showToast(
+                    "Erro: " + error.message,
+                    "error"
+                );
 
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-    }
+                return;
+            }
 
 
-    const container =
-        $("suggestionsTable");
+            await loadRegions();
+
+            await loadRegionsTable();
+
+            showToast(
+                active
+                    ? "Região ativada."
+                    : "Região desativada.",
+                "success"
+            );
+        }
 
 
-    if (!data?.length) {
+        /* ============================================================
+           SUGESTÕES
+        ============================================================ */
 
-        container.innerHTML = `
+        async function createSuggestion(event) {
+
+            event.preventDefault();
+
+            if (!(await requireAdmin())) return;
+
+
+            const nome =
+                $("suggestionName").value.trim();
+
+            const regiao_id =
+                $("suggestionRegion").value || null;
+
+
+            const {
+                error
+            } = await db
+                .from("spal_coletas_sugestoes")
+                .insert({
+                    nome,
+                    regiao_id,
+                    ativo: true
+                });
+
+
+            if (error) {
+
+                if (error.code === "23505") {
+
+                    showToast(
+                        "Essa sugestão já existe.",
+                        "error"
+                    );
+
+                } else {
+
+                    showToast(
+                        "Erro: " + error.message,
+                        "error"
+                    );
+
+                }
+
+                return;
+            }
+
+
+            $("suggestionForm").reset();
+
+            await loadSuggestions();
+
+            await loadSuggestionsTable();
+
+            showToast(
+                "Sugestão cadastrada.",
+                "success"
+            );
+        }
+
+
+        async function loadSuggestionsTable() {
+
+            const {
+                data,
+                error
+            } = await db
+                .from("spal_coletas_sugestoes")
+                .select("*")
+                .order("nome");
+
+
+            if (error) {
+
+                console.error(error);
+
+                return;
+            }
+
+
+            const container =
+                $("suggestionsTable");
+
+
+            if (!data?.length) {
+
+                container.innerHTML = `
             <div class="empty">
                 Nenhuma sugestão cadastrada.
             </div>
         `;
 
-        return;
-    }
+                return;
+            }
 
 
-    let html = `
+            let html = `
         <table>
 
             <thead>
@@ -3201,9 +4701,9 @@ async function loadSuggestionsTable() {
     `;
 
 
-    data.forEach(item => {
+            data.forEach(item => {
 
-        html += `
+                html += `
             <tr>
 
                 <td>
@@ -3214,10 +4714,10 @@ async function loadSuggestionsTable() {
 
                 <td>
                     ${escapeHtml(
-                        item.regiao_id
-                            ? regionName(item.regiao_id)
-                            : "Todas"
-                    )}
+                    item.regiao_id
+                        ? regionName(item.regiao_id)
+                        : "Todas"
+                )}
                 </td>
 
                 <td>
@@ -3238,304 +4738,758 @@ async function loadSuggestionsTable() {
             </tr>
         `;
 
-    });
+            });
 
 
-    html += `
+            html += `
             </tbody>
         </table>
     `;
 
 
-    container.innerHTML = html;
+            container.innerHTML = html;
 
 
-    document
-        .querySelectorAll(".delete-suggestion")
-        .forEach(button => {
+            document
+                .querySelectorAll(".delete-suggestion")
+                .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                async () => {
+                    button.addEventListener(
+                        "click",
+                        async () => {
 
-                    if (
-                        !confirm(
-                            "Excluir esta sugestão?"
-                        )
-                    ) {
-                        return;
-                    }
+                            if (
+                                !confirm(
+                                    "Excluir esta sugestão?"
+                                )
+                            ) {
+                                return;
+                            }
 
-                    await deleteSuggestion(
-                        button.dataset.id
+                            await deleteSuggestion(
+                                button.dataset.id
+                            );
+
+                        }
                     );
 
-                }
+                });
+
+        }
+
+
+        async function deleteSuggestion(id) {
+
+            if (!(await requireAdmin())) return;
+
+
+            const {
+                error
+            } = await db
+                .from("spal_coletas_sugestoes")
+                .delete()
+                .eq("id", id);
+
+
+            if (error) {
+
+                showToast(
+                    "Erro ao excluir: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+
+            await loadSuggestions();
+
+            await loadSuggestionsTable();
+
+            showToast(
+                "Sugestão excluída.",
+                "success"
+            );
+        }
+
+
+        /* ============================================================
+           ESCALA MOTORISTA / REGIÃO
+        ============================================================ */
+
+        async function saveSchedule(event) {
+
+            event.preventDefault();
+
+            if (!(await requireAdmin())) return;
+
+
+            const data =
+                $("scheduleDate").value;
+
+            const regiao_id =
+                $("scheduleRegion").value;
+
+            const motorista_id =
+                $("scheduleDriver").value;
+
+
+            if (!data || !regiao_id || !motorista_id) {
+
+                showToast(
+                    "Preencha todos os campos.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const {
+                error
+            } = await db
+                .from("spal_motoristas_dia")
+                .upsert(
+                    {
+                        data,
+                        regiao_id,
+                        motorista_id,
+                        atualizado_em: new Date().toISOString()
+                    },
+                    {
+                        onConflict: "data,regiao_id"
+                    }
+                );
+
+
+            if (error) {
+
+                showToast(
+                    "Erro ao salvar escala: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showToast(
+                "Motorista do dia salvo.",
+                "success"
             );
 
-        });
 
-}
+            await loadScheduleTable(
+                $("scheduleDate").value
+            );
 
+            await loadPublicData();
+        }
 
-async function deleteSuggestion(id) {
+        async function atualizarMotoristaDoDia(
+    id,
+    regiaoId,
+    motoristaId,
+    ajudanteId
+) {
+    try {
 
-    if (!(await requireAdmin())) return;
-
-
-    const {
-        error
-    } = await db
-        .from("spal_coletas_sugestoes")
-        .delete()
-        .eq("id", id);
-
-
-    if (error) {
-
-        showToast(
-            "Erro ao excluir: " + error.message,
-            "error"
+        const registroAtual = schedules.find(
+            s => s.id === id
         );
 
+        if (!registroAtual) {
+            showToast(
+                "Registro atual não encontrado.",
+                "error"
+            );
+            return;
+        }
+
+        // Não permite duas equipes para a mesma
+        // região na mesma data
+        const conflito = schedules.find(s =>
+            s.id !== id &&
+            s.data === registroAtual.data &&
+            s.regiao_id === regiaoId
+        );
+
+        if (conflito) {
+
+            showToast(
+                "Já existe uma equipe cadastrada para esta região nesta data.",
+                "error"
+            );
+
+            return;
+        }
+
+        const { error } = await db
+            .from("spal_motoristas_dia")
+            .update({
+                regiao_id: regiaoId,
+                motorista_id: motoristaId,
+                ajudante_id: ajudanteId || null
+            })
+            .eq("id", id);
+
+        if (error) {
+            throw error;
+        }
+
+        showToast(
+            "Equipe atualizada com sucesso.",
+            "success"
+        );
+
+        schedules = await getSchedules(
+            registroAtual.data
+        );
+
+        await loadScheduleTable();
+
+        if (
+            typeof loadAdminCollections === "function"
+        ) {
+            await loadAdminCollections();
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao atualizar equipe:",
+            error
+        );
+
+        showToast(
+            "Não foi possível atualizar a equipe.",
+            "error"
+        );
+    }
+}
+
+async function editarMotoristaDoDia(id) {
+
+    const registro = schedules.find(
+        s => s.id === id
+    );
+
+    if (!registro) {
+        showToast(
+            "Equipe não encontrada.",
+            "error"
+        );
         return;
     }
 
-
-    await loadSuggestions();
-
-    await loadSuggestionsTable();
-
-    showToast(
-        "Sugestão excluída.",
-        "success"
+    const motoristasAtivos = drivers.filter(
+        d => d.ativo !== false
     );
-}
 
+    const motoristaAtual = motoristasAtivos.find(
+        d => d.id === registro.motorista_id
+    );
 
-/* ============================================================
-   ESCALA MOTORISTA / REGIÃO
-============================================================ */
+    const ajudanteAtual = motoristasAtivos.find(
+        d => d.id === registro.ajudante_id
+    );
 
-async function saveSchedule(event) {
+    const listaMotoristas = motoristasAtivos
+        .map(
+            (m, i) =>
+                `${i + 1} - ${m.nome}`
+        )
+        .join("\n");
 
-    event.preventDefault();
+    const motoristaEscolhido = prompt(
+        `REGIÃO: ${
+            regions.find(
+                r => r.id === registro.regiao_id
+            )?.nome || ""
+        }\n\n` +
 
-    if (!(await requireAdmin())) return;
+        `Motorista atual: ${
+            motoristaAtual
+                ? motoristaAtual.nome
+                : "Não informado"
+        }\n\n` +
 
+        `Escolha o motorista:\n\n${listaMotoristas}`,
 
-    const data =
-        $("scheduleDate").value;
+        motoristaAtual
+            ? String(
+                motoristasAtivos.findIndex(
+                    m =>
+                        m.id ===
+                        motoristaAtual.id
+                ) + 1
+            )
+            : ""
+    );
 
-    const regiao_id =
-        $("scheduleRegion").value;
-
-    const motorista_id =
-        $("scheduleDriver").value;
-
-
-    if (!data || !regiao_id || !motorista_id) {
-
-        showToast(
-            "Preencha todos os campos.",
-            "error"
-        );
-
+    if (motoristaEscolhido === null) {
         return;
     }
 
+    const indiceMotorista =
+        Number(motoristaEscolhido) - 1;
 
-    const {
-        error
-    } = await db
-        .from("spal_motoristas_dia")
-        .upsert(
-            {
-                data,
-                regiao_id,
-                motorista_id,
-                atualizado_em: new Date().toISOString()
-            },
-            {
-                onConflict: "data,regiao_id"
-            }
-        );
-
-
-    if (error) {
-
+    if (
+        !Number.isInteger(indiceMotorista) ||
+        !motoristasAtivos[indiceMotorista]
+    ) {
         showToast(
-            "Erro ao salvar escala: " + error.message,
+            "Motorista inválido.",
             "error"
         );
-
         return;
     }
 
+    const novoMotorista =
+        motoristasAtivos[indiceMotorista];
 
-    showToast(
-        "Motorista do dia salvo.",
-        "success"
+    const ajudanteEscolhido = prompt(
+        `Ajudante atual: ${
+            ajudanteAtual
+                ? ajudanteAtual.nome
+                : "Nenhum"
+        }\n\n` +
+
+        `Escolha o ajudante:\n\n${listaMotoristas}\n\n` +
+
+        `Digite 0 para deixar sem ajudante.`,
+
+        ajudanteAtual
+            ? String(
+                motoristasAtivos.findIndex(
+                    m =>
+                        m.id ===
+                        ajudanteAtual.id
+                ) + 1
+            )
+            : "0"
     );
 
+    if (ajudanteEscolhido === null) {
+        return;
+    }
 
-    await loadScheduleTable(
-        $("scheduleDate").value
+    const numeroAjudante =
+        Number(ajudanteEscolhido);
+
+    let novoAjudanteId = null;
+
+    if (numeroAjudante !== 0) {
+
+        const indiceAjudante =
+            numeroAjudante - 1;
+
+        if (
+            !Number.isInteger(indiceAjudante) ||
+            !motoristasAtivos[indiceAjudante]
+        ) {
+            showToast(
+                "Ajudante inválido.",
+                "error"
+            );
+            return;
+        }
+
+        novoAjudanteId =
+            motoristasAtivos[
+                indiceAjudante
+            ].id;
+    }
+
+    await atualizarMotoristaDoDia(
+        id,
+        registro.regiao_id,
+        novoMotorista.id,
+        novoAjudanteId
     );
-
-    await loadPublicData();
 }
 
+async function carregarEquipesPadrao() {
+    try {
+        const { data, error } = await db
+            .from("spal_equipe_padrao")
+            .select(`
+                *,
+                regiao:spal_regioes(id, nome),
+                motorista:spal_motoristas!spal_equipe_padrao_motorista_id_fkey(id, nome, telefone),
+                ajudante:spal_motoristas!spal_equipe_padrao_ajudante_id_fkey(id, nome, telefone)
+            `)
+            .eq("ativo", true);
 
-async function loadScheduleTable(date = today()) {
+        if (error) throw error;
 
-    const {
-        data,
-        error
-    } = await db
-        .from("spal_motoristas_dia")
+        return data || [];
+
+    } catch (error) {
+        console.error(
+            "Erro ao carregar equipes padrão:",
+            error
+        );
+
+        return [];
+    }
+}
+
+async function buscarEquipePadrao(regiaoId) {
+
+    const { data, error } = await db
+        .from("spal_equipe_padrao")
         .select("*")
-        .eq("data", date)
-        .order("created_at");
-
+        .eq("regiao_id", regiaoId)
+        .eq("ativo", true)
+        .maybeSingle();
 
     if (error) {
+        console.error(
+            "Erro ao buscar equipe padrão:",
+            error
+        );
 
-        console.error(error);
-
-        return;
+        return null;
     }
 
+    return data;
+}
 
-    schedules = data || [];
+async function loadScheduleTable(date) {
 
+    try {
 
-    const container =
-        $("scheduleTable");
+        if (!date) {
+            date = $("scheduleDate").value;
+        }
 
+        if (!date) {
+            date = today();
+        }
 
-    if (!data?.length) {
+        if ($("scheduleDate")) {
+            $("scheduleDate").value = date;
+        }
 
-        container.innerHTML = `
-            <div class="empty">
-                Nenhum motorista definido para ${formatDate(date)}.
-            </div>
+        console.log(
+            "Carregando escala:",
+            date
+        );
+
+        const {
+            data,
+            error
+        } = await db
+            .from("spal_motoristas_dia")
+            .select("*")
+            .eq("data", date)
+            .order("created_at");
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar escala:",
+                error
+            );
+
+            return;
+        }
+
+        schedules = data || [];
+
+        const container =
+            $("scheduleTable");
+
+        if (!container) {
+
+            console.error(
+                "Elemento #scheduleTable não encontrado."
+            );
+
+            return;
+        }
+
+        if (!schedules.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    Nenhum motorista definido para
+                    ${formatDate(date)}.
+                </div>
+            `;
+
+            return;
+        }
+
+        let html = `
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Data</th>
+
+                        <th>Região</th>
+
+                        <th>Motorista</th>
+
+                        <th>Ajudante</th>
+
+                        <th>Ação</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
         `;
 
-        return;
-    }
+        schedules.forEach(function(schedule) {
 
+            const motorista =
+                drivers.find(function(driver) {
+                    return driver.id ===
+                        schedule.motorista_id;
+                });
 
-    let html = `
-        <table>
+            const ajudante =
+                drivers.find(function(driver) {
+                    return driver.id ===
+                        schedule.ajudante_id;
+                });
 
-            <thead>
-
+            html += `
                 <tr>
-                    <th>Data</th>
-                    <th>Região</th>
-                    <th>Motorista</th>
-                    <th>Ação</th>
+
+                    <td>
+                        ${formatDate(schedule.data)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            regionName(
+                                schedule.regiao_id
+                            )
+                        )}
+                    </td>
+
+                    <td>
+
+                        <strong>
+                            🚚 ${
+                                motorista
+                                    ? escapeHtml(
+                                        motorista.nome
+                                    )
+                                    : "Não informado"
+                            }
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <span>
+                            👤 ${
+                                ajudante
+                                    ? escapeHtml(
+                                        ajudante.nome
+                                    )
+                                    : "Sem ajudante"
+                            }
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="btn btn-small"
+                            onclick="editarMotoristaDoDia('${schedule.id}')"
+                        >
+                            ✎ Editar equipe
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-small delete-schedule"
+                            data-id="${schedule.id}"
+                        >
+                            Remover
+                        </button>
+
+                    </td>
+
                 </tr>
+            `;
 
-            </thead>
-
-            <tbody>
-    `;
-
-
-    data.forEach(item => {
+        });
 
         html += `
-            <tr>
+                </tbody>
 
-                <td>
-                    ${formatDate(item.data)}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        regionName(item.regiao_id)
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        driverName(item.motorista_id)
-                    )}
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn btn-danger btn-small delete-schedule"
-                        data-id="${item.id}"
-                    >
-                        Remover
-                    </button>
-
-                </td>
-
-            </tr>
+            </table>
         `;
 
-    });
+        container.innerHTML = html;
 
+        document
+            .querySelectorAll(".delete-schedule")
+            .forEach(function(button) {
 
-    html += `
-            </tbody>
-        </table>
-    `;
+                button.addEventListener(
+                    "click",
+                    async function() {
 
+                        if (
+                            !confirm(
+                                "Remover essa escala?"
+                            )
+                        ) {
+                            return;
+                        }
 
-    container.innerHTML = html;
+                        await deleteSchedule(
+                            button.dataset.id
+                        );
 
-
-    document
-        .querySelectorAll(".delete-schedule")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                async () => {
-
-                    if (
-                        !confirm(
-                            "Remover essa escala?"
-                        )
-                    ) {
-                        return;
                     }
+                );
 
-                    await deleteSchedule(
-                        button.dataset.id
-                    );
+            });
 
-                }
-            );
+    } catch (error) {
 
-        });
+        console.error(
+            "Erro em loadScheduleTable:",
+            error
+        );
+
+    }
 
 }
 
+        
 
-async function deleteSchedule(id) {
+        async function deleteSchedule(id) {
 
-    if (!(await requireAdmin())) return;
+            if (!(await requireAdmin())) return;
+
+
+            const {
+                error
+            } = await db
+                .from("spal_motoristas_dia")
+                .delete()
+                .eq("id", id);
+
+
+            if (error) {
+
+                showToast(
+                    "Erro ao remover: " + error.message,
+                    "error"
+                );
+
+                return;
+            }
+
+
+            await loadScheduleTable(
+                $("scheduleDate").value
+            );
+
+            await loadPublicData();
+
+            showToast(
+                "Escala removida.",
+                "success"
+            );
+        }
+
+
+        /* ============================================================
+           ADMIN
+        ============================================================ */
+
+        async function openAdmin() {
+
+            const allowed =
+                await requireAdmin();
+
+            if (!allowed) return;
+
+            document.body.classList.add(
+                "admin-mode"
+            );
+
+            $("adminBtn").style.display =
+                "none";
+
+            $("backPublicBtn").style.display =
+                "inline-block";
+
+            await loadAdminData();
+        }
+
+        async function marcarColetasSelecionadasFeitas() {
+
+    const ids =
+        Array.from(
+            coletasSelecionadas
+        );
+
+
+    if (!ids.length) {
+
+        showToast(
+            "Selecione pelo menos uma coleta.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            `Marcar ${ids.length} coleta(s) como feitas?`
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
 
 
     const {
         error
     } = await db
-        .from("spal_motoristas_dia")
-        .delete()
-        .eq("id", id);
+        .from("spal_coletas")
+        .update({
+            status: "feita",
+            atualizado_em:
+                new Date().toISOString()
+        })
+        .in(
+            "id",
+            ids
+        );
 
 
     if (error) {
 
+        console.error(
+            "Erro ao marcar coletas:",
+            error
+        );
+
         showToast(
-            "Erro ao remover: " + error.message,
+            "Não foi possível marcar as coletas.",
             "error"
         );
 
@@ -3543,45 +5497,23 @@ async function deleteSchedule(id) {
     }
 
 
-    await loadScheduleTable(
-        $("scheduleDate").value
+    coletasSelecionadas.clear();
+
+
+    showToast(
+        `${ids.length} coleta(s) marcada(s) como feitas.`,
+        "success"
     );
+
+
+    await loadAdminCollections();
 
     await loadPublicData();
 
-    showToast(
-        "Escala removida.",
-        "success"
-    );
 }
 
 
-/* ============================================================
-   ADMIN
-============================================================ */
-
-async function openAdmin() {
-
-    const allowed =
-        await requireAdmin();
-
-    if (!allowed) return;
-
-    document.body.classList.add(
-        "admin-mode"
-    );
-
-    $("adminBtn").style.display =
-        "none";
-
-    $("backPublicBtn").style.display =
-        "inline-block";
-
-    await loadAdminData();
-}
-
-
-async function loadAdminData() {
+        async function loadAdminData() {
 
     await loadRegions();
 
@@ -3590,6 +5522,8 @@ async function loadAdminData() {
     await loadSuggestions();
 
     await loadDriversTable();
+
+    carregarFiltrosColetas();
 
     await loadRegionsTable();
 
@@ -3600,494 +5534,818 @@ async function loadAdminData() {
     await loadScheduleTable(
         $("scheduleDate").value || today()
     );
+
 }
 
-// ============================================================
-// WHATSAPP DA COLETA
-// ============================================================
+        // ============================================================
+        // WHATSAPP DA COLETA
+        // ============================================================
 
-function normalizarTelefoneWhatsApp(telefone) {
-    let numero = String(telefone || "").replace(/\D/g, "");
+        function normalizarTelefoneWhatsApp(telefone) {
+            let numero = String(telefone || "").replace(/\D/g, "");
 
-    if (!numero) return "";
+            if (!numero) return "";
 
-    // Já possui código do Brasil
-    if (numero.startsWith("55")) {
-        return numero;
-    }
+            // Já possui código do Brasil
+            if (numero.startsWith("55")) {
+                return numero;
+            }
 
-    // Telefone brasileiro com DDD
-    if (numero.length === 10 || numero.length === 11) {
-        return "55" + numero;
-    }
+            // Telefone brasileiro com DDD
+            if (numero.length === 10 || numero.length === 11) {
+                return "55" + numero;
+            }
 
-    return numero;
-}
+            return numero;
+        }
 
 
-function enviarColetaWhatsApp(coletaId) {
-    const coleta = adminCollections.find(c => c.id === coletaId);
+        async function enviarColetaWhatsApp(coletaId) {
 
-    if (!coleta) {
-        showToast("Coleta não encontrada.", "error");
-        return;
-    }
+    try {
 
-    // Procura o motorista da região naquela data
-    const escala = schedules.find(s =>
-        s.regiao_id === coleta.regiao_id &&
-        s.data === coleta.data_coleta
-    );
-
-    if (!escala) {
-        showToast(
-            "Não existe motorista cadastrado para esta região nesta data.",
-            "error"
+        const coleta = adminCollections.find(
+            function(c) {
+                return c.id === coletaId;
+            }
         );
-        return;
-    }
 
-    const motorista = drivers.find(d => d.id === escala.motorista_id);
+        if (!coleta) {
+            showToast(
+                "Coleta não encontrada.",
+                "error"
+            );
+            return;
+        }
 
-    if (!motorista) {
-        showToast("Motorista não encontrado.", "error");
-        return;
-    }
+        /*
+         * Procura a equipe da REGIÃO + DATA da coleta.
+         */
+        const escala = schedules.find(
+            function(schedule) {
 
-    const telefone = normalizarTelefoneWhatsApp(motorista.telefone);
-
-    if (!telefone) {
-        showToast(
-            `O motorista ${motorista.nome} não possui telefone cadastrado.`,
-            "error"
-        );
-        return;
-    }
-
-    const mensagem =
-`
-Coleta: ${coleta.nome}
-`;
-
-    const url =
-        `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
-
-    window.open(url, "_blank", "noopener,noreferrer");
-}
-
-
-function closeAdmin() {
-
-    document.body.classList.remove(
-        "admin-mode"
-    );
-
-    $("adminBtn").style.display =
-        "inline-block";
-
-    $("backPublicBtn").style.display =
-        "none";
-}
-
-
-/* ============================================================
-   ABAS ADMIN
-============================================================ */
-
-document
-    .querySelectorAll("[data-admin-tab]")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            async () => {
-
-                const tab =
-                    button.dataset.adminTab;
-
-
-                document
-                    .querySelectorAll("[data-admin-tab]")
-                    .forEach(btn =>
-                        btn.classList.remove("active")
-                    );
-
-
-                button.classList.add("active");
-
-
-                document
-                    .querySelectorAll(".admin-section")
-                    .forEach(section =>
-                        section.classList.remove("active")
-                    );
-
-
-                $(`tab-${tab}`)
-                    .classList.add("active");
-
-
-                if (tab === "coletas") {
-
-                    await loadAdminCollections();
-
-                }
-
-                if (tab === "motoristas") {
-
-                    await loadDriversTable();
-
-                }
-
-                if (tab === "regioes") {
-
-                    await loadRegionsTable();
-
-                }
-
-                if (tab === "sugestoes") {
-
-                    await loadSuggestionsTable();
-
-                }
-
-                if (tab === "escalas") {
-
-                    await loadScheduleTable(
-                        $("scheduleDate").value || today()
-                    );
-
-                }
+                return (
+                    schedule.regiao_id === coleta.regiao_id &&
+                    schedule.data === coleta.data_coleta
+                );
 
             }
         );
 
-    });
+        if (!escala) {
+            showToast(
+                "Não existe equipe cadastrada para esta região nesta data.",
+                "error"
+            );
+            return;
+        }
+
+        /*
+         * O responsável principal é o AJUDANTE.
+         */
+        let responsavel = drivers.find(
+            function(driver) {
+                return driver.id === escala.ajudante_id;
+            }
+        );
+
+        /*
+         * Se não houver ajudante, usa o motorista.
+         */
+        if (!responsavel) {
+
+            responsavel = drivers.find(
+                function(driver) {
+                    return driver.id === escala.motorista_id;
+                }
+            );
+
+        }
+
+        if (!responsavel) {
+            showToast(
+                "Não foi possível encontrar o responsável pela coleta.",
+                "error"
+            );
+            return;
+        }
+
+        /*
+         * A mensagem é EXATAMENTE o conteúdo
+         * digitado no campo da coleta.
+         */
+        const mensagem = String(
+            coleta.nome || ""
+        ).trim();
+
+        if (!mensagem) {
+            showToast(
+                "A coleta não possui conteúdo para enviar.",
+                "error"
+            );
+            return;
+        }
+
+        /*
+         * ============================================================
+         * RESPONSÁVEL PRINCIPAL
+         * ============================================================
+         */
+
+        const telefoneResponsavel =
+            normalizarTelefoneWhatsApp(
+                responsavel.telefone
+            );
+
+        if (!telefoneResponsavel) {
+
+            showToast(
+                `${responsavel.nome} não possui telefone cadastrado.`,
+                "error"
+            );
+
+            return;
+        }
+
+        const urlResponsavel =
+            `https://wa.me/${telefoneResponsavel}?text=${
+                encodeURIComponent(mensagem)
+            }`;
+
+        /*
+         * ============================================================
+         * VERIFICA SE É GARÇA OU GÁLIA
+         * ============================================================
+         */
+
+        const nomeRegiao =
+            String(
+                regionName(coleta.regiao_id) || ""
+            )
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim()
+                .toLowerCase();
+
+        const precisaCarlos =
+            nomeRegiao.includes("garca") ||
+            nomeRegiao.includes("galia");
 
 
-/* ============================================================
-   LOGIN
-============================================================ */
+        /*
+         * ============================================================
+         * CARLOS
+         * ============================================================
+         *
+         * Aqui NÃO dependemos de drivers.
+         *
+         * Buscamos diretamente no Supabase.
+         */
 
-$("loginForm")
-    .addEventListener(
-        "submit",
-        async event => {
+        let carlos = null;
 
-            event.preventDefault();
-
-
-            const email =
-                $("loginEmail").value.trim();
-
-            const password =
-                $("loginPassword").value;
-
+        if (precisaCarlos) {
 
             const {
-                error
-            } = await db.auth.signInWithPassword({
-                email,
-                password
-            });
+                data: carlosData,
+                error: carlosError
+            } = await db
+                .from("spal_motoristas")
+                .select("id,nome,telefone,ativo")
+                .ilike("nome", "%Carlos%")
+                .order("ativo", {
+                    ascending: false
+                })
+                .limit(1);
 
+            if (carlosError) {
 
-            if (error) {
+                console.error(
+                    "Erro ao buscar Carlos:",
+                    carlosError
+                );
 
                 showToast(
-                    "Login inválido: " + error.message,
+                    "Não foi possível localizar o Carlos.",
                     "error"
                 );
 
                 return;
             }
 
-
-            $("loginModal")
-                .classList.remove("open");
-
-
-            await updateAuthUI();
-
-            await openAdmin();
+            carlos =
+                carlosData &&
+                carlosData.length
+                    ? carlosData[0]
+                    : null;
 
         }
-    );
 
 
-$("closeLogin")
-    .addEventListener(
-        "click",
-        () => {
+        /*
+         * ============================================================
+         * ABRE O RESPONSÁVEL
+         * ============================================================
+         */
 
-            $("loginModal")
-                .classList.remove("open");
-
-        }
-    );
-
-
-/* ============================================================
-   EVENTOS PÚBLICOS
-============================================================ */
-
-$("publicDate").addEventListener(
-    "change",
-    loadPublicData
-);
+        window.open(
+            urlResponsavel,
+            "_blank",
+            "noopener,noreferrer"
+        );
 
 
-$("refreshPublic").addEventListener(
-    "click",
-    loadPublicData
-);
+        /*
+         * ============================================================
+         * ABRE CARLOS
+         * ============================================================
+         */
 
+        if (precisaCarlos) {
 
-$("filterRegion").addEventListener(
-    "change",
-    renderPublic
-);
+            if (!carlos) {
 
+                showToast(
+                    `Coleta enviada para ${responsavel.nome}, mas nenhum Carlos foi encontrado no cadastro.`,
+                    "error"
+                );
 
-$("filterDriver").addEventListener(
-    "change",
-    renderPublic
-);
+                return;
+            }
 
+            const telefoneCarlos =
+                normalizarTelefoneWhatsApp(
+                    carlos.telefone
+                );
 
-$("filterStatus").addEventListener(
-    "change",
-    renderPublic
-);
+            if (!telefoneCarlos) {
 
+                showToast(
+                    `Coleta enviada para ${responsavel.nome}, mas Carlos não possui telefone cadastrado.`,
+                    "error"
+                );
 
-$("clearFilters").addEventListener(
-    "click",
-    () => {
+                return;
+            }
 
-        $("filterRegion").value = "";
-        $("filterDriver").value = "";
-        $("filterStatus").value = "";
+            const urlCarlos =
+                `https://wa.me/${telefoneCarlos}?text=${
+                    encodeURIComponent(mensagem)
+                }`;
 
-        renderPublic();
-
-    }
-);
-
-
-/* ============================================================
-   EVENTOS ADMIN
-============================================================ */
-
-$("adminBtn")
-    .addEventListener(
-        "click",
-        openAdmin
-    );
-
-
-$("backPublicBtn")
-    .addEventListener(
-        "click",
-        closeAdmin
-    );
-
-
-$("collectionForm")
-    .addEventListener(
-        "submit",
-        registerCollection
-    );
-
-
-$("saveAsSuggestion")
-    .addEventListener(
-        "click",
-        saveCurrentAsSuggestion
-    );
-
-
-$("collectionRegion")
-    .addEventListener(
-        "change",
-        renderQuickSuggestions
-    );
-
-
-$("adminListDate")
-    .addEventListener(
-        "change",
-        loadAdminCollections
-    );
-
-
-$("driverForm")
-    .addEventListener(
-        "submit",
-        createDriver
-    );
-
-
-$("regionForm")
-    .addEventListener(
-        "submit",
-        createRegion
-    );
-
-
-$("suggestionForm")
-    .addEventListener(
-        "submit",
-        createSuggestion
-    );
-
-
-$("scheduleForm")
-    .addEventListener(
-        "submit",
-        saveSchedule
-    );
-
-
-$("scheduleDate")
-    .addEventListener(
-        "change",
-        () => {
-
-            loadScheduleTable(
-                $("scheduleDate").value
+            /*
+             * IMPORTANTE:
+             *
+             * Não usamos setTimeout aqui.
+             * A segunda abertura acontece diretamente
+             * durante o clique do usuário, reduzindo
+             * o bloqueio de popup do navegador.
+             */
+            window.open(
+                urlCarlos,
+                "_blank",
+                "noopener,noreferrer"
             );
 
-        }
-    );
+            showToast(
+                `Coleta enviada para ${responsavel.nome} e Carlos.`,
+                "success"
+            );
 
-
-/* ============================================================
-   LOGOUT
-============================================================ */
-
-$("loggedUser")
-    .addEventListener(
-        "dblclick",
-        async () => {
-
-            if (!currentUser) return;
-
-            await db.auth.signOut();
-
-            currentUser = null;
-
-            closeAdmin();
-
-            await updateAuthUI();
+        } else {
 
             showToast(
-                "Sessão encerrada.",
+                `Coleta enviada para ${responsavel.nome}.`,
                 "success"
             );
 
         }
-    );
 
+    } catch (error) {
 
-/* ============================================================
-   REALTIME
-   ============================================================
+        console.error(
+            "Erro ao enviar coleta pelo WhatsApp:",
+            error
+        );
 
-   Se você habilitar Realtime para as tabelas no Supabase,
-   alterações feitas por outro computador aparecem
-   automaticamente.
-============================================================ */
-
-db.channel("spal-coletas-live")
-    .on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: "spal_coletas"
-        },
-        async () => {
-
-            await loadPublicData();
-
-            if (
-                document.body.classList.contains(
-                    "admin-mode"
-                )
-            ) {
-                await loadAdminCollections();
-            }
-
-        }
-    )
-    .on(
-        "postgres_changes",
-        {
-            event: "*",
-            schema: "public",
-            table: "spal_motoristas_dia"
-        },
-        async () => {
-
-            await loadPublicData();
-
-        }
-    )
-    .subscribe();
-
-
-/* ============================================================
-   INICIALIZAÇÃO
-============================================================ */
-
-async function init() {
-
-    $("publicDate").value =
-        today();
-
-    $("collectionDate").value =
-        today();
-
-    $("adminListDate").value =
-        today();
-
-    $("scheduleDate").value =
-        today();
-
-
-    await updateAuthUI();
-
-    await loadRegions();
-
-    await loadDrivers();
-
-    await loadSuggestions();
-
-    await loadPublicData();
-
-
-    /*
-       Se acessar:
-       arquivo.html#admin
-
-       tenta abrir a área administrativa.
-    */
-
-    if (
-        window.location.hash === "#admin"
-    ) {
-
-        await openAdmin();
+        showToast(
+            "Não foi possível enviar a coleta pelo WhatsApp.",
+            "error"
+        );
 
     }
 
 }
 
+        function closeAdmin() {
 
-init();
+            document.body.classList.remove(
+                "admin-mode"
+            );
 
-</script>
+            $("adminBtn").style.display =
+                "inline-block";
+
+            $("backPublicBtn").style.display =
+                "none";
+        }
+
+
+        /* ============================================================
+           ABAS ADMIN
+        ============================================================ */
+
+        document
+            .querySelectorAll("[data-admin-tab]")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    async () => {
+
+                        const tab =
+                            button.dataset.adminTab;
+
+
+                        document
+                            .querySelectorAll("[data-admin-tab]")
+                            .forEach(btn =>
+                                btn.classList.remove("active")
+                            );
+
+
+                        button.classList.add("active");
+
+
+                        document
+                            .querySelectorAll(".admin-section")
+                            .forEach(section =>
+                                section.classList.remove("active")
+                            );
+
+
+                        $(`tab-${tab}`)
+                            .classList.add("active");
+
+
+                        if (tab === "coletas") {
+
+                            await loadAdminCollections();
+
+                        }
+
+                        if (tab === "motoristas") {
+
+                            await loadDriversTable();
+
+                        }
+
+                        if (tab === "regioes") {
+
+                            await loadRegionsTable();
+
+                        }
+
+                        if (tab === "sugestoes") {
+
+                            await loadSuggestionsTable();
+
+                        }
+
+                        if (tab === "escalas") {
+
+                            await loadScheduleTable(
+                                $("scheduleDate").value || today()
+                            );
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        /* ============================================================
+           LOGIN
+        ============================================================ */
+
+        $("loginForm")
+            .addEventListener(
+                "submit",
+                async event => {
+
+                    event.preventDefault();
+
+
+                    const email =
+                        $("loginEmail").value.trim();
+
+                    const password =
+                        $("loginPassword").value;
+
+
+                    const {
+                        error
+                    } = await db.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+
+                    if (error) {
+
+                        showToast(
+                            "Login inválido: " + error.message,
+                            "error"
+                        );
+
+                        return;
+                    }
+
+
+                    $("loginModal")
+                        .classList.remove("open");
+
+
+                    await updateAuthUI();
+
+                    await openAdmin();
+
+                }
+            );
+
+
+        $("closeLogin")
+            .addEventListener(
+                "click",
+                () => {
+
+                    $("loginModal")
+                        .classList.remove("open");
+
+                }
+            );
+
+
+        /* ============================================================
+           EVENTOS PÚBLICOS
+        ============================================================ */
+
+        $("publicDate").addEventListener(
+            "change",
+            loadPublicData
+        );
+
+
+        $("refreshPublic").addEventListener(
+            "click",
+            loadPublicData
+        );
+
+
+        $("filterRegion").addEventListener(
+            "change",
+            renderPublic
+        );
+
+
+        $("filterDriver").addEventListener(
+            "change",
+            renderPublic
+        );
+
+
+        $("filterStatus").addEventListener(
+            "change",
+            renderPublic
+        );
+
+
+        $("clearFilters").addEventListener(
+            "click",
+            () => {
+
+                $("filterRegion").value = "";
+                $("filterDriver").value = "";
+                $("filterStatus").value = "";
+
+                renderPublic();
+
+            }
+        );
+
+
+        /* ============================================================
+           EVENTOS ADMIN
+        ============================================================ */
+
+        $("adminBtn")
+            .addEventListener(
+                "click",
+                openAdmin
+            );
+
+
+        $("backPublicBtn")
+            .addEventListener(
+                "click",
+                closeAdmin
+            );
+
+
+        $("collectionForm")
+            .addEventListener(
+                "submit",
+                registerCollection
+            );
+
+
+        $("saveAsSuggestion")
+            .addEventListener(
+                "click",
+                saveCurrentAsSuggestion
+            );
+
+
+        $("collectionRegion")
+            .addEventListener(
+                "change",
+                renderQuickSuggestions
+            );
+
+
+        $("adminListDate")
+            .addEventListener(
+                "change",
+                loadAdminCollections
+            );
+
+
+        $("driverForm")
+            .addEventListener(
+                "submit",
+                createDriver
+            );
+
+
+        $("regionForm")
+            .addEventListener(
+                "submit",
+                createRegion
+            );
+
+
+        $("suggestionForm")
+            .addEventListener(
+                "submit",
+                createSuggestion
+            );
+
+
+        $("scheduleForm")
+            .addEventListener(
+                "submit",
+                saveSchedule
+            );
+
+
+        $("scheduleDate")
+            .addEventListener(
+                "change",
+                () => {
+
+                    loadScheduleTable(
+                        $("scheduleDate").value
+                    );
+
+                }
+            );
+
+            $("adminCollectionSearch")
+    .addEventListener(
+        "input",
+        function() {
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("adminCollectionRegion")
+    .addEventListener(
+        "change",
+        function() {
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("adminCollectionStatus")
+    .addEventListener(
+        "change",
+        function() {
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("adminCollectionDriver")
+    .addEventListener(
+        "change",
+        function() {
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("adminCollectionHelper")
+    .addEventListener(
+        "change",
+        function() {
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("clearAdminCollectionFilters")
+    .addEventListener(
+        "click",
+        function() {
+
+            $("adminCollectionSearch").value = "";
+
+            $("adminCollectionRegion").value = "";
+
+            $("adminCollectionStatus").value = "";
+
+            $("adminCollectionDriver").value = "";
+
+            $("adminCollectionHelper").value = "";
+
+            renderAdminCollections();
+
+        }
+    );
+
+
+$("selecionarTodasColetas")
+    .addEventListener(
+        "change",
+        selecionarTodasColetas
+    );
+
+
+$("btnEnviarSelecionadasWhatsApp")
+    .addEventListener(
+        "click",
+        enviarColetasSelecionadasWhatsApp
+    );
+
+
+$("btnMarcarSelecionadasFeitas")
+    .addEventListener(
+        "click",
+        marcarColetasSelecionadasFeitas
+    );
+
+
+        /* ============================================================
+           LOGOUT
+        ============================================================ */
+
+        $("loggedUser")
+            .addEventListener(
+                "dblclick",
+                async () => {
+
+                    if (!currentUser) return;
+
+                    await db.auth.signOut();
+
+                    currentUser = null;
+
+                    closeAdmin();
+
+                    await updateAuthUI();
+
+                    showToast(
+                        "Sessão encerrada.",
+                        "success"
+                    );
+
+                }
+            );
+
+
+        /* ============================================================
+           REALTIME
+           ============================================================
+        
+           Se você habilitar Realtime para as tabelas no Supabase,
+           alterações feitas por outro computador aparecem
+           automaticamente.
+        ============================================================ */
+
+        db.channel("spal-coletas-live")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "spal_coletas"
+                },
+                async () => {
+
+                    await loadPublicData();
+
+                    if (
+                        document.body.classList.contains(
+                            "admin-mode"
+                        )
+                    ) {
+                        await loadAdminCollections();
+                    }
+
+                }
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "spal_motoristas_dia"
+                },
+                async () => {
+
+                    await loadPublicData();
+
+                }
+            )
+            .subscribe();
+
+
+        /* ============================================================
+           INICIALIZAÇÃO
+        ============================================================ */
+
+        async function init() {
+
+            $("publicDate").value =
+                today();
+
+            $("collectionDate").value =
+                today();
+
+            $("adminListDate").value =
+                today();
+
+            $("scheduleDate").value =
+                today();
+
+
+            await updateAuthUI();
+
+            await loadRegions();
+
+            await loadDrivers();
+
+            await loadSuggestions();
+
+            await loadPublicData();
+
+
+            /*
+               Se acessar:
+               arquivo.html#admin
+        
+               tenta abrir a área administrativa.
+            */
+
+            if (
+                window.location.hash === "#admin"
+            ) {
+
+                await openAdmin();
+
+            }
+
+        }
+
+
+        init();
+
+    </script>
 
 </body>
+
 </html>
