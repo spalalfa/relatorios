@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b10">
+<title>Painel Coletas</title>
+<style>
+:root{
+  --bg:#07090d;
+  --panel:#0d1118;
+  --panel2:#111722;
+  --border:#222a36;
+  --text:#f5f7fa;
+  --muted:#8d98a8;
+  --red:#e3262e;
+  --green:#23c77a;
+  --yellow:#f3b63f;
+  --blue:#4e9cff;
+  --shadow:0 20px 60px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{overflow-x:hidden}
+button,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  min-height:76px;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  background:rgba(7,9,13,.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border)
+}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.logo{
+  width:44px;height:44px;border-radius:12px;background:var(--red);
+  display:grid;place-items:center;font-weight:900;font-size:20px;
+  box-shadow:0 8px 24px rgba(227,38,46,.25)
+}
+.brand h1{font-size:18px;margin:0;font-weight:850;letter-spacing:.2px}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.top-right{display:flex;align-items:center;gap:12px}
+.clock{text-align:right}
+.clock strong{display:block;font-size:20px;line-height:1}
+.clock span{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+main{width:min(1800px,100%);margin:0 auto;padding:20px 24px 28px;flex:1}
+.toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 16px;margin-bottom:18px;
+  background:var(--panel);border:1px solid var(--border);border-radius:16px
+}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{padding:9px 13px;border:1px solid var(--border);background:#0a0e14;border-radius:11px}
+.stat b{font-size:17px}.stat span{font-size:11px;color:var(--muted);margin-left:5px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--border);background:#151b25;color:var(--text);
+  border-radius:10px;padding:9px 12px;font-weight:750;font-size:12px
+}
+.btn:hover{background:#1b2330}
+.btn.primary{background:var(--red);border-color:var(--red)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.active{background:#273244;border-color:#52627a}
+.select{
+  border:1px solid var(--border);background:#151b25;color:var(--text);
+  border-radius:10px;padding:9px 10px;font-weight:700;font-size:12px
+}
+.presentation-controls{display:none;align-items:center;gap:8px}
+.presentation-controls.visible{display:flex}
+.slide-counter{
+  min-width:74px;text-align:center;font-size:12px;font-weight:800;color:#d9dee6
+}
+.countdown{
+  width:120px;height:5px;border-radius:10px;background:#202734;overflow:hidden
+}
+.countdown i{display:block;height:100%;width:100%;background:var(--red);transform-origin:left}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.region-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;box-shadow:var(--shadow);min-width:0
+}
+.region-head{padding:17px 18px 14px;border-bottom:1px solid var(--border)}
+.region-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.region-title h2{font-size:21px;margin:0;font-weight:900}
+.region-title small{color:var(--muted);display:block;margin-top:4px;font-size:11px}
+.badge{
+  padding:6px 9px;border-radius:999px;font-size:10px;font-weight:850;
+  white-space:nowrap;background:#18202b;color:#b7c0ce
+}
+.badge.ok{background:rgba(35,199,122,.12);color:#5ee3a2}
+.badge.warn{background:rgba(243,182,63,.12);color:#ffd27a}
+.badge.red{background:rgba(227,38,46,.13);color:#ff777d}
+.progress-wrap{margin-top:13px}
+.progress-line{height:7px;background:#1a202a;border-radius:99px;overflow:hidden}
+.progress-line i{height:100%;display:block;background:var(--green);border-radius:99px;transition:width .35s}
+.progress-info{display:flex;justify-content:space-between;margin-top:6px;color:var(--muted);font-size:10px}
+.team{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--border);font-size:12px}
+.team-item{flex:1;min-width:0;background:#0a0e14;border:1px solid #1a2029;border-radius:10px;padding:8px}
+.team-item span{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.6px}
+.team-item b{display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.collections{padding:8px 10px}
+.collection{
+  display:flex;align-items:center;gap:9px;padding:10px 8px;
+  border-bottom:1px solid #171d26;min-width:0
+}
+.collection:last-child{border-bottom:0}
+.collection-dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);flex:none}
+.collection.done .collection-dot{background:var(--green)}
+.collection.no .collection-dot{background:var(--red)}
+.collection-name{flex:1;min-width:0;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.collection-time{font-size:10px;color:var(--muted);white-space:nowrap}
+.collection-status{font-size:9px;font-weight:850;padding:5px 7px;border-radius:7px;background:#191f28;color:#b8c1cf;white-space:nowrap}
+.collection.done .collection-status{color:#65e5a6;background:rgba(35,199,122,.11)}
+.collection.no .collection-status{color:#ff777d;background:rgba(227,38,46,.11)}
+.empty{padding:25px 12px;text-align:center;color:var(--muted);font-size:12px}
+.footer{margin-top:16px;color:var(--muted);font-size:11px;text-align:center}
+.presentation{display:none}
+body.presentation-active main{padding:10px 24px 20px}
+body.presentation-active .toolbar .stats{display:none}
+body.presentation-active .board{display:none}
+body.presentation-active .presentation{display:block}
+body.presentation-active .toolbar{margin-bottom:10px}
+body.presentation-active .topbar{min-height:68px}
+.presentation-slide{
+  min-height:calc(100vh - 165px);
+  display:flex;flex-direction:column;
+  background:linear-gradient(145deg,#0d1118,#090c12);
+  border:1px solid var(--border);border-radius:24px;overflow:hidden;
+  box-shadow:0 30px 100px rgba(0,0,0,.45)
+}
+.slide-head{
+  padding:26px 34px 20px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:20px
+}
+.slide-region{min-width:0}
+.slide-region .eyebrow{
+  color:var(--red);font-weight:900;text-transform:uppercase;
+  letter-spacing:1.5px;font-size:12px;margin-bottom:7px
+}
+.slide-region h2{font-size:clamp(38px,5vw,72px);line-height:.98;margin:0;font-weight:950;letter-spacing:-2px}
+.slide-region p{margin:9px 0 0;color:var(--muted);font-size:14px}
+.slide-total{text-align:right;flex:none}
+.slide-total strong{display:block;font-size:clamp(38px,4vw,64px);line-height:1;font-weight:950}
+.slide-total span{display:block;margin-top:5px;color:var(--muted);font-size:12px}
+.slide-team{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  padding:15px 34px;border-bottom:1px solid var(--border)
+}
+.slide-team .team-item{padding:13px 15px}
+.slide-team .team-item span{font-size:10px}
+.slide-team .team-item b{font-size:15px}
+.slide-progress{padding:14px 34px;border-bottom:1px solid var(--border)}
+.slide-progress .progress-info{font-size:12px;margin-bottom:7px}
+.slide-progress .progress-line{height:9px}
+.slide-collections{
+  padding:12px 26px;display:grid;grid-template-columns:1fr 1fr;
+  align-content:start;gap:0 28px;flex:1;overflow:hidden
+}
+.slide-collection{
+  display:flex;align-items:center;gap:13px;
+  min-height:58px;border-bottom:1px solid #1a2029
+}
+.slide-collection .num{
+  width:31px;height:31px;border-radius:9px;background:#171e28;
+  display:grid;place-items:center;font-size:11px;font-weight:900;color:#9faaba;flex:none
+}
+.slide-collection .dot{width:10px;height:10px;border-radius:50%;background:var(--yellow);flex:none}
+.slide-collection.done .dot{background:var(--green)}
+.slide-collection.no .dot{background:var(--red)}
+.slide-collection .name{font-size:clamp(16px,1.55vw,23px);font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-collection .time{font-size:11px;color:var(--muted);white-space:nowrap}
+.slide-collection .status{font-size:10px;font-weight:900;padding:6px 8px;border-radius:8px;background:#191f28;color:#b8c1cf;white-space:nowrap}
+.slide-collection.done .status{color:#65e5a6;background:rgba(35,199,122,.11)}
+.slide-collection.no .status{color:#ff777d;background:rgba(227,38,46,.11)}
+.slide-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 34px;background:#0a0e14;border-top:1px solid var(--border);
+  color:var(--muted);font-size:11px
+}
+.slide-bottom strong{color:#e4e8ed}
+.attention{color:#ffd27a}
+.fade-in{animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:850px){
+  .topbar{padding:12px 15px}.clock{display:none}
+  main{padding:14px}.toolbar{align-items:flex-start;flex-direction:column}
+  .board{grid-template-columns:1fr}
+  .slide-head{padding:20px;align-items:flex-start}
+  .slide-team,.slide-progress{padding-left:20px;padding-right:20px}
+  .slide-collections{padding:8px 16px;grid-template-columns:1fr}
+  .slide-bottom{padding:10px 20px}
+  .slide-total strong{font-size:34px}
+  .slide-region h2{font-size:42px}
+}
+@media(max-height:700px) and (min-width:851px){
+  .slide-collection{min-height:45px}
+  .slide-collections{padding-top:4px;padding-bottom:4px}
+  .slide-team{padding-top:8px;padding-bottom:8px}
+  .slide-progress{padding-top:8px;padding-bottom:8px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">S</div>
+    <div>
+      <h1>Controle de Coletas</h1>
+      <p>Painel operacional em tempo real</p>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="clock">
+      <strong id="clock">--:--:--</strong>
+      <span id="dateLabel">--/--/----</span>
+    </div>
+    <button class="btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Tela cheia</button>
+  </div>
+</header>
+
+<main>
+  <section class="toolbar">
+    <div class="stats">
+      <div class="stat"><b id="statRegions">0</b><span>regiões</span></div>
+      <div class="stat"><b id="statTotal">0</b><span>coletas</span></div>
+      <div class="stat"><b id="statDone">0</b><span>feitas</span></div>
+      <div class="stat"><b id="statPending">0</b><span>pendentes</span></div>
+      <div class="stat"><b id="statNo">0</b><span>não feitas</span></div>
+    </div>
+
+    <div class="actions">
+      <div class="presentation-controls" id="presentationControls">
+        <button class="btn" onclick="previousSlide()">←</button>
+        <button class="btn" id="pauseBtn" onclick="togglePause()">Ⅱ Pausar</button>
+        <button class="btn" onclick="nextSlide()">→</button>
+        <select class="select" id="intervalSelect" onchange="changeInterval(this.value)">
+          <option value="5">5 segundos</option>
+          <option value="10" selected>10 segundos</option>
+          <option value="15">15 segundos</option>
+          <option value="20">20 segundos</option>
+          <option value="30">30 segundos</option>
+        </select>
+        <span class="slide-counter" id="slideCounter">0 / 0</span>
+        <div class="countdown"><i id="countdownBar"></i></div>
+      </div>
+      <button class="btn primary" id="presentationBtn" onclick="togglePresentation()">▶ Modo apresentação</button>
+    </div>
+  </section>
+
+  <section id="board" class="board"></section>
+
+  <section id="presentation" class="presentation">
+    <div id="presentationSlide" class="presentation-slide"></div>
+  </section>
+
+  <div class="footer" id="footerText">Atualizando dados...</div>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://ewawkukleqboozavhovb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let regions = [];
+let drivers = [];
+let collections = [];
+let schedules = [];
+let presentationMode = false;
+let paused = false;
+let slides = [];
+let slideIndex = 0;
+let rotationSeconds = 10;
+let rotationTimer = null;
+let countdownTimer = null;
+let secondsLeft = rotationSeconds;
+let lastUpdate = null;
+let loading = false;
+
+const $ = id => document.getElementById(id);
+
+function todayISO(){
+  const d = new Date();
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
+function formatTime(value){
+  if(!value) return "--:--";
+  const s=String(value);
+  const direct=s.match(/(?:T|\\s)(\\d{2}:\\d{2})/);
+  if(direct) return direct[1];
+  const only=s.match(/^(\\d{2}:\\d{2})/);
+  if(only) return only[1];
+  const d=new Date(value);
+  if(!Number.isNaN(d.getTime()))
+    return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  return "--:--";
+}
+
+function statusInfo(status){
+  const s=String(status || "").toLowerCase();
+  if(s === "feita") return {cls:"done", label:"FEITA"};
+  if(s === "nao_feita" || s === "não_feita") return {cls:"no", label:"NÃO FEITA"};
+  return {cls:"", label:"PENDENTE"};
+}
+
+function getRegionCollections(regionId){
+  return collections.filter(c => String(c.regiao_id) === String(regionId));
+}
+
+function getSchedule(regionId){
+  const found = schedules.find(s => String(s.regiao_id) === String(regionId));
+  if(!found) return null;
+  return {
+    driver: drivers.find(d => String(d.id) === String(found.motorista_id)) || null,
+    assistant: drivers.find(d => String(d.id) === String(found.ajudante_id)) || null
+  };
+}
+
+function buildSlides(){
+  const result = [];
+  const chunkSize = window.innerWidth < 850 ? 6 : (window.innerHeight < 720 ? 8 : 10);
+
+  for(const region of regions){
+    const items = getRegionCollections(region.id);
+    const chunks = [];
+
+    if(items.length === 0) chunks.push([]);
+    else {
+      for(let i=0;i<items.length;i+=chunkSize)
+        chunks.push(items.slice(i,i+chunkSize));
+    }
+
+    const totalDone = items.filter(c => c.status === "feita").length;
+    const schedule = getSchedule(region.id);
+
+    chunks.forEach((chunk, idx) => {
+      result.push({
+        region,
+        items: chunk,
+        allItems: items,
+        schedule,
+        chunkIndex: idx,
+        chunkCount: chunks.length,
+        start: idx * chunkSize + 1,
+        end: Math.min((idx + 1) * chunkSize, items.length),
+        totalDone
+      });
+    });
+  }
+
+  return result;
+}
+
+function renderStats(){
+  const total=collections.length;
+  const done=collections.filter(c=>c.status==="feita").length;
+  const no=collections.filter(c=>c.status==="nao_feita" || c.status==="não_feita").length;
+  $("statRegions").textContent=regions.length;
+  $("statTotal").textContent=total;
+  $("statDone").textContent=done;
+  $("statPending").textContent=Math.max(0,total-done-no);
+  $("statNo").textContent=no;
+}
+
+function renderBoard(){
+  const board=$("board");
+
+  if(!regions.length){
+    board.innerHTML='<div class="empty">Nenhuma região ativa cadastrada.</div>';
+    return;
+  }
+
+  board.innerHTML=regions.map(region=>{
+    const items=getRegionCollections(region.id);
+    const done=items.filter(c=>c.status==="feita").length;
+    const no=items.filter(c=>c.status==="nao_feita" || c.status==="não_feita").length;
+    const pct=items.length ? Math.round(done/items.length*100) : 0;
+    const schedule=getSchedule(region.id);
+
+    let badge="SEM COLETAS", badgeCls="";
+    if(items.length && done===items.length) {badge="CONCLUÍDA";badgeCls="ok"}
+    else if(no) {badge=`${no} NÃO FEITA`;badgeCls="red"}
+    else if(items.length) {badge=`${items.length-done} PENDENTE(S)`;badgeCls="warn"}
+
+    return `
+      <article class="region-card">
+        <div class="region-head">
+          <div class="region-title">
+            <div>
+              <h2>${escapeHTML(region.nome)}</h2>
+              <small>${items.length} coleta(s) registrada(s)</small>
+            </div>
+            <span class="badge ${badgeCls}">${badge}</span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-line"><i style="width:${pct}%"></i></div>
+            <div class="progress-info"><span>${done} de ${items.length} feitas</span><span>${pct}%</span></div>
+          </div>
+        </div>
+
+        <div class="team">
+          <div class="team-item"><span>Motorista</span><b>${escapeHTML(schedule?.driver?.nome || "Não definido")}</b></div>
+          <div class="team-item"><span>Ajudante</span><b>${escapeHTML(schedule?.assistant?.nome || "Não definido")}</b></div>
+        </div>
+
+        <div class="collections">
+          ${items.length ? items.map(c=>{
+            const st=statusInfo(c.status);
+            return `<div class="collection ${st.cls}">
+              <i class="collection-dot"></i>
+              <div class="collection-name">${escapeHTML(c.nome)}</div>
+              <div class="collection-time">${formatTime(c.horario_registro)}</div>
+              <span class="collection-status">${st.label}</span>
+            </div>`;
+          }).join("") : '<div class="empty">Nenhuma coleta para esta região.</div>'}
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function renderPresentation(){
+  slides=buildSlides();
+
+  if(!slides.length){
+    $("presentationSlide").innerHTML='<div class="empty">Nenhuma região disponível.</div>';
+    $("slideCounter").textContent="0 / 0";
+    return;
+  }
+
+  if(slideIndex >= slides.length) slideIndex=0;
+  const slide=slides[slideIndex];
+  const all=slide.allItems;
+  const done=all.filter(c=>c.status==="feita").length;
+  const no=all.filter(c=>c.status==="nao_feita" || c.status==="não_feita").length;
+  const pending=Math.max(0,all.length-done-no);
+  const pct=all.length ? Math.round(done/all.length*100) : 0;
+  const attention=no+pending;
+  const schedule=slide.schedule;
+
+  $("slideCounter").textContent=`${slideIndex+1} / ${slides.length}`;
+
+  $("presentationSlide").innerHTML=`
+    <div class="slide-head">
+      <div class="slide-region">
+        <div class="eyebrow">Região em atendimento</div>
+        <h2>${escapeHTML(slide.region.nome)}</h2>
+        <p>${slide.chunkCount>1
+          ? `Exibindo coletas ${slide.start}–${slide.end} de ${all.length}`
+          : `${all.length} coleta(s) nesta região`}</p>
+      </div>
+      <div class="slide-total">
+        <strong>${all.length}</strong>
+        <span>coletas no total</span>
+      </div>
+    </div>
+
+    <div class="slide-team">
+      <div class="team-item">
+        <span>Motorista do dia</span>
+        <b>${escapeHTML(schedule?.driver?.nome || "Não definido")}</b>
+      </div>
+      <div class="team-item">
+        <span>Ajudante</span>
+        <b>${escapeHTML(schedule?.assistant?.nome || "Não definido")}</b>
+      </div>
+    </div>
+
+    <div class="slide-progress">
+      <div class="progress-info">
+        <span>${done} feitas • ${pending} pendentes • ${no} não feitas</span>
+        <strong>${pct}% concluído</strong>
+      </div>
+      <div class="progress-line"><i style="width:${pct}%"></i></div>
+    </div>
+
+    <div class="slide-collections">
+      ${slide.items.length ? slide.items.map((c,i)=>{
+        const st=statusInfo(c.status);
+        return `<div class="slide-collection ${st.cls}">
+          <span class="num">${slide.start+i}</span>
+          <i class="dot"></i>
+          <div class="name">${escapeHTML(c.nome)}</div>
+          <div class="time">${formatTime(c.horario_registro)}</div>
+          <span class="status">${st.label}</span>
+        </div>`;
+      }).join("") : `<div class="empty">Nenhuma coleta registrada para esta região.</div>`}
+    </div>
+
+    <div class="slide-bottom">
+      <span>${slide.chunkCount>1 ? `Página ${slide.chunkIndex+1} de ${slide.chunkCount} desta região` : "Painel operacional SPAL"}</span>
+      <strong class="${attention ? "attention":""}">
+        ${attention ? `${attention} pendência(s) para atenção` : "Todas as coletas concluídas"}
+      </strong>
+    </div>`;
+
+  const el=$("presentationSlide");
+  el.classList.remove("fade-in");
+  void el.offsetWidth;
+  el.classList.add("fade-in");
+}
+
+function resetCountdown(){
+  secondsLeft=rotationSeconds;
+  updateCountdown();
+}
+
+function updateCountdown(){
+  $("countdownBar").style.width=Math.max(0,Math.min(100,(secondsLeft/rotationSeconds)*100))+"%";
+}
+
+function startRotation(){
+  stopRotation();
+  resetCountdown();
+
+  if(!presentationMode || paused || slides.length<=1) return;
+
+  rotationTimer=setInterval(()=>{
+    secondsLeft--;
+    updateCountdown();
+    if(secondsLeft<=0){
+      nextSlide();
+    }
+  },1000);
+}
+
+function stopRotation(){
+  if(rotationTimer){clearInterval(rotationTimer);rotationTimer=null}
+}
+
+function nextSlide(){
+  if(!slides.length) return;
+  slideIndex=(slideIndex+1)%slides.length;
+  renderPresentation();
+  resetCountdown();
+  if(presentationMode && !paused) startRotation();
+}
+
+function previousSlide(){
+  if(!slides.length) return;
+  slideIndex=(slideIndex-1+slides.length)%slides.length;
+  renderPresentation();
+  resetCountdown();
+  if(presentationMode && !paused) startRotation();
+}
+
+function togglePause(){
+  paused=!paused;
+  $("pauseBtn").textContent=paused ? "▶ Continuar" : "Ⅱ Pausar";
+  if(paused) stopRotation();
+  else startRotation();
+}
+
+function changeInterval(value){
+  rotationSeconds=Math.max(3,Number(value)||10);
+  startRotation();
+}
+
+function enterPresentation(){
+  presentationMode=true;
+  paused=false;
+  slideIndex=0;
+  document.body.classList.add("presentation-active");
+  $("presentationControls").classList.add("visible");
+  $("presentationBtn").textContent="■ Sair do modo apresentação";
+  $("presentationBtn").classList.remove("primary");
+  $("presentationBtn").classList.add("active");
+  $("pauseBtn").textContent="Ⅱ Pausar";
+  renderPresentation();
+  startRotation();
+}
+
+function exitPresentation(){
+  presentationMode=false;
+  paused=false;
+  stopRotation();
+  document.body.classList.remove("presentation-active");
+  $("presentationControls").classList.remove("visible");
+  $("presentationBtn").textContent="▶ Modo apresentação";
+  $("presentationBtn").classList.add("primary");
+  $("presentationBtn").classList.remove("active");
+}
+
+function togglePresentation(){
+  if(presentationMode) exitPresentation();
+  else enterPresentation();
+}
+
+async function toggleFullscreen(){
+  try{
+    if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){ console.warn(e) }
+}
+
+function updateClock(){
+  const d=new Date();
+  $("clock").textContent=d.toLocaleTimeString("pt-BR");
+  $("dateLabel").textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
+}
+setInterval(updateClock,1000);
+updateClock();
+
+async function loadAll(){
+  if(loading) return;
+  loading=true;
+
+  try{
+    const date=todayISO();
+
+    const [rRes,dRes,cRes,sRes]=await Promise.all([
+      db.from("spal_regioes").select("*").eq("ativo",true).order("nome"),
+      db.from("spal_motoristas").select("*").eq("ativo",true).order("nome"),
+      db.from("spal_coletas").select("*").eq("data_coleta",date),
+      db.from("spal_motoristas_dia").select("*").eq("data",date)
+    ]);
+
+    const errors=[rRes.error,dRes.error,cRes.error,sRes.error].filter(Boolean);
+    if(errors.length) throw errors[0];
+
+    regions=rRes.data||[];
+    drivers=dRes.data||[];
+    collections=cRes.data||[];
+    schedules=sRes.data||[];
+    lastUpdate=new Date();
+
+    renderStats();
+    renderBoard();
+
+    if(presentationMode){
+      renderPresentation();
+      if(!paused) startRotation();
+    }
+
+    const done=collections.filter(c=>c.status==="feita").length;
+    const no=collections.filter(c=>c.status==="nao_feita" || c.status==="não_feita").length;
+    const pending=collections.length-done-no;
+
+    $("footerText").textContent=
+      `Última atualização: ${lastUpdate.toLocaleTimeString("pt-BR")} • ${pending} pendente(s) • ${no} não feita(s) • Realtime ativo`;
+  }catch(err){
+    console.error("Erro ao carregar painel:",err);
+    $("footerText").textContent="Erro ao atualizar os dados. Verifique a conexão com o Supabase.";
+  }finally{
+    loading=false;
+  }
+}
+
+let reloadTimer=null;
+function scheduleReload(){
+  clearTimeout(reloadTimer);
+  reloadTimer=setTimeout(loadAll,400);
+}
+
+function subscribeRealtime(){
+  const tables=["spal_regioes","spal_motoristas","spal_coletas","spal_motoristas_dia"];
+  tables.forEach(table=>{
+    db.channel(`tv-${table}`)
+      .on("postgres_changes",{event:"*",schema:"public",table},scheduleReload)
+      .subscribe();
+  });
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key===" " && presentationMode){e.preventDefault();togglePause()}
+  if(e.key==="ArrowRight" && presentationMode) nextSlide();
+  if(e.key==="ArrowLeft" && presentationMode) previousSlide();
+  if(e.key.toLowerCase()==="t") togglePresentation();
+  if(e.key.toLowerCase()==="f") toggleFullscreen();
+  if(e.key==="Escape" && presentationMode) exitPresentation();
+});
+
+window.addEventListener("resize",()=>{
+  if(presentationMode) renderPresentation();
+});
+
+(async()=>{
+  await loadAll();
+  subscribeRealtime();
+
+  const params=new URLSearchParams(location.search);
+  if(params.get("tv")==="1"){
+    setTimeout(enterPresentation,500);
+  }
+})();
+</script>
+</body>
+</html>
