@@ -555,6 +555,39 @@
             color: var(--muted);
         }
 
+        .password-timestamps {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .password-timestamps span {
+            display: block;
+            color: var(--muted-2);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .password-timestamps strong {
+            display: block;
+            margin-top: 5px;
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 420px) {
+            .password-timestamps {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .report-footer {
             display: flex;
             align-items: center;
@@ -1107,44 +1140,42 @@ function normalize(value) {
 
 
 function formatDate(value) {
+    if (!value) return "—";
 
-    if (!value) {
-        return "—";
-    }
+    // Trata datas YYYY-MM-DD sem conversão de fuso horário.
+    const raw = String(value).trim();
+    const match = raw.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+    if (match) return `${match[3]}/${match[2]}/${match[1]}`;
 
-    const date =
-        new Date(`${value}T00:00:00`);
-
-    if (Number.isNaN(date.getTime())) {
-        return value;
-    }
-
-    return date.toLocaleDateString("pt-BR");
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return raw;
+    return date.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
 }
 
 
 function formatDateTime(value) {
+    if (!value) return "—";
 
-    if (!value) {
-        return "—";
-    }
+    const raw = String(value).trim();
 
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return value;
-    }
-
-    return date.toLocaleString(
-        "pt-BR",
-        {
+    // Exibe timestamps sem deixar o "T" ISO aparecer na tela.
+    const date = new Date(raw);
+    if (!Number.isNaN(date.getTime())) {
+        return new Intl.DateTimeFormat("pt-BR", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
+            minute: "2-digit",
+            hour12: false,
+            timeZone: "America/Sao_Paulo"
+        }).format(date).replace(",", " às");
+    }
+
+    // Fallback para valores que vierem como texto ISO sem fuso reconhecível.
+    const match = raw.match(/^(\\d{4})-(\\d{2})-(\\d{2})[T ](\\d{2}):(\\d{2})/);
+    if (match) return `${match[3]}/${match[2]}/${match[1]} às ${match[4]}:${match[5]}`;
+    return raw.replace("T", " às ").replace(/Z$/, "");
 }
 
 
@@ -1502,15 +1533,11 @@ function renderReportCard(report) {
                 <div class="stat">
 
                     <span>
-                        Importado
+                        Registrado em
                     </span>
 
                     <strong>
-                        ${escapeHtml(
-                            formatDate(
-                                report.imported_at
-                            )
-                        )}
+                        ${escapeHtml(formatDateTime(report.imported_at))}
                     </strong>
 
                 </div>
@@ -1532,6 +1559,11 @@ function renderReportCard(report) {
                 <strong>
                     ${escapeHtml(password)}
                 </strong>
+
+                <div class="password-timestamps">
+                    <div><span>Senha gerada</span><strong>${escapeHtml(formatDateTime(report.password_generated_at))}</strong></div>
+                    <div><span>Senha liberada</span><strong>${escapeHtml(formatDateTime(report.password_released_at))}</strong></div>
+                </div>
 
             </div>
 
@@ -1601,7 +1633,7 @@ function openReport(reportId) {
             style="
                 display:grid;
                 grid-template-columns:
-                    repeat(3,minmax(0,1fr));
+                    repeat(2,minmax(0,1fr));
                 gap:10px;
                 margin-bottom:22px;
             "
@@ -1620,22 +1652,17 @@ function openReport(reportId) {
 
             <div class="stat">
 
-                <span>Importado em</span>
+                <span>Registrado em</span>
 
                 <strong>
-                    ${escapeHtml(
-                        formatDateTime(
-                            report.imported_at
-                        )
-                    )}
+                    ${escapeHtml(formatDateTime(report.imported_at))}
                 </strong>
 
             </div>
 
-
             <div class="stat">
 
-                <span>Senha</span>
+                <span>Senha do relatório</span>
 
                 <strong>
                     ${
@@ -1644,6 +1671,22 @@ function openReport(reportId) {
                             : "Não liberada"
                     }
                 </strong>
+
+            </div>
+
+            <div class="stat">
+
+                <span>Senha gerada em</span>
+
+                <strong>${escapeHtml(formatDateTime(report.password_generated_at))}</strong>
+
+            </div>
+
+            <div class="stat">
+
+                <span>Senha liberada em</span>
+
+                <strong>${escapeHtml(formatDateTime(report.password_released_at))}</strong>
 
             </div>
 
