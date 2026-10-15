@@ -1,0 +1,35 @@
+MÓDULO DE ROTAS SPAL — INSTRUÇÕES
+
+ARQUIVOS
+- painel-coletas-rotas.html: versão do painel com módulo de rotas adicionado.
+- sql-modulo-rotas-spal.sql: alterações de banco necessárias.
+
+ANTES DE USAR
+1. Faça uma cópia de segurança do painel-coletas.html que está funcionando.
+2. No Supabase do projeto SPAL, abra SQL Editor e execute sql-modulo-rotas-spal.sql.
+3. Publique painel-coletas-rotas.html no lugar de teste primeiro, sem sobrescrever a versão atual imediatamente.
+4. Faça login e abra Administração > Sugestões.
+5. Clique em “Endereço” para cadastrar endereço e coordenadas de cada sugestão recorrente.
+6. Abra Administração > Planejamento de rotas, escolha a data e a região.
+7. Informe o endereço da base da região, clique em “Localizar endereço” e depois “Salvar base”.
+8. Clique em “Montar rota sugerida”.
+
+COMPORTAMENTO
+- O campo de coleta continua sendo texto livre; não foi criado campo separado para volumes.
+- A associação da coleta diária à sugestão tenta encontrar nome exato e também nomes com observação após vírgula, por exemplo “Joinp, 23 volumes”.
+- Coletas sem sugestão/endereço são exibidas como pendências e não bloqueiam o restante da rota.
+- A rota é calculada separadamente para a região escolhida e mostra o motorista da escala daquele dia.
+- O painel usa Leaflet/OpenStreetMap para mapa, Nominatim para geocodificar endereços e o serviço público OSRM para sugerir a sequência/estimar percurso. Esses serviços públicos podem ter limites ou indisponibilidade; confirme sempre os endereços e a rota real.
+- Se o OSRM não responder, o painel tenta uma ordem aproximada por proximidade em linha reta e informa que não é uma estimativa rodoviária.
+- A rota considera saída e retorno à base configurada.
+
+SEGURANÇA
+- A tabela spal_rotas_config permite alterações a usuários autenticados, alinhado ao painel atual em que ADMIN_EMAILS está vazio e qualquer usuário autenticado pode entrar na administração. Se isso não for desejado, restrinja a policy RLS por usuário autorizado antes de publicar.
+- Não foi adicionada nenhuma chave secreta no HTML.
+
+TESTES RECOMENDADOS
+- Teste primeiro com uma região e duas ou três sugestões com endereços conferidos.
+- Confirme se a escala do dia mostra o motorista esperado.
+- Confira se a rota abre no Google Maps e se o mapa apresenta os pontos.
+- Confirme o comportamento de coletas sem endereço.
+- Mantenha o painel original como cópia até concluir os testes.
