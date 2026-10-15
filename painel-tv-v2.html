@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090b10">
-<title>Painel Coletas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<title>SPAL • Painel TV</title>
 <style>
 :root{
   --bg:#07090d;
@@ -82,7 +83,7 @@ main{width:min(1800px,100%);margin:0 auto;padding:20px 24px 28px;flex:1}
 }
 .region-head{padding:17px 18px 14px;border-bottom:1px solid var(--border)}
 .region-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.region-title h2{font-size:21px;margin:0;font-weight:900}
+.region-title h2{font-size:clamp(18px,1.5vw,21px);margin:0;font-weight:900;overflow-wrap:anywhere}
 .region-title small{color:var(--muted);display:block;margin-top:4px;font-size:11px}
 .badge{
   padding:6px 9px;border-radius:999px;font-size:10px;font-weight:850;
@@ -101,18 +102,29 @@ main{width:min(1800px,100%);margin:0 auto;padding:20px 24px 28px;flex:1}
 .team-item b{display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .collections{padding:8px 10px}
 .collection{
-  display:flex;align-items:center;gap:9px;padding:10px 8px;
+  display:grid;grid-template-columns:9px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:9px;row-gap:5px;padding:11px 8px;
   border-bottom:1px solid #171d26;min-width:0
 }
 .collection:last-child{border-bottom:0}
-.collection-dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);flex:none}
+.collection-dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);grid-column:1;grid-row:1;align-self:start;margin-top:5px}
 .collection.done .collection-dot{background:var(--green)}
 .collection.no .collection-dot{background:var(--red)}
-.collection-name{flex:1;min-width:0;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.collection-time{font-size:10px;color:var(--muted);white-space:nowrap}
-.collection-status{font-size:9px;font-weight:850;padding:5px 7px;border-radius:7px;background:#191f28;color:#b8c1cf;white-space:nowrap}
+.collection-name{grid-column:2;grid-row:1;min-width:0;font-size:13px;font-weight:750;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.35}
+.collection-time{grid-column:2;grid-row:2;font-size:10px;color:var(--muted);white-space:nowrap}
+.collection-status{grid-column:3;grid-row:1;align-self:start;font-size:9px;font-weight:850;padding:5px 7px;border-radius:7px;background:#191f28;color:#b8c1cf;white-space:nowrap}
 .collection.done .collection-status{color:#65e5a6;background:rgba(35,199,122,.11)}
 .collection.no .collection-status{color:#ff777d;background:rgba(227,38,46,.11)}
+.region-title-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;flex:none}
+.map-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #344154;background:#111a27;color:#e8eef8;border-radius:10px;padding:7px 9px;font-size:10px;font-weight:850;max-width:155px}
+.map-toggle:hover,.map-toggle[aria-expanded="true"]{border-color:var(--red);background:rgba(227,38,46,.13)}
+.region-minimap{display:none;padding:10px;border-top:1px solid var(--border);background:#090e15}
+.region-minimap.open{display:block}
+.region-minimap-frame{height:clamp(230px,32vw,360px);min-height:230px;border:1px solid #263142;border-radius:12px;overflow:hidden;position:relative;background:#0b1119}
+.region-minimap-canvas{width:100%;height:100%;min-height:230px}
+.region-minimap-note{padding:9px 4px 2px;color:var(--muted);font-size:11px;line-height:1.4}
+.tv-route-marker{background:transparent;border:0}.tv-route-pin{width:30px;height:36px;display:flex;justify-content:center;align-items:flex-start;filter:drop-shadow(0 4px 5px rgba(0,0,0,.4));position:relative}.tv-route-pin:after{content:"";position:absolute;bottom:0;left:9px;width:12px;height:12px;transform:rotate(45deg);border-radius:3px;background:var(--pin,#e32636);z-index:-1}.tv-route-pin b{width:27px;height:27px;display:grid;place-items:center;border:2px solid white;border-radius:10px;background:var(--pin,#e32636);color:white;font-size:11px;font-weight:950}.tv-route-pin.base{--pin:#2878ff}.tv-route-pin.done{--pin:#16a765}.tv-route-pin.no{--pin:#f59e0b}
+.tv-map-popup{min-width:170px;color:#172033;font:12px/1.4 Inter,system-ui,sans-serif}.tv-map-popup strong{display:block;font-size:13px;margin-bottom:4px}.tv-map-popup small{color:#64748b}
+.leaflet-container{font-family:Inter,system-ui,sans-serif}.leaflet-control-zoom a{background:#111827!important;color:#f8fafc!important;border-color:#374151!important}.leaflet-control-attribution{background:rgba(7,12,20,.75)!important;color:#aab6c8!important}.leaflet-control-attribution a{color:#cbd5e1!important}
 .empty{padding:25px 12px;text-align:center;color:var(--muted);font-size:12px}
 .footer{margin-top:16px;color:var(--muted);font-size:11px;text-align:center}
 .presentation{display:none}
@@ -183,6 +195,7 @@ body.presentation-active .topbar{min-height:68px}
 .fade-in{animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(max-width:850px){
+  main{padding:10px}.toolbar{padding:12px}.region-head{padding:14px}.team{padding:10px 12px}.collection{padding:12px 6px}.collection-name{font-size:13px}.collection-status{font-size:8px;padding:5px 6px}.region-minimap-frame{height:300px}
   .topbar{padding:12px 15px}.clock{display:none}
   main{padding:14px}.toolbar{align-items:flex-start;flex-direction:column}
   .board{grid-template-columns:1fr}
@@ -193,6 +206,7 @@ body.presentation-active .topbar{min-height:68px}
   .slide-total strong{font-size:34px}
   .slide-region h2{font-size:42px}
 }
+@media(max-width:420px){.region-title{gap:7px}.region-title-tools{flex-direction:column;align-items:flex-end;gap:5px}.map-toggle{max-width:120px;padding:6px 7px}.badge{white-space:normal;text-align:center;max-width:118px}.team{gap:6px}.team-item{padding:7px}.collection{grid-template-columns:8px minmax(0,1fr);column-gap:7px}.collection-status{grid-column:2;grid-row:2;justify-self:start}.collection-time{grid-column:2;grid-row:3}.collection{grid-template-rows:auto auto auto}.region-minimap-frame{height:260px}}
 @media(max-height:700px) and (min-width:851px){
   .slide-collection{min-height:45px}
   .slide-collections{padding-top:4px;padding-bottom:4px}
@@ -207,7 +221,7 @@ body.presentation-active .topbar{min-height:68px}
   <div class="brand">
     <div class="logo">S</div>
     <div>
-      <h1>Controle de Coletas</h1>
+      <h1>SPAL • Controle de Coletas</h1>
       <p>Painel operacional em tempo real</p>
     </div>
   </div>
@@ -259,6 +273,7 @@ body.presentation-active .topbar{min-height:68px}
 </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://ewawkukleqboozavhovb.supabase.co";
@@ -280,6 +295,11 @@ let countdownTimer = null;
 let secondsLeft = rotationSeconds;
 let lastUpdate = null;
 let loading = false;
+let routeSuggestions = [];
+let routeBases = [];
+let openMapRegionId = null;
+const regionMaps = new Map();
+const regionMapTokens = new Map();
 
 const $ = id => document.getElementById(id);
 
@@ -378,6 +398,9 @@ function renderStats(){
 
 function renderBoard(){
   const board=$("board");
+  // Cards are rebuilt on realtime refresh, so clean up any Leaflet instances first.
+  regionMaps.forEach(map=>{try{map.remove()}catch(e){}});
+  regionMaps.clear();
 
   if(!regions.length){
     board.innerHTML='<div class="empty">Nenhuma região ativa cadastrada.</div>';
@@ -390,6 +413,7 @@ function renderBoard(){
     const no=items.filter(c=>c.status==="nao_feita" || c.status==="não_feita").length;
     const pct=items.length ? Math.round(done/items.length*100) : 0;
     const schedule=getSchedule(region.id);
+    const isMapOpen=String(openMapRegionId)===String(region.id);
 
     let badge="SEM COLETAS", badgeCls="";
     if(items.length && done===items.length) {badge="CONCLUÍDA";badgeCls="ok"}
@@ -397,14 +421,17 @@ function renderBoard(){
     else if(items.length) {badge=`${items.length-done} PENDENTE(S)`;badgeCls="warn"}
 
     return `
-      <article class="region-card">
+      <article class="region-card" data-region-card="${escapeHTML(String(region.id))}">
         <div class="region-head">
           <div class="region-title">
             <div>
               <h2>${escapeHTML(region.nome)}</h2>
               <small>${items.length} coleta(s) registrada(s)</small>
             </div>
-            <span class="badge ${badgeCls}">${badge}</span>
+            <div class="region-title-tools">
+              <span class="badge ${badgeCls}">${badge}</span>
+              <button class="map-toggle" type="button" aria-expanded="${isMapOpen}" onclick="toggleRegionMap('${escapeHTML(String(region.id))}')">${isMapOpen?'✕ Fechar mapa':'🗺️ Ver rota'}</button>
+            </div>
           </div>
           <div class="progress-wrap">
             <div class="progress-line"><i style="width:${pct}%"></i></div>
@@ -413,23 +440,123 @@ function renderBoard(){
         </div>
 
         <div class="team">
-          <div class="team-item"><span>Motorista</span><b>${escapeHTML(schedule?.driver?.nome || "Não definido")}</b></div>
-          <div class="team-item"><span>Ajudante</span><b>${escapeHTML(schedule?.assistant?.nome || "Não definido")}</b></div>
+          <div class="team-item"><span>Motorista</span><b title="${escapeHTML(schedule?.driver?.nome || "Não definido")}">${escapeHTML(schedule?.driver?.nome || "Não definido")}</b></div>
+          <div class="team-item"><span>Ajudante</span><b title="${escapeHTML(schedule?.assistant?.nome || "Não definido")}">${escapeHTML(schedule?.assistant?.nome || "Não definido")}</b></div>
         </div>
 
         <div class="collections">
           ${items.length ? items.map(c=>{
             const st=statusInfo(c.status);
-            return `<div class="collection ${st.cls}">
+            return `<div class="collection ${st.cls}" title="${escapeHTML(c.nome)}">
               <i class="collection-dot"></i>
               <div class="collection-name">${escapeHTML(c.nome)}</div>
-              <div class="collection-time">${formatTime(c.horario_registro)}</div>
+              <div class="collection-time">Registrada às ${formatTime(c.horario_registro)}</div>
               <span class="collection-status">${st.label}</span>
             </div>`;
           }).join("") : '<div class="empty">Nenhuma coleta para esta região.</div>'}
         </div>
+        <div class="region-minimap ${isMapOpen?'open':''}" id="miniMapPanel-${escapeHTML(String(region.id))}" ${isMapOpen?'':'hidden'}>
+          <div class="region-minimap-frame"><div class="region-minimap-canvas" id="miniMap-${escapeHTML(String(region.id))}"></div></div>
+          <div class="region-minimap-note" id="miniMapNote-${escapeHTML(String(region.id))}">Carregando pontos da rota...</div>
+        </div>
       </article>`;
   }).join("");
+
+  if(openMapRegionId!==null && regions.some(r=>String(r.id)===String(openMapRegionId))){
+    const region=regions.find(r=>String(r.id)===String(openMapRegionId));
+    setTimeout(()=>initRegionMiniMap(region),80);
+  } else {
+    openMapRegionId=null;
+  }
+}
+
+function toggleRegionMap(regionId){
+  openMapRegionId=String(openMapRegionId)===String(regionId)?null:String(regionId);
+  renderBoard();
+}
+
+function normalizeRouteName(value){
+  return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+}
+function routeBaseName(value){return normalizeRouteName(String(value||"").split(",")[0]);}
+function findTVSuggestion(collection, regionId){
+  const name=normalizeRouteName(collection.nome), base=routeBaseName(collection.nome);
+  const options=routeSuggestions.filter(s=>!s.regiao_id || String(s.regiao_id)===String(regionId));
+  return options.find(s=>normalizeRouteName(s.nome)===name) || options.find(s=>base && routeBaseName(s.nome)===base) || null;
+}
+function tvMapIcon(label, kind){
+  return L.divIcon({className:"tv-route-marker",html:`<div class="tv-route-pin ${kind||"pending"}"><b>${escapeHTML(String(label))}</b></div>`,iconSize:[30,36],iconAnchor:[15,34],popupAnchor:[0,-31]});
+}
+function addTVReliableBasemap(map){
+  const providers=[
+    {name:"OpenStreetMap",url:"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",options:{subdomains:"abc",maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}},
+    {name:"CARTO Voyager",url:"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",options:{subdomains:"abcd",maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}}
+  ];
+  let active=null,failures=0,loaded=0,switched=false;
+  const attach=index=>{
+    failures=0;loaded=0;
+    if(active){map.removeLayer(active);active.off();}
+    const provider=providers[index];
+    active=L.tileLayer(provider.url,{...provider.options,updateWhenIdle:true,keepBuffer:3});
+    active.on("tileload",()=>{loaded++;});
+    active.on("tileerror",()=>{
+      failures++;
+      if(!switched && failures>=4 && loaded===0){switched=true;console.warn("Mapa base indisponível em "+provider.name+"; tentando provedor alternativo.");attach(index===0?1:0);}
+    });
+    active.addTo(map);
+  };
+  attach(0);
+}
+function initRegionMiniMap(region){
+  const regionId=String(region.id), container=$("miniMap-"+regionId), note=$("miniMapNote-"+regionId);
+  if(!container || !window.L) {if(note)note.textContent="Não foi possível carregar a biblioteca do mapa. Confira sua conexão.";return;}
+  if(regionMaps.has(regionId)){try{regionMaps.get(regionId).remove()}catch(e){}regionMaps.delete(regionId);}
+  const token=(regionMapTokens.get(regionId)||0)+1;regionMapTokens.set(regionId,token);
+  const map=L.map(container,{zoomControl:true,attributionControl:true,preferCanvas:true,scrollWheelZoom:false}).setView([-22.2,-49.9],8);
+  regionMaps.set(regionId,map);
+  addTVReliableBasemap(map);
+  const layer=L.layerGroup().addTo(map);
+  const base=routeBases.find(b=>String(b.regiao_id)===regionId);
+  const pts=[];
+  if(base && base.base_latitude!=null && base.base_longitude!=null && Number.isFinite(Number(base.base_latitude)) && Number.isFinite(Number(base.base_longitude))){
+    pts.push({name:base.base_nome||`Base ${region.nome}`,lat:Number(base.base_latitude),lng:Number(base.base_longitude),base:true,address:base.base_endereco});
+  }
+  getRegionCollections(region.id).forEach((c,index)=>{
+    const sug=findTVSuggestion(c,region.id);
+    if(!sug || sug.latitude==null || sug.longitude==null || !Number.isFinite(Number(sug.latitude)) || !Number.isFinite(Number(sug.longitude)))return;
+    pts.push({name:c.nome,lat:Number(sug.latitude),lng:Number(sug.longitude),number:index+1,status:c.status,address:[sug.endereco,sug.numero,sug.bairro,sug.cidade,sug.uf].filter(Boolean).join(", ")});
+  });
+  if(!pts.length){if(note)note.textContent="Ainda não há endereços com latitude/longitude cadastrados para esta região. Cadastre os pontos em Rotas para desenhar o trajeto.";setTimeout(()=>{if(regionMaps.get(regionId)===map)map.invalidateSize()},100);return;}
+  if(note)note.textContent=`${pts.filter(p=>!p.base).length} parada(s) localizada(s). Toque nos marcadores para ver detalhes.`;
+  const linePts=pts.map(p=>[p.lat,p.lng]);
+  if(pts[0]?.base && pts.length>1)linePts.push([pts[0].lat,pts[0].lng]);
+  let directGlow=null,directLine=null;
+  if(linePts.length>1){
+    directGlow=L.polyline(linePts,{color:"#07111f",weight:10,opacity:.45,lineCap:"round",lineJoin:"round"}).addTo(layer);
+    directLine=L.polyline(linePts,{color:"#e32636",weight:4,opacity:.95,dashArray:"7 8",lineCap:"round",lineJoin:"round"}).addTo(layer);
+  }
+  pts.forEach(p=>{
+    const kind=p.base?"base":(p.status==="feita"?"done":((p.status==="nao_feita"||p.status==="não_feita")?"no":"pending"));
+    const label=p.base?"B":p.number;
+    const popup=`<div class="tv-map-popup"><strong>${escapeHTML(p.base?p.name:`Parada ${p.number} · ${p.name}`)}</strong>${p.address?`<div>${escapeHTML(p.address)}</div>`:""}<small>${p.base?"Ponto de partida / retorno":escapeHTML(statusInfo(p.status).label)}</small></div>`;
+    L.marker([p.lat,p.lng],{icon:tvMapIcon(label,kind),title:p.name,zIndexOffset:p.base?1000:500}).bindPopup(popup,{maxWidth:250}).addTo(layer);
+  });
+  map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])).pad(.2),{maxZoom:14});
+  setTimeout(()=>{if(regionMaps.get(regionId)===map)map.invalidateSize()},120);
+  if(pts.length>1){
+    const routePoints=pts.slice();if(routePoints[0]?.base)routePoints.push({...routePoints[0]});
+    const coords=routePoints.map(p=>`${p.lng},${p.lat}`).join(";");
+    fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=false`)
+      .then(response=>{if(!response.ok)throw new Error("Roteador indisponível");return response.json()})
+      .then(result=>{
+        if(regionMapTokens.get(regionId)!==token || regionMaps.get(regionId)!==map || result.code!=="Ok" || !result.routes?.[0]?.geometry?.coordinates?.length)return;
+        if(directGlow)layer.removeLayer(directGlow);if(directLine)layer.removeLayer(directLine);
+        const roadLine=result.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+        L.polyline(roadLine,{color:"#07111f",weight:10,opacity:.48,lineCap:"round",lineJoin:"round"}).addTo(layer);
+        L.polyline(roadLine,{color:"#e32636",weight:4,opacity:.97,lineCap:"round",lineJoin:"round"}).addTo(layer);
+        map.fitBounds(L.latLngBounds(roadLine).pad(.12),{maxZoom:14});
+      }).catch(()=>{if(note && regionMaps.get(regionId)===map)note.textContent="Pontos exibidos. Não foi possível calcular o trajeto pelas ruas agora; a linha de referência continua no mapa.";});
+  }
 }
 
 function renderPresentation(){
@@ -621,11 +748,13 @@ async function loadAll(){
   try{
     const date=todayISO();
 
-    const [rRes,dRes,cRes,sRes]=await Promise.all([
+    const [rRes,dRes,cRes,sRes,sgRes,baseRes]=await Promise.all([
       db.from("spal_regioes").select("*").eq("ativo",true).order("nome"),
       db.from("spal_motoristas").select("*").eq("ativo",true).order("nome"),
       db.from("spal_coletas").select("*").eq("data_coleta",date),
-      db.from("spal_motoristas_dia").select("*").eq("data",date)
+      db.from("spal_motoristas_dia").select("*").eq("data",date),
+      db.from("spal_coletas_sugestoes").select("*").eq("ativo",true),
+      db.from("spal_rotas_config").select("*")
     ]);
 
     const errors=[rRes.error,dRes.error,cRes.error,sRes.error].filter(Boolean);
@@ -635,6 +764,8 @@ async function loadAll(){
     drivers=dRes.data||[];
     collections=cRes.data||[];
     schedules=sRes.data||[];
+    routeSuggestions=sgRes.error ? [] : (sgRes.data||[]);
+    routeBases=baseRes.error ? [] : (baseRes.data||[]);
     lastUpdate=new Date();
 
     renderStats();
@@ -666,7 +797,7 @@ function scheduleReload(){
 }
 
 function subscribeRealtime(){
-  const tables=["spal_regioes","spal_motoristas","spal_coletas","spal_motoristas_dia"];
+  const tables=["spal_regioes","spal_motoristas","spal_coletas","spal_motoristas_dia","spal_coletas_sugestoes","spal_rotas_config"];
   tables.forEach(table=>{
     db.channel(`tv-${table}`)
       .on("postgres_changes",{event:"*",schema:"public",table},scheduleReload)
