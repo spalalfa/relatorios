@@ -1471,9 +1471,9 @@ function renderReportCard(report) {
 
 
     const password =
-        released && report.password
-            ? report.password
-            : "Não liberada";
+    report.password
+        ? report.password
+        : "Ainda não gerada";
 
 
     const passwordClass =
@@ -1666,9 +1666,9 @@ function openReport(reportId) {
 
                 <strong>
                     ${
-                        released && report.password
-                            ? escapeHtml(report.password)
-                            : "Não liberada"
+                        report.password
+    ? escapeHtml(report.password)
+    : "Ainda não gerada"
                     }
                 </strong>
 
