@@ -1226,117 +1226,80 @@ function showToast(message) {
 ============================================================ */
 
 async function loadData() {
+    const grid = $("#reportsGrid");
+    const count = $("#resultCount");
+    const connectionText = $("#connectionText");
+    const connectionDot = $("#connectionDot");
 
-    try {
+    grid.innerHTML = `
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    `;
+    count.textContent = "Carregando relatórios...";
+    connectionText.textContent = "Conectando...";
+    connectionDot.style.background = "var(--yellow)";
 
-        const [
-            reportsResponse,
-            processesResponse
-        ] = await Promise.all([
-
-            supabaseClient
+    let lastError = null;
+    // Tenta novamente em falhas transitórias de rede, comuns em inicializações lentas.
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const reportsResponse = await supabaseClient
                 .from("relatorios")
-                .select(`
-                    id,
-                    report_number,
-                    report_date,
-                    imported_at,
-                    password,
-                    status,
-                    password_generated_at,
-                    password_released_at
-                `)
-                .order(
-                    "report_date",
-                    {
-                        ascending: false
-                    }
-                ),
+                .select("id, report_number, report_date, imported_at, password, status, password_generated_at, password_released_at")
+                .order("report_date", { ascending: false });
 
-            supabaseClient
+            if (reportsResponse.error) throw reportsResponse.error;
+
+            const processesResponse = await supabaseClient
                 .from("processos")
-                .select(`
-                    id,
-                    report_id,
-                    data,
-                    cte,
-                    nf,
-                    cliente,
-                    volume,
-                    acr,
-                    created_at
-                `)
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                )
-        ]);
+                .select("id, report_id, data, cte, nf, cliente, volume, acr, created_at")
+                .order("created_at", { ascending: false });
 
+            if (processesResponse.error) throw processesResponse.error;
 
-        if (reportsResponse.error) {
-            throw reportsResponse.error;
+            reports = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
+            processes = Array.isArray(processesResponse.data) ? processesResponse.data : [];
+
+            connectionDot.style.background = "var(--green)";
+            connectionText.textContent = reports.length
+                ? `Sistema conectado • ${reports.length} relatório(s)`
+                : "Conectado, mas sem relatórios retornados";
+
+            render();
+
+            if (reports.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">!</div>
+                        <h3>Nenhum relatório foi retornado pelo banco</h3>
+                        <p>A conexão respondeu, mas a consulta retornou 0 relatórios. Isso pode indicar permissões de leitura (RLS), projeto/tabela diferente ou ausência de registros visíveis para acesso público.</p>
+                        <button class="search-button" type="button" style="margin-top:16px" onclick="loadData()">Tentar carregar novamente</button>
+                    </div>
+                `;
+                count.textContent = "0 relatórios retornados pelo banco";
+            }
+            return;
+        } catch (error) {
+            lastError = error;
+            console.error(`Falha ao carregar dados (tentativa ${attempt}/3):`, error);
+            if (attempt < 3) {
+                await new Promise(resolve => setTimeout(resolve, attempt * 900));
+            }
         }
-
-        if (processesResponse.error) {
-            throw processesResponse.error;
-        }
-
-
-        reports =
-            reportsResponse.data || [];
-
-        processes =
-            processesResponse.data || [];
-
-
-        $("#connectionDot")
-            .style.background =
-            "var(--green)";
-
-        $("#connectionText")
-            .textContent =
-            "Sistema conectado";
-
-
-        render();
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao carregar:",
-            error
-        );
-
-        $("#connectionDot")
-            .style.background =
-            "var(--red)";
-
-        $("#connectionText")
-            .textContent =
-            "Erro de conexão";
-
-
-        $("#reportsGrid").innerHTML = `
-            <div class="empty">
-
-                <div class="empty-icon">
-                    !
-                </div>
-
-                <h3>
-                    Não foi possível carregar os dados
-                </h3>
-
-                <p>
-                    Verifique a conexão com o sistema e tente novamente.
-                </p>
-
-            </div>
-        `;
-
     }
+
+    connectionDot.style.background = "var(--red)";
+    connectionText.textContent = "Falha ao carregar dados";
+    count.textContent = "Não foi possível carregar os relatórios";
+    grid.innerHTML = `
+        <div class="empty">
+            <div class="empty-icon">!</div>
+            <h3>Não foi possível carregar os dados</h3>
+            <p>O sistema tentou carregar os relatórios 3 vezes e não conseguiu. Verifique a conexão e tente novamente.</p>
+            <button class="search-button" type="button" style="margin-top:16px" onclick="loadData()">Tentar novamente</button>
+        </div>
+    `;
 }
 
 
@@ -1892,6 +1855,12 @@ document.addEventListener(
 ============================================================ */
 
 loadData();
+
+// Recupera automaticamente caso a conexão esteja indisponível na abertura.
+window.addEventListener("online", () => loadData());
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") loadData();
+});
 
 </script>
 
