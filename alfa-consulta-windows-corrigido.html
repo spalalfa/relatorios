@@ -24,7 +24,7 @@
         rel="stylesheet"
     >
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
 
     <style>
         :root {
@@ -1094,11 +1094,33 @@ const SUPABASE_ANON_KEY =
     "sb_publishable_WQ_vLGpDP9aveeUOtDNNJw_8Kg7L73y";
 
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
+// A página é de consulta pública: não deve reaproveitar sessão antiga
+// guardada no navegador de um usuário ou de outro sistema.
+const noCacheFetch = (url, options = {}) => fetch(url, {
+    ...options,
+    cache: "no-store",
+    headers: {
+        ...(options.headers || {}),
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache"
+    }
+});
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+    {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false
+        },
+        global: {
+            fetch: noCacheFetch,
+            headers: { "Cache-Control": "no-cache" }
+        }
+    }
+);
 
 
 /* ============================================================
@@ -1228,78 +1250,66 @@ function showToast(message) {
 async function loadData() {
     const grid = $("#reportsGrid");
     const count = $("#resultCount");
-    const connectionText = $("#connectionText");
-    const connectionDot = $("#connectionDot");
+    const dot = $("#connectionDot");
+    const status = $("#connectionText");
 
-    grid.innerHTML = `
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-    `;
+    grid.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
     count.textContent = "Carregando relatórios...";
-    connectionText.textContent = "Conectando...";
-    connectionDot.style.background = "var(--yellow)";
+    status.textContent = "Conectando ao banco...";
+    dot.style.background = "var(--yellow)";
 
-    let lastError = null;
-    // Tenta novamente em falhas transitórias de rede, comuns em inicializações lentas.
+    // Faz até 3 tentativas para lidar com falhas temporárias de rede/DNS.
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
             const reportsResponse = await supabaseClient
                 .from("relatorios")
                 .select("id, report_number, report_date, imported_at, password, status, password_generated_at, password_released_at")
                 .order("report_date", { ascending: false });
-
             if (reportsResponse.error) throw reportsResponse.error;
 
             const processesResponse = await supabaseClient
                 .from("processos")
                 .select("id, report_id, data, cte, nf, cliente, volume, acr, created_at")
                 .order("created_at", { ascending: false });
-
             if (processesResponse.error) throw processesResponse.error;
 
             reports = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
             processes = Array.isArray(processesResponse.data) ? processesResponse.data : [];
+            dot.style.background = "var(--green)";
 
-            connectionDot.style.background = "var(--green)";
-            connectionText.textContent = reports.length
-                ? `Sistema conectado • ${reports.length} relatório(s)`
-                : "Conectado, mas sem relatórios retornados";
-
-            render();
-
-            if (reports.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty">
-                        <div class="empty-icon">!</div>
-                        <h3>Nenhum relatório foi retornado pelo banco</h3>
-                        <p>A conexão respondeu, mas a consulta retornou 0 relatórios. Isso pode indicar permissões de leitura (RLS), projeto/tabela diferente ou ausência de registros visíveis para acesso público.</p>
-                        <button class="search-button" type="button" style="margin-top:16px" onclick="loadData()">Tentar carregar novamente</button>
-                    </div>
-                `;
-                count.textContent = "0 relatórios retornados pelo banco";
+            if (reports.length > 0) {
+                status.textContent = `Sistema conectado • ${reports.length} relatório(s)`;
+                render();
+                return;
             }
+
+            // HTTP bem-sucedido com lista vazia não significa que os dados carregaram.
+            status.textContent = "Conectado, mas sem relatórios";
+            count.textContent = "Nenhum relatório retornado";
+            grid.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">!</div>
+                    <h3>Nenhum relatório foi retornado</h3>
+                    <p>O banco respondeu, mas não entregou relatórios para esta página. Como o sistema funciona em outros dispositivos, não altere as policies ainda. Primeiro, tente recarregar a página ou abrir em uma janela anônima.</p>
+                    <button class="search-button" type="button" style="margin-top:16px" onclick="loadData()">Tentar novamente</button>
+                </div>`;
             return;
         } catch (error) {
-            lastError = error;
             console.error(`Falha ao carregar dados (tentativa ${attempt}/3):`, error);
-            if (attempt < 3) {
-                await new Promise(resolve => setTimeout(resolve, attempt * 900));
-            }
+            if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 1000));
         }
     }
 
-    connectionDot.style.background = "var(--red)";
-    connectionText.textContent = "Falha ao carregar dados";
-    count.textContent = "Não foi possível carregar os relatórios";
+    dot.style.background = "var(--red)";
+    status.textContent = "Falha ao carregar dados";
+    count.textContent = "Não foi possível consultar os relatórios";
     grid.innerHTML = `
         <div class="empty">
             <div class="empty-icon">!</div>
             <h3>Não foi possível carregar os dados</h3>
-            <p>O sistema tentou carregar os relatórios 3 vezes e não conseguiu. Verifique a conexão e tente novamente.</p>
+            <p>A página tentou consultar o banco três vezes. Se este problema ocorrer somente neste computador, teste uma janela anônima e confira se o navegador ou a rede da empresa bloqueia conexões ao Supabase.</p>
             <button class="search-button" type="button" style="margin-top:16px" onclick="loadData()">Tentar novamente</button>
-        </div>
-    `;
+        </div>`;
 }
 
 
@@ -1856,14 +1866,10 @@ document.addEventListener(
 
 loadData();
 
-// Recupera automaticamente caso a conexão esteja indisponível na abertura.
+// Recupera a consulta se o computador perder e depois recuperar a conexão.
 window.addEventListener("online", () => loadData());
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") loadData();
-});
 
 </script>
 
 </body>
 </html>
-```
