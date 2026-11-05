@@ -217,10 +217,90 @@ body.presentation-active .topbar{min-height:68px}
   .slide-team{padding-top:8px;padding-bottom:8px}
   .slide-progress{padding-top:8px;padding-bottom:8px}
 }
+
+/* ===== ALERTAS, TOASTS E HISTÓRICO ===== */
+.alert-banner{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:10px 18px;background:#2a1c08;border-bottom:1px solid #6b4a12;color:#ffd98a;font-size:13px;font-weight:700;text-align:center}
+.alert-banner[hidden]{display:none}
+.alert-banner .btn{padding:7px 12px}
+.count-pill{display:inline-block;min-width:18px;padding:1px 6px;margin-left:4px;border-radius:99px;background:var(--red);color:#fff;font-size:10px;font-weight:900;text-align:center}
+.count-pill[hidden]{display:none}
+.rt-dot{width:9px;height:9px;border-radius:50%;background:#556070;display:inline-block;margin-right:6px}
+.rt-dot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
+.recent-strip{display:flex;align-items:center;gap:10px;padding:9px 14px;margin-bottom:16px;background:var(--panel);border:1px solid var(--border);border-radius:14px;cursor:pointer;overflow:hidden}
+.recent-strip:hover{border-color:#34445a}
+.recent-label{flex:none;font-size:10px;font-weight:900;letter-spacing:1.2px;color:var(--red);text-transform:uppercase}
+.recent-items{display:flex;gap:8px;min-width:0;flex:1;overflow:hidden}
+.recent-chip{flex:0 1 auto;min-width:0;display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:10px;background:#0a0e14;border:1px solid #1a2029;font-size:12px;white-space:nowrap}
+.recent-chip span.t{overflow:hidden;text-overflow:ellipsis}
+.recent-chip em{font-style:normal;color:var(--muted);font-size:10px}
+.recent-chip.feita{border-color:rgba(35,199,122,.35)}
+.recent-chip.nao_feita{border-color:rgba(227,38,46,.45)}
+.recent-empty{color:var(--muted);font-size:12px}
+.recent-more{flex:none;color:var(--muted);font-size:11px;font-weight:800}
+body.presentation-active .recent-strip{margin-bottom:10px}
+body.presentation-active .presentation-slide{min-height:calc(100vh - 225px)}
+
+.toast-box{position:fixed;top:84px;right:18px;z-index:200;display:flex;flex-direction:column;gap:10px;width:min(390px,calc(100vw - 28px));pointer-events:none}
+.toast{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;padding:14px 14px 14px 16px;background:#0f1520;border:1px solid var(--border);border-left:5px solid var(--blue);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.55);animation:toastIn .35s cubic-bezier(.2,.9,.3,1.2)}
+.toast.feita{border-left-color:var(--green)}
+.toast.nao_feita{border-left-color:var(--red)}
+.toast.pendente,.toast.editada{border-left-color:var(--yellow)}
+.toast.removida{border-left-color:#7b8798}
+.toast.out{animation:toastOut .3s ease forwards}
+.toast-ic{font-size:26px;line-height:1}
+.toast-tx{flex:1;min-width:0}
+.toast-tx b{display:block;font-size:14px;margin-bottom:3px}
+.toast-tx span{display:block;font-size:12px;color:#b9c3d1;overflow-wrap:anywhere}
+.toast-tx small{display:block;margin-top:4px;font-size:10px;color:var(--muted)}
+.toast button{border:0;background:transparent;color:var(--muted);font-size:14px;padding:0 2px}
+.toast button:hover{color:#fff}
+@keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(60px)}}
+
+.screen-flash{position:fixed;inset:0;z-index:150;pointer-events:none;opacity:0;box-shadow:inset 0 0 140px 36px rgba(78,156,255,.55)}
+.screen-flash.feita{box-shadow:inset 0 0 140px 36px rgba(35,199,122,.6)}
+.screen-flash.nao_feita{box-shadow:inset 0 0 140px 36px rgba(227,38,46,.65)}
+.screen-flash.pendente,.screen-flash.editada{box-shadow:inset 0 0 140px 36px rgba(243,182,63,.55)}
+.screen-flash.go{animation:screenGlow 1.6s ease-out}
+@keyframes screenGlow{0%{opacity:0}12%{opacity:1}40%{opacity:.35}60%{opacity:.9}100%{opacity:0}}
+
+.region-card.flash{animation:cardFlash 1.2s ease 0s 5;border-color:var(--yellow)}
+@keyframes cardFlash{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 3px rgba(243,182,63,.75),0 0 40px rgba(243,182,63,.35)}}
+.collection.flash-row,.slide-collection.flash-row{animation:rowFlash 1.2s ease 0s 6;border-radius:10px}
+@keyframes rowFlash{0%,100%{background:transparent}50%{background:rgba(243,182,63,.22)}}
+
+.hd-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:180;opacity:0;pointer-events:none;transition:opacity .25s}
+.hd-backdrop.open{opacity:1;pointer-events:auto}
+.history-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);z-index:190;display:flex;flex-direction:column;background:#0b1017;border-left:1px solid var(--border);box-shadow:-20px 0 60px rgba(0,0,0,.5);transform:translateX(105%);transition:transform .3s ease}
+.history-drawer.open{transform:none}
+.hd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 18px 12px;border-bottom:1px solid var(--border)}
+.hd-head h3{margin:0;font-size:17px;font-weight:900}
+.hd-head small{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+.hd-filters{display:flex;gap:6px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--border)}
+.chip{border:1px solid var(--border);background:#111722;color:#c4cdda;border-radius:99px;padding:6px 11px;font-size:11px;font-weight:800}
+.chip.active{background:var(--red);border-color:var(--red);color:#fff}
+.hd-list{flex:1;overflow-y:auto;padding:6px 10px 20px}
+.hd-item{display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid #171d26}
+.hd-item.live{background:rgba(78,156,255,.06);border-radius:10px}
+.hd-ic{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:17px;background:#151b25}
+.hd-item.feita .hd-ic{background:rgba(35,199,122,.13)}
+.hd-item.nao_feita .hd-ic{background:rgba(227,38,46,.13)}
+.hd-body{min-width:0;flex:1}
+.hd-body b{display:block;font-size:13px;overflow-wrap:anywhere}
+.hd-body span{display:block;margin-top:3px;font-size:11px;color:#aeb8c6}
+.hd-time{flex:none;text-align:right;font-size:11px;font-weight:800;color:#d9dee6}
+.hd-time small{display:block;margin-top:3px;font-size:10px;font-weight:600;color:var(--muted)}
+@media(max-width:850px){.toast-box{top:70px;right:10px}.recent-label{display:none}}
+@media(prefers-reduced-motion:reduce){.region-card.flash,.collection.flash-row,.slide-collection.flash-row,.screen-flash.go{animation:none}}
 </style>
 </head>
 <body>
 <div class="app">
+<div class="alert-banner" id="alertBanner" hidden>
+  <span id="alertBannerText">🔔 Ative os alertas para receber aviso sonoro e visual sempre que uma coleta for registrada.</span>
+  <button class="btn primary" onclick="enableAlerts()">Ativar alertas</button>
+  <button class="btn" onclick="dismissBanner()">Agora não</button>
+</div>
 <header class="topbar">
   <div class="brand">
     <div class="logo">S</div>
@@ -252,6 +332,8 @@ body.presentation-active .topbar{min-height:68px}
       <label class="date-control" for="presentationDate">📅 Data das coletas
         <input type="date" id="presentationDate" onchange="changePresentationDate(this.value)" aria-label="Data das coletas exibidas">
       </label>
+      <button class="btn" id="historyBtn" onclick="toggleHistory()">🕘 Histórico<span class="count-pill" id="historyBadge" hidden>0</span></button>
+      <button class="btn" id="soundBtn" onclick="toggleAlerts()">🔔 Alertas</button>
       <a class="btn reports" href="https://spalalfa.github.io/relatorios/" target="_blank" rel="noopener noreferrer">📄 Relatórios SPAL ↗</a>
       <div class="presentation-controls" id="presentationControls">
         <button class="btn" onclick="previousSlide()">←</button>
@@ -271,6 +353,12 @@ body.presentation-active .topbar{min-height:68px}
     </div>
   </section>
 
+  <section class="recent-strip" id="recentStrip" onclick="toggleHistory()" title="Abrir histórico completo">
+    <span class="recent-label">Últimas</span>
+    <div class="recent-items" id="recentItems"><span class="recent-empty">Carregando atualizações...</span></div>
+    <span class="recent-more">Ver tudo ›</span>
+  </section>
+
   <section id="board" class="board"></section>
 
   <section id="presentation" class="presentation">
@@ -280,6 +368,23 @@ body.presentation-active .topbar{min-height:68px}
   <div class="footer" id="footerText">Atualizando dados...</div>
 </main>
 </div>
+
+<div class="toast-box" id="toastBox" aria-live="polite"></div>
+<div class="screen-flash" id="screenFlash"></div>
+<div class="hd-backdrop" id="historyBackdrop" onclick="toggleHistory()"></div>
+<aside class="history-drawer" id="historyDrawer" aria-hidden="true">
+  <div class="hd-head">
+    <div><h3>Histórico de atualizações</h3><small>Coletas registradas, feitas, não feitas e alteradas</small></div>
+    <button class="btn" onclick="toggleHistory()">✕</button>
+  </div>
+  <div class="hd-filters" id="historyFilters">
+    <button class="chip active" data-f="all" onclick="setHistoryFilter('all')">Todas</button>
+    <button class="chip" data-f="feita" onclick="setHistoryFilter('feita')">✅ Feitas</button>
+    <button class="chip" data-f="nao_feita" onclick="setHistoryFilter('nao_feita')">⚠️ Não feitas</button>
+    <button class="chip" data-f="nova" onclick="setHistoryFilter('nova')">➕ Registradas</button>
+  </div>
+  <div class="hd-list" id="historyList"></div>
+</aside>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -436,7 +541,7 @@ function renderBoard(){
     else if(items.length) {badge=`${items.length-done} PENDENTE(S)`;badgeCls="warn"}
 
     return `
-      <article class="region-card" data-region-card="${escapeHTML(String(region.id))}">
+      <article class="region-card ${isFlashRegion(region.id)?'flash':''}" data-region-card="${escapeHTML(String(region.id))}">
         <div class="region-head">
           <div class="region-title">
             <div>
@@ -462,7 +567,7 @@ function renderBoard(){
         <div class="collections">
           ${items.length ? items.map(c=>{
             const st=statusInfo(c.status);
-            return `<div class="collection ${st.cls}" title="${escapeHTML(c.nome)}">
+            return `<div class="collection ${st.cls} ${isFlashRow(c.id)?'flash-row':''}" title="${escapeHTML(c.nome)}">
               <i class="collection-dot"></i>
               <div class="collection-name">${escapeHTML(c.nome)}</div>
               <div class="collection-time">Registrada às ${formatTime(c.horario_registro)}</div>
@@ -633,7 +738,7 @@ function renderPresentation(){
     <div class="slide-collections">
       ${slide.items.length ? slide.items.map((c,i)=>{
         const st=statusInfo(c.status);
-        return `<div class="slide-collection ${st.cls}">
+        return `<div class="slide-collection ${st.cls} ${isFlashRow(c.id)?'flash-row':''}">
           <span class="num">${slide.start+i}</span>
           <i class="dot"></i>
           <div class="name">${escapeHTML(c.nome)}</div>
@@ -797,7 +902,7 @@ async function loadAll(){
     const pending=collections.length-done-no;
 
     $("footerText").textContent=
-      `Última atualização: ${lastUpdate.toLocaleTimeString("pt-BR")} • ${pending} pendente(s) • ${no} não feita(s) • Realtime ativo`;
+      `Última atualização: ${lastUpdate.toLocaleTimeString("pt-BR")} • ${pending} pendente(s) • ${no} não feita(s) • ${realtimeOk?"Realtime ativo":"Realtime reconectando..."}`;
   }catch(err){
     console.error("Erro ao carregar painel:",err);
     $("footerText").textContent="Erro ao atualizar os dados. Verifique a conexão com o Supabase.";
@@ -815,11 +920,353 @@ function scheduleReload(){
 function subscribeRealtime(){
   const tables=["spal_regioes","spal_motoristas","spal_coletas","spal_motoristas_dia","spal_coletas_sugestoes","spal_rotas_config"];
   tables.forEach(table=>{
+    const isColetas = table==="spal_coletas";
+    const handler = isColetas ? (payload=>{onColetaEvent(payload);scheduleReload();}) : scheduleReload;
     db.channel(`tv-${table}`)
-      .on("postgres_changes",{event:"*",schema:"public",table},scheduleReload)
-      .subscribe();
+      .on("postgres_changes",{event:"*",schema:"public",table},handler)
+      .subscribe(status=>{
+        if(!isColetas) return;
+        const ok = status==="SUBSCRIBED";
+        const wasDown = !realtimeOk && realtimeEverUp;
+        realtimeOk = ok;
+        if(ok){ realtimeEverUp=true; if(wasDown){ loadAll(); loadHistory(); } }
+        updateAlertUI();
+      });
   });
 }
+
+
+/* =====================================================================
+   ALERTAS (som + visual + notificação) E HISTÓRICO DE ATUALIZAÇÕES
+   ===================================================================== */
+const ALERT_PREF_KEY = "spal_tv_alertas";
+const HISTORY_MAX = 60;
+const FLASH_MS = 8000;
+
+let alertsOn = lsGet(ALERT_PREF_KEY) !== "off";
+let bannerDismissed = false;
+let audioCtx = null;
+let realtimeOk = false;
+let realtimeEverUp = false;
+let historyItems = [];
+let historyUnread = 0;
+let historyFilter = "all";
+let historyOpen = false;
+let notifQueue = [];
+let notifTimer = null;
+let unseenTitleCount = 0;
+const flashRows = new Map();
+const flashRegionsMap = new Map();
+const BASE_TITLE = document.title;
+
+function lsGet(k){ try{return localStorage.getItem(k)}catch(e){return null} }
+function lsSet(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
+
+const KIND_META = {
+  feita:     {icon:"✅", title:"Coleta FEITA",             verb:"marcada como FEITA",       plural:"marcadas como FEITA"},
+  nao_feita: {icon:"⚠️", title:"Coleta NÃO FEITA",         verb:"marcada como NÃO FEITA",   plural:"marcadas como NÃO FEITA"},
+  pendente:  {icon:"🕓", title:"Coleta voltou a pendente", verb:"voltou para PENDENTE",     plural:"voltaram para PENDENTE"},
+  nova:      {icon:"➕", title:"Nova coleta registrada",   verb:"registrada",               plural:"registradas"},
+  editada:   {icon:"✏️", title:"Coleta atualizada",        verb:"atualizada",               plural:"atualizadas"},
+  removida:  {icon:"🗑️", title:"Coleta removida",          verb:"removida",                 plural:"removidas"}
+};
+function normStatus(s){ const v=String(s||"").toLowerCase(); return v==="não_feita"?"nao_feita":v; }
+function regionName(id){ return regions.find(r=>String(r.id)===String(id))?.nome || "Região"; }
+function isFlashRow(id){ const t=flashRows.get(String(id)); return !!t && t>Date.now(); }
+function isFlashRegion(id){ const t=flashRegionsMap.get(String(id)); return !!t && t>Date.now(); }
+
+/* ---------- Áudio ---------- */
+function getAudio(){
+  if(!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    try{ audioCtx = new AC(); audioCtx.onstatechange = updateAlertUI; }catch(e){ return null; }
+  }
+  return audioCtx;
+}
+function audioReady(){ return !!audioCtx && audioCtx.state==="running"; }
+async function unlockAudio(){
+  const ctx = getAudio();
+  if(!ctx) return false;
+  try{ if(ctx.state!=="running") await ctx.resume(); }catch(e){}
+  updateAlertUI();
+  return ctx.state==="running";
+}
+function tone(freq,start,dur,type="sine",vol=.28){
+  const ctx=audioCtx, o=ctx.createOscillator(), g=ctx.createGain(), t=ctx.currentTime+start;
+  o.type=type; o.frequency.value=freq;
+  g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(vol,t+.02);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(t); o.stop(t+dur+.05);
+}
+function playSound(kind){
+  if(!alertsOn || !audioReady()) return;
+  try{
+    if(kind==="feita"){ tone(659.25,0,.26); tone(880,.13,.26); tone(1318.5,.26,.5); }
+    else if(kind==="nao_feita"){ tone(330,0,.28,"square",.16); tone(247,.26,.28,"square",.16); tone(196,.52,.5,"square",.16); }
+    else if(kind==="removida"){ tone(440,0,.2,"triangle"); tone(330,.16,.35,"triangle"); }
+    else { tone(740,0,.2,"triangle"); tone(740,.26,.34,"triangle"); }
+  }catch(e){ console.warn("Som indisponível",e); }
+}
+
+/* ---------- Notificação do navegador ---------- */
+function notifSupported(){ return "Notification" in window; }
+async function askNotifPermission(){
+  if(!notifSupported() || Notification.permission!=="default") return;
+  try{ await Notification.requestPermission(); }catch(e){}
+  updateAlertUI();
+}
+function systemNotify(title, body, tag){
+  if(!alertsOn || !notifSupported() || Notification.permission!=="granted" || !document.hidden) return;
+  try{
+    const n=new Notification(title,{body,tag,renotify:true,silent:true});
+    n.onclick=()=>{window.focus();n.close();};
+    setTimeout(()=>n.close(),12000);
+  }catch(e){}
+}
+
+/* ---------- Controles de alerta ---------- */
+function updateAlertUI(){
+  const ready=audioReady();
+  const perm=notifSupported()?Notification.permission:"unsupported";
+  const needs = alertsOn && (!ready || perm==="default");
+  const banner=$("alertBanner");
+  if(banner) banner.hidden = !needs || bannerDismissed;
+  const btn=$("soundBtn");
+  if(btn){
+    if(!alertsOn) btn.textContent="🔕 Alertas mudos";
+    else if(!ready) btn.textContent="🔔 Ativar alertas";
+    else btn.textContent="🔔 Alertas ligados";
+  }
+  const txt=$("alertBannerText");
+  if(txt && alertsOn && perm==="denied") txt.textContent="🔔 Clique para liberar o som. As notificações do navegador estão bloqueadas neste site, mas os avisos na tela continuam funcionando.";
+}
+async function enableAlerts(){
+  alertsOn=true; lsSet(ALERT_PREF_KEY,"on"); bannerDismissed=false;
+  const ok=await unlockAudio();
+  await askNotifPermission();
+  updateAlertUI();
+  if(ok){ playSound("feita"); showToast({kind:"feita",icon:"🔔",title:"Alertas ativados",body:"Você será avisado a cada atualização de coleta."}); }
+}
+function dismissBanner(){ bannerDismissed=true; updateAlertUI(); }
+function toggleAlerts(){
+  if(alertsOn && audioReady()){
+    alertsOn=false; lsSet(ALERT_PREF_KEY,"off");
+    updateAlertUI();
+    showToast({kind:"editada",icon:"🔕",title:"Alertas mudos",body:"Sem som nem notificação. Os registros continuam no histórico."});
+  } else enableAlerts();
+}
+["pointerdown","keydown","touchstart"].forEach(ev=>
+  document.addEventListener(ev,()=>{ if(alertsOn && !audioReady()) unlockAudio(); },{passive:true}));
+
+/* ---------- Toast + flash ---------- */
+function removeToast(el){
+  if(!el || !el.parentNode) return;
+  el.classList.add("out");
+  setTimeout(()=>el.remove(),300);
+}
+function showToast({kind="info",icon="🔔",title,body,small}){
+  const box=$("toastBox"); if(!box) return;
+  const el=document.createElement("div");
+  el.className="toast "+kind;
+  el.innerHTML=`<div class="toast-ic">${icon}</div>
+    <div class="toast-tx"><b>${escapeHTML(title)}</b><span>${escapeHTML(body||"")}</span>${small?`<small>${escapeHTML(small)}</small>`:""}</div>
+    <button type="button" aria-label="Fechar">✕</button>`;
+  el.querySelector("button").onclick=()=>removeToast(el);
+  box.prepend(el);
+  while(box.children.length>4) box.lastChild.remove();
+  setTimeout(()=>removeToast(el),9000);
+}
+function screenFlash(kind){
+  const el=$("screenFlash"); if(!el) return;
+  el.className="screen-flash "+kind;
+  void el.offsetWidth;
+  el.classList.add("go");
+}
+
+/* ---------- Histórico ---------- */
+function nowHHMM(){ return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+function relTime(d){
+  const s=Math.max(0,Math.floor((Date.now()-d.getTime())/1000));
+  if(s<45) return "agora";
+  const m=Math.floor(s/60); if(m<60) return `há ${m} min`;
+  const h=Math.floor(m/60); if(h<24) return `há ${h} h`;
+  const days=Math.floor(h/24); return `há ${days} dia${days>1?"s":""}`;
+}
+function dateLabel(iso){
+  if(!iso) return "";
+  const [y,m,d]=String(iso).slice(0,10).split("-");
+  return (y&&m&&d)?`${d}/${m}`:"";
+}
+function pushHistory(entry){
+  historyItems.unshift(entry);
+  if(historyItems.length>HISTORY_MAX) historyItems.length=HISTORY_MAX;
+  if(!historyOpen){ historyUnread++; }
+  renderHistory(); renderRecent(); updateBadge();
+}
+function updateBadge(){
+  const b=$("historyBadge"); if(!b) return;
+  b.hidden=historyUnread<=0;
+  b.textContent=historyUnread>99?"99+":historyUnread;
+}
+function setHistoryFilter(f){
+  historyFilter=f;
+  document.querySelectorAll("#historyFilters .chip").forEach(c=>c.classList.toggle("active",c.dataset.f===f));
+  renderHistory();
+}
+function toggleHistory(){
+  historyOpen=!historyOpen;
+  $("historyDrawer").classList.toggle("open",historyOpen);
+  $("historyBackdrop").classList.toggle("open",historyOpen);
+  $("historyDrawer").setAttribute("aria-hidden",String(!historyOpen));
+  if(historyOpen){ historyUnread=0; updateBadge(); renderHistory(); }
+}
+function renderHistory(){
+  const list=$("historyList"); if(!list) return;
+  const items=historyItems.filter(h=>historyFilter==="all"||h.kind===historyFilter);
+  if(!items.length){ list.innerHTML='<div class="empty">Nenhuma atualização para este filtro.</div>'; return; }
+  list.innerHTML=items.map(h=>{
+    const meta=KIND_META[h.kind]||KIND_META.editada;
+    const day=h.data && h.data!==todayISO() ? ` • coleta de ${dateLabel(h.data)}` : "";
+    return `<div class="hd-item ${h.kind} ${h.live?"live":""}">
+      <div class="hd-ic">${meta.icon}</div>
+      <div class="hd-body"><b>${escapeHTML(h.nome)}</b><span>${escapeHTML(h.regiao)} • ${meta.verb}${day}</span></div>
+      <div class="hd-time">${escapeHTML(h.time)}<small>${relTime(h.ts)}</small></div>
+    </div>`;
+  }).join("");
+}
+function renderRecent(){
+  const box=$("recentItems"); if(!box) return;
+  const items=historyItems.slice(0,4);
+  if(!items.length){ box.innerHTML='<span class="recent-empty">Nenhuma atualização registrada ainda.</span>'; return; }
+  box.innerHTML=items.map(h=>{
+    const meta=KIND_META[h.kind]||KIND_META.editada;
+    return `<div class="recent-chip ${h.kind}" title="${escapeHTML(h.nome+" • "+meta.verb)}">
+      <span>${meta.icon}</span><span class="t">${escapeHTML(h.nome)}</span><em>${escapeHTML(h.regiao)} • ${escapeHTML(h.time)}</em></div>`;
+  }).join("");
+}
+async function loadHistory(){
+  try{
+    const [a,b]=await Promise.all([
+      db.from("spal_coletas").select("*").order("atualizado_em",{ascending:false,nullsFirst:false}).limit(40),
+      db.from("spal_coletas").select("*").order("horario_registro",{ascending:false,nullsFirst:false}).limit(40)
+    ]);
+    const byId=new Map();
+    [...(a.data||[]),...(b.data||[])].forEach(r=>byId.set(String(r.id),r));
+    const loaded=[];
+    byId.forEach(r=>{
+      const reg=r.horario_registro, upd=r.atualizado_em, st=normStatus(r.status);
+      const changed = upd && reg && (new Date(upd)-new Date(reg))>3000;
+      let kind="nova", raw=reg||upd;
+      if(st==="feita"||st==="nao_feita"){ kind=st; raw=(changed?upd:(upd||reg)); }
+      else if(changed){ kind="editada"; raw=upd; }
+      const ts=new Date(raw);
+      if(!raw || Number.isNaN(ts.getTime())) return;
+      loaded.push({id:"db-"+r.id,ts,time:formatTime(raw),kind,nome:r.nome||"Coleta",regiao:regionName(r.regiao_id),regiaoId:r.regiao_id,data:r.data_coleta,live:false});
+    });
+    const live=historyItems.filter(h=>h.live);
+    historyItems=[...live,...loaded].sort((x,y)=>y.ts-x.ts).slice(0,HISTORY_MAX);
+    renderHistory(); renderRecent();
+  }catch(e){ console.warn("Histórico indisponível:",e); renderRecent(); }
+}
+
+/* ---------- Evento em tempo real das coletas ---------- */
+function onColetaEvent(payload){
+  try{
+    const type=payload.eventType, nw=payload.new||{}, old=payload.old||{};
+    const id=nw.id ?? old.id;
+    const prev=collections.find(c=>String(c.id)===String(id)) || null;
+    let kind=null, row=nw;
+
+    if(type==="INSERT"){
+      kind="nova";
+      if(!prev && String(nw.data_coleta)===String(selectedDate)) collections.push(nw);
+    }else if(type==="DELETE"){
+      kind="removida"; row=prev||old;
+      collections=collections.filter(c=>String(c.id)!==String(id));
+    }else{
+      const st=normStatus(nw.status);
+      const oldSt=prev?prev.status:old.status;
+      if(oldSt!==undefined && normStatus(oldSt)!==st) kind=st==="feita"?"feita":st==="nao_feita"?"nao_feita":"pendente";
+      else if(prev && (prev.nome!==nw.nome || String(prev.regiao_id)!==String(nw.regiao_id))) kind="editada";
+      else if(!prev && oldSt===undefined) kind=(st==="feita"||st==="nao_feita")?st:"editada";
+      if(prev) Object.assign(prev,nw);
+    }
+    if(!kind) return;
+
+    const entry={
+      id:"live-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),
+      ts:new Date(), time:nowHHMM(), kind,
+      nome:row.nome||"Coleta", regiao:regionName(row.regiao_id), regiaoId:row.regiao_id,
+      data:row.data_coleta, live:true
+    };
+    pushHistory(entry);
+
+    if(kind!=="removida"){
+      flashRows.set(String(id),Date.now()+FLASH_MS);
+    }
+    if(row.regiao_id!=null) flashRegionsMap.set(String(row.regiao_id),Date.now()+FLASH_MS);
+
+    notifQueue.push(entry);
+    clearTimeout(notifTimer);
+    notifTimer=setTimeout(flushNotifications,500);
+  }catch(e){ console.warn("Falha ao processar evento:",e); }
+}
+
+function flushNotifications(){
+  const queue=notifQueue; notifQueue=[];
+  if(!queue.length) return;
+
+  const groups={};
+  queue.forEach(e=>{(groups[e.kind]=groups[e.kind]||[]).push(e)});
+
+  Object.entries(groups).forEach(([kind,list])=>{
+    const meta=KIND_META[kind];
+    let title,body;
+    if(list.length<=2){
+      list.forEach(e=>{
+        showToast({kind,icon:meta.icon,title:meta.title,body:`${e.nome} — ${e.regiao}`,small:`Às ${e.time}`});
+      });
+      title=meta.title; body=list.map(e=>`${e.nome} — ${e.regiao}`).join(" | ");
+    }else{
+      const names=list.slice(0,3).map(e=>e.nome).join(", ")+(list.length>3?` e mais ${list.length-3}`:"");
+      title=`${list.length} coletas ${meta.plural}`; body=names;
+      showToast({kind,icon:meta.icon,title,body,small:`Às ${list[0].time}`});
+    }
+    systemNotify("SPAL • "+title,body,"spal-"+kind);
+  });
+
+  const top = groups.nao_feita?"nao_feita":groups.feita?"feita":groups.nova?"nova":groups.pendente?"pendente":groups.editada?"editada":"removida";
+  screenFlash(top);
+  playSound(top);
+
+  if(document.hidden){
+    unseenTitleCount+=queue.length;
+    document.title=`(${unseenTitleCount}) ${BASE_TITLE}`;
+  }
+
+  // No modo apresentação, leva o slide para a região que acabou de mudar
+  const target=queue.find(e=>e.regiaoId!=null && String(e.data)===String(selectedDate));
+  if(presentationMode && target){
+    setTimeout(()=>{
+      const i=slides.findIndex(s=>String(s.region.id)===String(target.regiaoId));
+      if(i>=0){ slideIndex=i; renderPresentation(); resetCountdown(); if(!paused) startRotation(); }
+    },1000);
+  }
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden){ unseenTitleCount=0; document.title=BASE_TITLE; }
+});
+document.addEventListener("keydown",e=>{
+  const tag=(e.target&&e.target.tagName)||"";
+  if(tag==="INPUT"||tag==="SELECT"||tag==="TEXTAREA") return;
+  if(e.key.toLowerCase()==="h") toggleHistory();
+  if(e.key==="Escape" && historyOpen) toggleHistory();
+});
+setInterval(()=>{ renderRecent(); if(historyOpen) renderHistory(); },30000);
 
 document.addEventListener("keydown",e=>{
   if(e.key===" " && presentationMode){e.preventDefault();togglePause()}
@@ -837,8 +1284,11 @@ window.addEventListener("resize",()=>{
 (async()=>{
   selectedDate=todayISO();
   $("presentationDate").value=selectedDate;
+  getAudio();
+  updateAlertUI();
   await loadAll();
   subscribeRealtime();
+  loadHistory();
 
   const params=new URLSearchParams(location.search);
   if(params.get("tv")==="1"){
